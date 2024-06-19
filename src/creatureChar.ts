@@ -15,10 +15,14 @@ import { fightAction } from "./fightAction";
 
 export class creatureChar extends gameElement {
 
+    public name:string = "animal" + String(Math.floor(Math.random()*1000));
+
     public HP:number = 100;
     public maxHP:number = 100; 
     public dodgePoint: number = 1;
     public dodgeMax: number = 1;
+
+    public dir:number = 1;
 
     muscle:number = 10;
     magic:number = 10;
@@ -27,6 +31,7 @@ export class creatureChar extends gameElement {
     speed:number = 5;
 
     actions:Array<any> = [];
+    
     //protect1:fightAction = null;
     types:Array<monsType> = [];
     shapes:Array<shape> = [];
@@ -54,10 +59,14 @@ export class creatureChar extends gameElement {
             {
                 _context.save();
                 //_context.drawImage(this.imageElem,this.x+64,this.y,64,64);
-                _context.translate(320, 0);
-                _context.scale(-1, 1);
-                _context.drawImage(this.imageElem,this.x+64,this.y,64,64);
-                _context.restore(); 
+                if (this.dir == -1)
+                { 
+                    _context.translate(640, 0);
+                    _context.scale(-1, 1);
+                    _context.drawImage(this.imageElem,640-this.x-64,this.y,64,64);
+                } 
+                else{_context.drawImage(this.imageElem,this.x,this.y,64,64);} 
+                _context.restore();
             }
 
     }

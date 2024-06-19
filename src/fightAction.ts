@@ -1,9 +1,10 @@
 export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special"
-export type TARGETT = "single" | "double" | "aoe"
+export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal"
 
 export class fightAction { 
 
     
+    name:string = "default action";
     actionType:ACTIONT = "physical";
     targetType:TARGETT = "single";
     priority:number = 0;
