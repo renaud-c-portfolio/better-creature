@@ -48,13 +48,10 @@ class gameEngine {
             this.ReleaseMouse(event,this.canvas);
         });  
 
+        this.currentMatch.defaultParty(); //until we import parties from data
         this.gameElements.push(this.currentMatch);
         this.depthList.push(-100); 
-        console.log("what the");
-
-        const creature = new creatureChar(this,50,50,0,"fire","fire","beetle","crawler");
-        this.gameElements.push(creature);
-        this.depthList.push(0); 
+        console.log("what the"); 
     }
     
     
