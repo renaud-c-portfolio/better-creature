@@ -110,6 +110,7 @@ export class FightMatch extends gameElement {
 
     actionChoiceFunction = (context:CanvasRenderingContext2D) => {
 
+        ///cat
             for (let i=0; i < this.actionButtons.length; i++)
             {
                 let currentButton = this.actionButtons[i];
