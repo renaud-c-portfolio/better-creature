@@ -49,3 +49,9 @@
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast; 
   } 
+
+
+  @font-face {
+    font-family: "04b03";
+    src: url(./gfx/04B_03_.TTF) format("truetype");
+}

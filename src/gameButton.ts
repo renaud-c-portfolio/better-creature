@@ -18,10 +18,7 @@ class gameButton extends gameElement {
 
     drawFunction = (_context:CanvasRenderingContext2D) => {
 
-        if (this.clicked > 0 && this.engine.leftRelease)
-            {
-                this.clicked = 0;
-            }
+        
 
         _context.fillStyle = "black";
         _context.beginPath();
@@ -31,18 +28,25 @@ class gameButton extends gameElement {
         
         if (this.engine.MouseInRect(this.x,this.y,this.width,this.height))
             {_context.fillStyle = "rgb(100,100,150)"; 
+                document.body.style.cursor = 'pointer';
 
                 if (this.engine.leftClick === 1)
                     {
                         this.clicked = 1;
                     }
-                else if (this.engine.leftRelease > 0 && this.clicked)
+                if (this.engine.leftRelease > 0 && this.clicked > 0)
                     {
-                        this.clickConfirm = 1;
+                        this.clickConfirm = this.clicked;
+                        this.clicked = 0;
                     }
                     
             }
-        else {_context.fillStyle = "rgb(80,80,130)";}
+        else {
+            if (this.clicked > 0 && this.engine.leftRelease)
+            {
+                this.clicked = 0;
+            }
+            _context.fillStyle = "rgb(80,80,130)";}
         if (this.clicked)
         { _context.fillStyle= "rgb(60,60,110)";
             //this.x = this.engine.mouseX;

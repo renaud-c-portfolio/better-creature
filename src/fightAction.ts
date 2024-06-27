@@ -1,42 +1,64 @@
-export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special"
-export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal"
+import CreatureChar from "./CreatureChar";
 
-export class fightAction { 
+export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special";
+export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal";
+
+const tempNames:Array<string> = ["slash","bash","gash","fire","ash","clash","crush","pincer","claw","zap","needle","bite","light","heavy","banana","destruction","laser","breath","sever"];
+
+export class FightAction { 
 
     
-    name:string = "default action";
+    name:string = "default action"+String(Math.floor(Math.random()*1000));
     actionType:ACTIONT = "physical";
     targetType:TARGETT = "single";
     priority:number = 0;
     power:number = 0;
     statusEffect:string = "";
     statusPower:number = 0; 
-    otherEffects:object = {};
-
+    otherEffects:object = {}; 
     actionParts:Array<any> = [];
 
-    constructor() {
-        
+    remainingUses:number = -1;
+
+    constructor(user:CreatureChar) {
+        let random1 = tempNames[Math.floor(Math.random()*tempNames.length)];
+        let random2 = tempNames[Math.floor(Math.random()*tempNames.length)];
+        this.name = random1 + " " + random2;
     }
 
     preTurnAction = () => {
-        
+         
     }
 
     executeAction = () => {
-
+         
     }
    
     postTurnAction = () => {
-
-    }
-
-     
+         
+    } 
 
     generateTypesAction = () =>{
-
+         
     }
+    
      
+
 }
- 
- 
+
+export class SwitchAction extends FightAction {
+
+    constructor(user:CreatureChar) {
+        super(user); 
+    }
+
+}
+
+export class ProtectAction extends FightAction {
+
+    constructor(user:CreatureChar) {
+        super(user);
+        this.remainingUses = 1;
+    }
+
+}

@@ -1,7 +1,7 @@
 import gameButton from "./gameButton";
-import fightMatch from "./fightMatch";
+import FightMatch from "./FightMatch";
 import gameElement from "./gameElement"; 
-import creatureChar from "./creatureChar";
+import CreatureChar from "./CreatureChar";
 
 import { MTYPE } from "./game/types/monsType";
 import { MSHAPE } from "./game/shapes/shapes";
@@ -13,11 +13,19 @@ class gameEngine {
     public context:CanvasRenderingContext2D;
     public gameElements: Array<gameElement> = [];
     public depthList: Array<number> = [];
+    public frameRate = 1000 / 60;
+
+    public prevTime:number = Date.now();
+    public currentTime:number = Date.now();
+    public deltaTime:number = 0;
+    public frameTime:number = 0;
 
     public leftClick: number = 0;
     public leftRelease: number = 0;
+    public rightClick: number = 0;
+    public rightRelease: number = 0;
 
-    public currentMatch:fightMatch = new fightMatch(this,0,0,-100);
+    public currentMatch:FightMatch = new FightMatch(this,0,0,-100);
 
     constructor(public canvas:HTMLCanvasElement){ 
 
@@ -50,8 +58,7 @@ class gameEngine {
 
         this.currentMatch.defaultParty(); //until we import parties from data
         this.gameElements.push(this.currentMatch);
-        this.depthList.push(-100); 
-        console.log("what the"); 
+        this.depthList.push(-100);  
     }
     
     
@@ -78,8 +85,12 @@ class gameEngine {
         {
             this.leftClick = 1;  
         }
+        else if (event.button === 2)
+        {
+            this.rightClick = 1;  
+        }
 
-        console.log(event);
+        //console.log(event);
     }
 
     ReleaseMouse = (event:MouseEvent,_canvas:HTMLCanvasElement) => {
@@ -91,9 +102,16 @@ class gameEngine {
         this.mouseY =  Math.floor((event.clientY - rect.top)*scaleY); 
         if (event.button === 0)
         {
+            this.leftRelease = this.leftClick;
             this.leftClick = 0;
-            this.leftRelease = 1;
         }
+        else if (event.button === 2)
+        {
+            this.rightRelease = this.rightClick;
+            this.rightClick = 0;
+        }
+        
+        //console.log(event);
         
     }
 
@@ -130,40 +148,53 @@ class gameEngine {
 
     /// run every frame 
     gameTick = () => {
-        //tick += 0.25;
-
         
-
-        const _context = this.context;
-        
-        if (_context != null)
-          { 
-            _context.clearRect(0,0,999,999);
-            _context.fillStyle = "rgba(128, 128, 128, 1)";
-            _context.fillRect(0,0,640,360);  
-            _context.font = "48px '04b03'";  
-
-            for (let _j =0; _j < this.depthList.length;_j++)
-            {
-                const _depth = this.depthList[_j];
-                for (let _i =0; _i < this.gameElements.length; _i++)
-                {
-                    const _ge = this.gameElements[_i];
-                    if (_ge.depth === _depth)
-                    {
-                        _ge.drawFunction(_context);
-                    }
-                } 
-            }  
+         this.currentTime = Date.now();
+         this.deltaTime = this.currentTime - this.prevTime; 
+         this.prevTime =this.currentTime; 
+         this.frameTime += this.deltaTime;
+         //this allows us to limit game FPS to 60 instead of whatever your display is, along with frameskip sometimes. might need a limit though
+         let multiFrame = 0;
+         while (this.frameTime >= this.frameRate)
+            { 
+                this.frameTime -= this.frameRate;
+                multiFrame += 1;
             
-          }  
+                const _context = this.context; 
+                if (_context != null)
+                { 
+                    _context.clearRect(0,0,999,999);
+                    _context.fillStyle = "rgba(128, 128, 128, 1)";
+                    _context.fillRect(0,0,640,360);  
+                    _context.font = "48px '04b03'";  
 
-          if (this.leftClick > 0)
-            {this.leftClick +=1;}
-           if (this.leftRelease > 0) {this.leftRelease = 0;}
+                    for (let _j =0; _j < this.depthList.length;_j++)
+                    {
+                        const _depth = this.depthList[_j];
+                        for (let _i =0; _i < this.gameElements.length; _i++)
+                        {
+                            const _ge = this.gameElements[_i];
+                            if (_ge.depth === _depth)
+                            {
+                                _ge.drawFunction(_context);
+                            }
+                        } 
+                    }  
+                    
+                }  
+                if (this.leftClick > 0)  {this.leftClick +=1;}
+                if (this.leftRelease > 0) {this.leftRelease = 0;}
+                if (this.rightClick > 0)  {this.rightClick +=1;}
+                if (this.rightRelease > 0) {this.rightRelease = 0;}
+            }
 
-          requestAnimationFrame(()=>{this.gameTick()}); 
-      
+          if (multiFrame > 1)
+            {
+                console.log("frames skipped:",multiFrame);
+                multiFrame = 0;
+            }
+
+          requestAnimationFrame(()=>{this.gameTick()});  
       }
 
 }

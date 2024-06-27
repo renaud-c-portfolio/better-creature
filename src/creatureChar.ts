@@ -10,27 +10,34 @@ import nekoUrl from "./gfx/evil_neko.png";
 import centiUrl from "./gfx/centip.png";
 import sharkyUrl from "./gfx/sharky.png";
 import melonUrl from "./gfx/watermelone.png";
-import { fightAction } from "./fightAction";
+import { FightAction } from "./FightAction";
 
 
-export class creatureChar extends gameElement {
+export class CreatureChar extends gameElement {
 
-    public name:string = "animal" + String(Math.floor(Math.random()*1000));
+    public name:string = "animal" + String(Math.floor(Math.random()*1000)); 
+    public dir:number = 1;
 
     public HP:number = 100;
     public maxHP:number = 100; 
     public dodgePoint: number = 1;
     public dodgeMax: number = 1;
 
-    public dir:number = 1;
 
-    muscle:number = 10;
-    magic:number = 10;
-    armor:number = 1;
-    resistance:number = 1;
-    speed:number = 5;
+    public muscle:number = 10;
+    public magic:number = 10;
+    public armor:number = 1;
+    public resistance:number = 1;
+    public speed:number = 5;
 
-    actions:Array<any> = [];
+    public turnOver:boolean = false;
+
+    actions:Array<FightAction> = [
+        new FightAction(this),
+        new FightAction(this),
+        new FightAction(this),
+        new FightAction(this) 
+    ];
     
     //protect1:fightAction = null;
     types:Array<monsType> = [];
@@ -41,7 +48,7 @@ export class creatureChar extends gameElement {
  
     imageElem:HTMLImageElement = document.createElement("img");  
 
-    constructor (public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0,public type1:MTYPE,public type2:MTYPE,public shape1:MSHAPE,public shape2:MSHAPE){
+    constructor (public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0,public type1:MTYPE,public type2:MTYPE,public shape1:MSHAPE,public shape2:MSHAPE,public team = -1){
         super(engine,x,y,depth)
         var _rando = Math.floor(Math.random()*this.tempUrlArray.length);
         this.imageElem.src = this.tempUrlArray[_rando];
@@ -49,6 +56,8 @@ export class creatureChar extends gameElement {
         this.imageElem.onload = () => { 
             this.loaded = true;
           }
+
+        this.speed = Math.floor(Math.random()*9);
 
 
     }
@@ -77,4 +86,4 @@ export class creatureChar extends gameElement {
 }
 
 
-export default creatureChar
+export default CreatureChar
