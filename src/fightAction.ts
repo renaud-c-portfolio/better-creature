@@ -1,4 +1,6 @@
 import CreatureChar from "./CreatureChar";
+import { FightEvent,EffectFightMessage } from "./FightEvent";
+import FightMatch from "./FightMatch";
 
 export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special";
 export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal";
@@ -40,6 +42,15 @@ export class FightAction {
 
     generateTypesAction = () =>{
          
+    }
+
+
+    generateEvent = (fightMatch:FightMatch,user:CreatureChar) =>{
+
+        const newEvent = new FightEvent(fightMatch,[]);
+        newEvent.eventEffects.push(new EffectFightMessage(fightMatch,user.name+" uses "+this.name+"!"));
+
+        return newEvent;
     }
     
      

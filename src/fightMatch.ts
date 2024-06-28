@@ -11,8 +11,7 @@ import { shape, MSHAPE } from "./game/shapes/shapes";
 import { FightAction, ACTIONT, TARGETT } from "./FightAction";
 import gameEngine from "./gameEngine";
 
-import { FightEvent } from "./FightEvent";
-import { EventMessage } from "./FightEvent";
+import { FightEvent, EventType, EffectFightMessage } from "./FightEvent"; 
 
 
 type MultiMode = "cpu" | "local" | "online";
@@ -473,6 +472,18 @@ export class FightMatch extends gameElement {
                         if (charSpeed < minSpeed){minSpeed = charSpeed;}
                     }
             }
+
+        for (let k =maxSpeed; k >= minSpeed; k--)
+        {
+            for (let i = 0; i < this.totalTeams; i++)
+            {
+                for (let j=0; j < this.charsPerTeam; j++)
+                    {
+                         
+                    }
+            }
+        }
+        
         this.fightPhase = "actions";
         this.currentChar = null;
         this.currentAction = null;
@@ -481,7 +492,8 @@ export class FightMatch extends gameElement {
         console.log("speedlist",this.speedsList);
 
         this.eventsList = []; 
-        this.eventsList.push(new EventMessage(this));
+        this.eventsList.push( new FightEvent(this,[new EffectFightMessage(this,"hello message")]));
+        this.eventIndex = 0;
     }
  
     
@@ -501,12 +513,9 @@ export class FightMatch extends gameElement {
                 this.eventIndex+=1;
                 if (this.eventIndex >= this.eventsList.length)
                     {
-                        //this.fightPhase = "turnEnd";
+                        this.fightPhase = "turnEnd";
                     }
-            }
-        
-
-
+            } 
 
     }
 
@@ -571,7 +580,15 @@ export class FightMatch extends gameElement {
                 this.ActionsFunction(context);
 
             break;
+            case "turnEnd":
+                this.fightPhase = "choice"; 
+                this.choicePhase = 0;
+                this.choiceDepth = 0;
+                this.targetting = null;
+            break;
+
             default:
+
                 break;
             
          }
