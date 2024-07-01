@@ -1,16 +1,16 @@
-import gameElement from "./gameElement";
-import gameEngine from "./gameEngine";
+import GameElement from "./GameElement";
+import GameEngine from "./GameEngine";
 
 type BUTTONT = "text" | "image" | "labeledImage"
 
-class gameButton extends gameElement {
+class gameButton extends GameElement {
 
     public clicked:number = 0;
     public clickConfirm:number = 0;
  
     public sprite:string = "";
 
-    constructor(engine:gameEngine,public x:number = 0,public y:number = 0,public width:number = 50, public height:number = 30,public text:string = "",public depth:number = 0, public type:BUTTONT = "text") {
+    constructor(engine:GameEngine,public x:number = 0,public y:number = 0,public width:number = 50, public height:number = 30,public text:string = "",public depth:number = 0, public type:BUTTONT = "text") {
         super(engine,x,y,depth);
 
     }

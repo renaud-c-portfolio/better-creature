@@ -1,7 +1,7 @@
-import gameElement from "./gameElement";
+import GameElement from "./GameElement";
 import { monsType, MTYPE } from "./game/types/monsType";
 import { shape, MSHAPE } from "./game/shapes/shapes"; 
-import gameEngine from "./gameEngine";
+import gameEngine from "./GameEngine";
 
 import crambUrl from "./gfx/quadtopus.png";
 import mashUrl from "./gfx/mashroom.png";

@@ -1,6 +1,6 @@
-import gameButton from "./gameButton";
+import GameButton from "./GameButton";
 import CreatureChar from "./CreatureChar";
-import gameElement from "./gameElement";
+import GameElement from "./GameElement";
 
 
 import selectUrl from "./gfx/selector.png";
@@ -9,7 +9,7 @@ import targetUrl from "./gfx/targettersheet.png";
 import { monsType, MTYPE } from "./game/types/monsType";
 import { shape, MSHAPE } from "./game/shapes/shapes"; 
 import { FightAction, ACTIONT, TARGETT } from "./FightAction";
-import gameEngine from "./gameEngine";
+import gameEngine from "./GameEngine";
 
 import { FightEvent, EventType, EffectFightMessage } from "./FightEvent"; 
 
@@ -17,7 +17,7 @@ import { FightEvent, EventType, EffectFightMessage } from "./FightEvent";
 type MultiMode = "cpu" | "local" | "online";
 type FightPhase = "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd";
 
-export class FightMatch extends gameElement {
+export class FightMatch extends GameElement {
 
     multiMode:MultiMode = "cpu";
 
