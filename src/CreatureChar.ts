@@ -15,7 +15,7 @@ import { FightEvent } from "./FightEvent";
 import FightMatch from "./FightMatch";
 
 
-export class CreatureChar extends gameElement {
+export class CreatureChar extends GameElement {
 
     public name:string = "animal" + String(Math.floor(Math.random()*1000)); 
     public dir:number = 1;

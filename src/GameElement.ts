@@ -1,5 +1,5 @@
 import GameEngine from "./GameEngine";
-export class GameElement {
+class GameElement {
 
       
     sprite:string = "";
@@ -16,4 +16,5 @@ export class GameElement {
     }
     
 }
- 
+
+export default GameElement

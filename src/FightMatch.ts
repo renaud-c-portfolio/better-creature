@@ -60,7 +60,7 @@ export class FightMatch extends GameElement {
     interruptsList:Array<any> = [];
     eventIndex:number = 0;
 
-    animationsList:Array<gameElement> = [];
+    animationsList:Array<GameElement> = [];
 
     currentActionSpeed:number = 0;
     speedIndex:number = 0;
@@ -93,26 +93,26 @@ export class FightMatch extends GameElement {
 
 
     actionButtons = [
-        new gameButton(this.engine,26,246,140,40,"action1",0),
-        new gameButton(this.engine,176,246,140,40,"action2",0),
-        new gameButton(this.engine,326,246,140,40,"action3",0),
-        new gameButton(this.engine,476,246,140,40,"action4",0)
+        new GameButton(this.engine,26,246,140,40,"action1",0),
+        new GameButton(this.engine,176,246,140,40,"action2",0),
+        new GameButton(this.engine,326,246,140,40,"action3",0),
+        new GameButton(this.engine,476,246,140,40,"action4",0)
 
     ];
 
-    protectButtons = [new gameButton(this.engine,356,300,100,40,"protect1",0),
-    new gameButton(this.engine,486,300,100,40,"protect2",0)];
+    protectButtons = [new GameButton(this.engine,356,300,100,40,"protect1",0),
+    new GameButton(this.engine,486,300,100,40,"protect2",0)];
 
     switchButtons = [
-        new gameButton(this.engine,66,296,54,54,"switch",0,"labeledImage"),
-        new gameButton(this.engine,136,296,54,54,"switch",0,"labeledImage"),
-        new gameButton(this.engine,206,296,54,54,"switch",0,"labeledImage"),
-        new gameButton(this.engine,276,296,54,54,"switch",0,"labeledImage")
+        new GameButton(this.engine,66,296,54,54,"switch",0,"labeledImage"),
+        new GameButton(this.engine,136,296,54,54,"switch",0,"labeledImage"),
+        new GameButton(this.engine,206,296,54,54,"switch",0,"labeledImage"),
+        new GameButton(this.engine,276,296,54,54,"switch",0,"labeledImage")
     ];
 
-    confirmButton = new gameButton(this.engine,326,246,140,40,"confirm",0);
-    cancelButton = new gameButton(this.engine,26,246,140,40,"cancel",0);
-    backButton = new gameButton(this.engine,12,296,40,54,"back",0);
+    confirmButton = new GameButton(this.engine,326,246,140,40,"confirm",0);
+    cancelButton = new GameButton(this.engine,26,246,140,40,"cancel",0);
+    backButton = new GameButton(this.engine,12,296,40,54,"back",0);
     
     defaultParty = () =>{
 

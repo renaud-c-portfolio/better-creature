@@ -1,6 +1,6 @@
-import gameButton from "./gameButton";
+import GameButton from "./GameButton";
 import FightMatch from "./FightMatch";
-import gameElement from "./gameElement"; 
+import GameElement from "./GameElement";
 import CreatureChar from "./CreatureChar";
 
 import { MTYPE } from "./game/types/monsType";
@@ -11,7 +11,7 @@ class gameEngine {
     mouseX: number = -1;
     mouseY: number = -1; 
     public context:CanvasRenderingContext2D;
-    public gameElements: Array<gameElement> = [];
+    public gameElements: Array<GameElement> = [];
     public depthList: Array<number> = [];
     public frameRate = 1000 / 60;
 

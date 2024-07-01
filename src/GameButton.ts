@@ -3,7 +3,7 @@ import GameEngine from "./GameEngine";
 
 type BUTTONT = "text" | "image" | "labeledImage"
 
-class gameButton extends GameElement {
+class GameButton extends GameElement {
 
     public clicked:number = 0;
     public clickConfirm:number = 0;
@@ -78,4 +78,4 @@ class gameButton extends GameElement {
 }
 
 
-export default gameButton
+export default GameButton
