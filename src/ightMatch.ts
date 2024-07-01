@@ -57,7 +57,10 @@ export class FightMatch extends gameElement {
 
     speedsList:Array<number> = [];
     eventsList:Array<any> = [];
+    interruptsList:Array<any> = [];
     eventIndex:number = 0;
+
+    animationsList:Array<gameElement> = [];
 
     currentActionSpeed:number = 0;
     speedIndex:number = 0;
@@ -162,7 +165,7 @@ export class FightMatch extends gameElement {
         let outputString = "";
         if (char === null)
             {
-
+                 
             }
         else
         {
@@ -223,8 +226,8 @@ export class FightMatch extends gameElement {
                 if (this.confirmButton.clickConfirm)
                     {
                         this.targetting = null; 
-                        this.confirmButton.clickConfirm = 0;
-                        this.choiceConfirmed = true;
+                        this.confirmButton.clickConfirm = 0; 
+                        this.choiceConfirmed = true; 
                     }
 
                 this.cancelButton.drawFunction(context);
@@ -386,9 +389,9 @@ export class FightMatch extends gameElement {
                     let buttonAction:FightAction|null = new FightAction(this.currentChar);
 
                     if (this.currentChar != null) {buttonAction = this.currentChar.actions[i];}
-                    else { buttonAction.name = "none";}
-
-                    currentButton.text = buttonAction.name;
+                    else { buttonAction.name = "none";} 
+                    if (buttonAction != null) {currentButton.text = buttonAction.name;}
+                    
 
                     currentButton.drawFunction(context);
                     if (currentButton.clickConfirm > 0)
@@ -457,42 +460,38 @@ export class FightMatch extends gameElement {
 
     TurnStartFunction = (context:CanvasRenderingContext2D) => {
 
-        let minSpeed = 9999;
-        let maxSpeed = -9999;
-        this.speedsList = [];
-        for (let i = 0; i < this.totalTeams; i++)
-            {
-                for (let j=0; j < this.charsPerTeam; j++)
-                    {
-                        this.currentChar = this.activeChars[i][j];
-                        const charSpeed = this.currentChar.speed;
-                        if (this.speedsList.indexOf(charSpeed) === -1)
-                            {this.speedsList.push(charSpeed)}
-                        if (charSpeed > maxSpeed){maxSpeed = charSpeed;}
-                        if (charSpeed < minSpeed){minSpeed = charSpeed;}
-                    }
-            }
-
-        for (let k =maxSpeed; k >= minSpeed; k--)
-        {
+       this.eventsList = [];
             for (let i = 0; i < this.totalTeams; i++)
             {
                 for (let j=0; j < this.charsPerTeam; j++)
                     {
-                         
-                    }
+                        this.currentChar = this.activeChars[i][j]; 
+                        const currentChoice = this.playerChoices[i][j*2];
+
+                        if (currentChoice < 4)
+                            {
+                                this.eventsList.push(this.currentChar.makeEventFromAction(this,currentChoice));
+                            } 
+                    }    
             }
-        }
-        
+
+            //let minSpeed = 9999;
+            //let maxSpeed = -9999;
+            //this.speedsList = [];
+            /*const charSpeed = this.currentChar.speed;
+            if (this.speedsList.indexOf(charSpeed) === -1)
+                {this.speedsList.push(charSpeed)}
+            if (charSpeed > maxSpeed){maxSpeed = charSpeed;} 
+            if (charSpeed < minSpeed){minSpeed = charSpeed;} */ 
+            
         this.fightPhase = "actions";
         this.currentChar = null;
         this.currentAction = null;
-
-        this.speedsList.sort((a, b) => b - a);
+         
+        this.eventsList.sort((a:FightEvent, b:FightEvent) => b.eventSpeed - a.eventSpeed);
+        this.eventsList.sort((a:FightEvent, b:FightEvent) => b.eventPriority - a.eventPriority);
         console.log("speedlist",this.speedsList);
-
-        this.eventsList = []; 
-        this.eventsList.push( new FightEvent(this,[new EffectFightMessage(this,"hello message")]));
+ 
         this.eventIndex = 0;
     }
  
@@ -506,8 +505,14 @@ export class FightMatch extends gameElement {
         context.fillText(this.actionsMessage,70,258);  
          
         const currentEvent = this.eventsList[this.eventIndex];
+        context.fillText("speed:"+String(currentEvent.eventSpeed),70,238);  
         
+        if (currentEvent.user != null)
+            {
+                context.drawImage(this.selectImg,currentEvent.user.x-1,currentEvent.user.y-1,64,64); 
+            }
         currentEvent.ExecuteEvent();
+
         if (currentEvent.eventOver)
             {
                 this.eventIndex+=1;
@@ -546,6 +551,13 @@ export class FightMatch extends gameElement {
             _char.dir = -1;
             _char.drawFunction(context);
         }
+
+        //draw sfx animations
+        for (let i =0; i < this.animationsList.length;i++)
+            {
+                const currentAnim = this.animationsList[i];
+                currentAnim.drawFunction(context);
+            }
 
 
         ///draw buttons, catch their functions
@@ -588,8 +600,8 @@ export class FightMatch extends gameElement {
             break;
 
             default:
-
-                break;
+                //hello
+            break;
             
          }
 

@@ -27,28 +27,13 @@ export class FightAction {
         let random2 = tempNames[Math.floor(Math.random()*tempNames.length)];
         this.name = random1 + " " + random2;
     }
-
-    preTurnAction = () => {
-         
-    }
-
-    executeAction = () => {
-         
-    }
-   
-    postTurnAction = () => {
-         
-    } 
-
-    generateTypesAction = () =>{
-         
-    }
-
-
+ 
     generateEvent = (fightMatch:FightMatch,user:CreatureChar) =>{
 
         const newEvent = new FightEvent(fightMatch,[]);
         newEvent.eventEffects.push(new EffectFightMessage(fightMatch,user.name+" uses "+this.name+"!"));
+        newEvent.user = user;
+        newEvent.eventSpeed = user.speed;
 
         return newEvent;
     }

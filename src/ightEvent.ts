@@ -16,10 +16,16 @@ export class FightEvent {
  
     public effectIndex:number = 0;
 
+    public eventSpeed:number = 0;
+    public eventPriority:number = 0;
+
     public totalTime:number = 0;
     public effectTime:number = 0;
+     
 
-
+     
+     
+     
     constructor(public match:FightMatch, public eventEffects:Array<any>) {
          
     }

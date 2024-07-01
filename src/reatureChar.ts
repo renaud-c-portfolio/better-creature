@@ -11,12 +11,16 @@ import centiUrl from "./gfx/centip.png";
 import sharkyUrl from "./gfx/sharky.png";
 import melonUrl from "./gfx/watermelone.png";
 import { FightAction } from "./FightAction";
+import { FightEvent } from "./FightEvent";
+import FightMatch from "./FightMatch";
 
 
 export class CreatureChar extends gameElement {
 
     public name:string = "animal" + String(Math.floor(Math.random()*1000)); 
     public dir:number = 1;
+    public defaultX:number = 0;
+    public defaultY:number = 0;
 
     public HP:number = 100;
     public maxHP:number = 100; 
@@ -78,6 +82,12 @@ export class CreatureChar extends gameElement {
                 _context.restore();
             }
 
+    }
+
+    makeEventFromAction = (currentMatch:FightMatch,actionNumber:number) =>{ 
+        const currentAction = this.actions[actionNumber];  
+        const newEvent = currentAction.generateEvent(currentMatch,this);  
+        return newEvent;
     }
 
 

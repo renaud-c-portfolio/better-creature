@@ -11,7 +11,7 @@ class gameElement {
         
     }
 
-    drawFunction = (_context:CanvasRenderingContext2D) => {
+    drawFunction = (context:CanvasRenderingContext2D) => {
         
     }
     
