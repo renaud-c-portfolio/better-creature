@@ -2,7 +2,7 @@ import CreatureChar from "./CreatureChar";
 import { FightEvent,EffectFightMessage } from "./FightEvent";
 import FightMatch from "./FightMatch";
 
-export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special";
+export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special" | "switch";
 export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal";
 
 const tempNames:Array<string> = ["slash","bash","gash","fire","ash","clash","crush","pincer","claw","zap","needle","bite","light","heavy","banana","destruction","laser","breath","sever"];

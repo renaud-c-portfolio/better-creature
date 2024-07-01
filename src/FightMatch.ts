@@ -9,9 +9,10 @@ import targetUrl from "./gfx/targettersheet.png";
 import { monsType, MTYPE } from "./game/types/monsType";
 import { shape, MSHAPE } from "./game/shapes/shapes"; 
 import { FightAction, ACTIONT, TARGETT } from "./FightAction";
-import gameEngine from "./GameEngine";
+import GameEngine from "./GameEngine";
+import { FightAnimation } from "./FightAnimation";
 
-import { FightEvent, EventType, EffectFightMessage } from "./FightEvent"; 
+import { FightEvent, EventEffect, EffectType, EffectFightMessage } from "./FightEvent"; 
 
 
 type MultiMode = "cpu" | "local" | "online";
@@ -67,11 +68,12 @@ export class FightMatch extends GameElement {
 
     
 
-    constructor(public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0){
+    constructor(public engine:GameEngine,public x:number = 0,public y:number = 0,public depth:number = 0){
         super(engine,x,y,depth); 
         const spriteCanvasElement = document.createElement("canvas");;
         this.spriteCanvas = spriteCanvasElement; 
         const spriteContexter = this.spriteCanvas.getContext('2d');
+        console.log("context",spriteContexter);
         if (spriteContexter != null)
             {
                 this.spriteContext =  spriteContexter;
@@ -86,7 +88,7 @@ export class FightMatch extends GameElement {
         this.selectImg.onload = () => { 
             this.imgLoaded += 1;
           }
-
+          
     }
 
     
@@ -453,8 +455,7 @@ export class FightMatch extends GameElement {
                 const cpuTarget = Math.floor(Math.random()*2);
                 this.playerChoices[cpuPlayer][i*2] = cpuAction;
                 this.playerChoices[cpuPlayer][i*2+1] = cpuTarget;
-            }
-        
+            } 
 
     }
 
@@ -471,7 +472,15 @@ export class FightMatch extends GameElement {
                         if (currentChoice < 4)
                             {
                                 this.eventsList.push(this.currentChar.makeEventFromAction(this,currentChoice));
-                            } 
+                            }
+                        else if (currentChoice < 6)
+                            {
+                                 
+                            }
+                        else if (currentChoice < 11)
+                            {
+                                 
+                            }
                     }    
             }
 
@@ -523,6 +532,21 @@ export class FightMatch extends GameElement {
             } 
 
     }
+
+    createAnim = (animX:number,animY:number) => {
+
+        const newAnim = new FightAnimation(this.engine,this.spriteContext,animX,animY,0); 
+
+        return newAnim;
+    }
+
+
+    createEffectMessage = (message:string   ) => {
+        const newEffect = new EventEffect(this);
+        
+        return newEffect;
+    }
+
 
     override drawFunction = (context:CanvasRenderingContext2D) => {
 

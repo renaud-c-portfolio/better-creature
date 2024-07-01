@@ -42,6 +42,8 @@ export class CreatureChar extends GameElement {
         new FightAction(this),
         new FightAction(this) 
     ];
+
+    
     
     //protect1:fightAction = null;
     types:Array<monsType> = [];
@@ -80,6 +82,8 @@ export class CreatureChar extends GameElement {
                 } 
                 else{_context.drawImage(this.imageElem,this.x,this.y,64,64);} 
                 _context.restore();
+
+
             }
 
     }

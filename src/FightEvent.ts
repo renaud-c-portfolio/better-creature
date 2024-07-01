@@ -1,11 +1,11 @@
 import { FightAction } from "./FightAction";
 import CreatureChar from "./CreatureChar";
-import gameEngine from "./gameEngine";
+import GameEngine from "./GameEngine";
 import { FightMatch } from "./FightMatch";
 
 
 
-export type EventType = "actionMessage" | "dealDamage"
+export type EffectType = "actionMessage" | "dealDamage" | "createAnim"
 
 export class FightEvent { 
      
@@ -28,6 +28,10 @@ export class FightEvent {
      
     constructor(public match:FightMatch, public eventEffects:Array<any>) {
          
+    }
+    
+    ECreateAnim = (animX:number,animY:number) => {
+        const newAnim = this.match.createAnim(animX,animY);
     }
 
     EDealDamage = () => {
@@ -84,8 +88,7 @@ export class EventEffect {
      
     }
 
-    public ExecuteEffect = () => {
-        
+    public ExecuteEffect = () => { 
 
     }
 
