@@ -2,7 +2,7 @@ import './style.css'
 import * as PIXI from 'pixi.js';
 
 import crambUrl from "./gfx/funny_crab.png" 
-import gameEngine from './gameEngine';
+import GameEngine from './GameEngine';
 
 const gameWidth = 640;
 const gameHeight = 360;
@@ -38,7 +38,7 @@ const StartApp = async () => {
 
   
 
-  const engine = new gameEngine(gameCanvas);
+  const engine = new GameEngine(gameCanvas);
   ResizeCanvas(gameCanvas);
   engine.startGame();
   console.log("starto");

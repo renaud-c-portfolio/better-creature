@@ -6,7 +6,7 @@ import CreatureChar from "./CreatureChar";
 import { MTYPE } from "./game/types/monsType";
 import { MSHAPE } from "./game/shapes/shapes";
 
-class gameEngine {
+class GameEngine {
     
     mouseX: number = -1;
     mouseY: number = -1; 
@@ -199,4 +199,4 @@ class gameEngine {
 
 }
 
-export default gameEngine;
+export default GameEngine;
