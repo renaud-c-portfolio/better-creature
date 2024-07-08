@@ -10,13 +10,15 @@ import { monsType, MTYPE } from "./game/types/monsType";
 import { shape, MSHAPE } from "./game/shapes/shapes"; 
 import { FightAction, ACTIONT, TARGETT } from "./FightAction";
 import GameEngine from "./GameEngine";
-import { FightAnimation } from "./FightAnimation";
-
-import { FightEvent, EventEffect, EffectType, EffectFightMessage } from "./FightEvent"; 
+import { FightAnimation } from "./FightAnimation"; 
 
 
 type MultiMode = "cpu" | "local" | "online";
 type FightPhase = "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd";
+
+
+export type EffectType = "actionMessage" | "dealDamage" | "createAnim"
+
 
 export class FightMatch extends GameElement {
 
@@ -543,8 +545,12 @@ export class FightMatch extends GameElement {
 
     createEffectMessage = (message:string   ) => {
         const newEffect = new EventEffect(this);
-        
+
         return newEffect;
+    }
+
+    ActionToEvent = (action:FightAction) => {
+        
     }
 
 
@@ -635,5 +641,124 @@ export class FightMatch extends GameElement {
 
 
 }
+
+
+
+export class FightEvent { 
+     
+    public name:string = "default event";
+    public user:null|CreatureChar = null;
+    public referenceAction:null|FightAction = null;
+    public eventOver:boolean = false; 
+ 
+    public effectIndex:number = 0;
+
+    public eventSpeed:number = 0;
+    public eventPriority:number = 0;
+
+    public totalTime:number = 0;
+    public effectTime:number = 0;
+      
+
+     
+    constructor(public match:FightMatch, public eventEffects:Array<any>) {
+         
+    }
+
+    
+   
+ 
+
+
+    ExecuteEvent = () => {
+        if (this.eventEffects.length > 0)
+            {
+                if (this.effectIndex < this.eventEffects.length)
+                {
+                    const currentEffect = this.eventEffects[this.effectIndex];  
+                    currentEffect.ExecuteEffect();
+                    if (currentEffect.effectOver)
+                    {
+                        this.effectIndex += 1;
+                        //todo prolly destroy the effect or smth
+                    }
+                }
+                else
+                {
+                    this.eventOver = true;
+                }
+                
+                 
+            }
+        else
+            {
+                this.eventOver = true; 
+            }
+            
+    }
+
+    
+    
+} 
+
+
+class EventEffect {  
+
+    public timer:number = 0;
+    public duration:number = 120;
+    public effectOver:boolean = false;
+    public source:CreatureChar|null = null;
+    public target:CreatureChar|null = null;
+
+
+    constructor(public fightMatch:FightMatch){ 
+     
+    }
+
+    public ExecuteEffect = () => { 
+        
+    }
+
+}
+
+class EffectFightMessage extends EventEffect {
+
+    constructor(fightMatch:FightMatch,public message:string){ 
+        super(fightMatch);
+         
+    }
+
+     override ExecuteEffect = () => {  
+        console.log("timer:",this.timer)
+        this.fightMatch.actionsMessage = this.message;
+        this.timer += 1;
+        if (this.timer > this.duration)
+        {
+            this.effectOver = true;
+        }
+     };
+}
+
+class EffectCreateAnim extends EventEffect {
+    constructor(fightMatch:FightMatch,public animX:number,public animY:number){ 
+        super(fightMatch);
+    }
+
+    override ExecuteEffect = () => { 
+        const newAnim = this.fightMatch.createAnim(this.animX,this.animY);  
+    }
+}
+
+class EffectDealDamage extends EventEffect {
+    constructor(fightMatch:FightMatch){ 
+        super(fightMatch);
+    }  
+} 
+
+
+
+
+
+ 
 
 export default FightMatch;

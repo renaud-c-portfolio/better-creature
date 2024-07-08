@@ -17,8 +17,10 @@ export class FightAction {
     power:number = 0;
     statusEffect:string = "";
     statusPower:number = 0; 
-    otherEffects:object = {}; 
-    actionParts:Array<any> = [];
+
+
+    otherEffects:object = {};  
+    actionParts:Array<Array<any>> = [];
 
     remainingUses:number = -1;
 
@@ -28,7 +30,7 @@ export class FightAction {
         this.name = random1 + " " + random2;
     }
  
-    generateEvent = (fightMatch:FightMatch,user:CreatureChar) =>{
+    generateEvent = (fightMatch:FightMatch,user:CreatureChar) =>{ 
 
         const newEvent = new FightEvent(fightMatch,[]);
         newEvent.eventEffects.push(new EffectFightMessage(fightMatch,user.name+" uses "+this.name+"!"));
@@ -36,10 +38,7 @@ export class FightAction {
         newEvent.eventSpeed = user.speed;
 
         return newEvent;
-    }
-    
-     
-
+    }  
 }
 
 export class SwitchAction extends FightAction {
@@ -55,6 +54,15 @@ export class ProtectAction extends FightAction {
     constructor(user:CreatureChar) {
         super(user);
         this.remainingUses = 1;
-    }
+    } 
 
 }
+
+
+
+
+
+
+
+
+

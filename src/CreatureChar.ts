@@ -24,6 +24,8 @@ export class CreatureChar extends GameElement {
 
     public HP:number = 100;
     public maxHP:number = 100; 
+    public damaged:number = 0;
+
     public dodgePoint: number = 1;
     public dodgeMax: number = 1;
 
@@ -43,7 +45,9 @@ export class CreatureChar extends GameElement {
         new FightAction(this) 
     ];
 
-    
+    animations:Array<any> = [];
+
+
     
     //protect1:fightAction = null;
     types:Array<monsType> = [];
