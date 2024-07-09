@@ -10,8 +10,7 @@ import nekoUrl from "./gfx/evil_neko.png";
 import centiUrl from "./gfx/centip.png";
 import sharkyUrl from "./gfx/sharky.png";
 import melonUrl from "./gfx/watermelone.png";
-import { FightAction } from "./FightAction";
-import { FightEvent } from "./FightEvent";
+import { FightAction } from "./FightAction"; 
 import FightMatch from "./FightMatch";
 
 
@@ -86,7 +85,7 @@ export class CreatureChar extends GameElement {
                 } 
                 else{_context.drawImage(this.imageElem,this.x,this.y,64,64);} 
                 _context.restore();
-
+                
 
             }
 
@@ -94,7 +93,7 @@ export class CreatureChar extends GameElement {
 
     makeEventFromAction = (currentMatch:FightMatch,actionNumber:number) =>{ 
         const currentAction = this.actions[actionNumber];  
-        const newEvent = currentAction.generateEvent(currentMatch,this);  
+        const newEvent = currentAction.generateEvent(this);
         return newEvent;
     }
 

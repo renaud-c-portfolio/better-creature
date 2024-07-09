@@ -208,8 +208,11 @@ export class FightMatch extends GameElement {
 
             if (this.choiceConfirmed)
                 {
+                    
+                    this.choiceConfirmed = false; 
                     context.fillStyle = "blue"; 
-                    context.fillText("choices confirmed, please wait",70,278);    
+                    context.fillText("choices confirmed, please wait",70,278); 
+                    
                     if (this.multiMode === "cpu")
                         {
                             this.CpuRandom(1);
@@ -499,8 +502,8 @@ export class FightMatch extends GameElement {
         this.currentChar = null;
         this.currentAction = null;
          
-        this.eventsList.sort((a:FightEvent, b:FightEvent) => b.eventSpeed - a.eventSpeed);
-        this.eventsList.sort((a:FightEvent, b:FightEvent) => b.eventPriority - a.eventPriority);
+        this.eventsList.sort((a:FightAction, b:FightAction) => b.eventSpeed - a.eventSpeed);
+        this.eventsList.sort((a:FightAction, b:FightAction) => b.eventPriority - a.eventPriority);
         console.log("speedlist",this.speedsList);
  
         this.eventIndex = 0;
@@ -516,13 +519,14 @@ export class FightMatch extends GameElement {
         context.fillText(this.actionsMessage,70,258);  
          
         const currentEvent = this.eventsList[this.eventIndex];
+        console.log("evento",currentEvent);
         context.fillText("speed:"+String(currentEvent.eventSpeed),70,238);  
         
         if (currentEvent.user != null)
             {
                 context.drawImage(this.selectImg,currentEvent.user.x-1,currentEvent.user.y-1,64,64); 
             }
-        currentEvent.ExecuteEvent();
+        currentEvent.ExecuteEvent(this);
 
         if (currentEvent.eventOver)
             {
@@ -537,21 +541,9 @@ export class FightMatch extends GameElement {
 
     createAnim = (animX:number,animY:number) => {
 
-        const newAnim = new FightAnimation(this.engine,this.spriteContext,animX,animY,0); 
-
+        const newAnim = new FightAnimation(this.engine,this.spriteContext,animX,animY,0);  
         return newAnim;
-    }
-
-
-    createEffectMessage = (message:string   ) => {
-        const newEffect = new EventEffect(this);
-
-        return newEffect;
-    }
-
-    ActionToEvent = (action:FightAction) => {
-        
-    }
+    } 
 
 
     override drawFunction = (context:CanvasRenderingContext2D) => {
@@ -594,7 +586,7 @@ export class FightMatch extends GameElement {
          switch (this.fightPhase)
          {
             case "start":
-
+             
             break;
             case "choice": 
                 this.ViewCreatures(context);
@@ -637,6 +629,11 @@ export class FightMatch extends GameElement {
 
          
          this.time += 1;
+    }
+
+
+    getCharFromNumber = (num:number) => {
+        return this.activeChars[Math.floor(num/this.charsPerTeam)][num % this.charsPerTeam]; 
     }
 
 
@@ -699,61 +696,7 @@ export class FightEvent {
 
     
     
-} 
-
-
-class EventEffect {  
-
-    public timer:number = 0;
-    public duration:number = 120;
-    public effectOver:boolean = false;
-    public source:CreatureChar|null = null;
-    public target:CreatureChar|null = null;
-
-
-    constructor(public fightMatch:FightMatch){ 
-     
-    }
-
-    public ExecuteEffect = () => { 
-        
-    }
-
-}
-
-class EffectFightMessage extends EventEffect {
-
-    constructor(fightMatch:FightMatch,public message:string){ 
-        super(fightMatch);
-         
-    }
-
-     override ExecuteEffect = () => {  
-        console.log("timer:",this.timer)
-        this.fightMatch.actionsMessage = this.message;
-        this.timer += 1;
-        if (this.timer > this.duration)
-        {
-            this.effectOver = true;
-        }
-     };
-}
-
-class EffectCreateAnim extends EventEffect {
-    constructor(fightMatch:FightMatch,public animX:number,public animY:number){ 
-        super(fightMatch);
-    }
-
-    override ExecuteEffect = () => { 
-        const newAnim = this.fightMatch.createAnim(this.animX,this.animY);  
-    }
-}
-
-class EffectDealDamage extends EventEffect {
-    constructor(fightMatch:FightMatch){ 
-        super(fightMatch);
-    }  
-} 
+}  
 
 
 

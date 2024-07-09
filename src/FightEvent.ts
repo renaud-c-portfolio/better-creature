@@ -30,22 +30,7 @@ export class FightEvent {
          
     }
     
-    ECreateAnim = (animX:number,animY:number) => {
-        const newAnim = this.match.createAnim(animX,animY);
-    }
-
-    EDealDamage = () => {
-         console.log("first test"); 
-
-    }
-
-    EActionMessage = () =>{
-        console.log("2nd test"); 
-        this.match.actionsMessage = "testing action message"; 
-    }
-
-    public effect:Function = this.EDealDamage;
-
+    
     ExecuteEvent = () => {
         if (this.eventEffects.length > 0)
             {
@@ -111,3 +96,4 @@ export class EffectFightMessage extends EventEffect {
         }
      };
 }
+
