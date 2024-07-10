@@ -14,7 +14,7 @@ export class FightAction {
     actionType:ACTIONT = "physical";
     targetType:TARGETT = "single";
     priority:number = 0;
-    power:number = 0;
+    power:number = 1+Math.random()*20;
     public moddedPower = 0;
     statusEffect:string = "";
     statusPower:number = 0; 
@@ -24,14 +24,16 @@ export class FightAction {
 
     otherEffects:object = {};  
 
-    actionEffects:Array<Array<string>> = [["fightMessage","@user uses @name on @target"]];
-    actionEffectTimers:Array<number> = [120];
+    actionEffects:Array<Array<string>> = [["fightMessage","@user uses @name on @target"],["createAnim","target"], ["targetAnim"], ["physicalAttack","target"],["wait"],["fightMessage2","@total damage!"],["wait"]];
+    actionEffectTimers:Array<number> = [20,5,2,2,10,5,120];
     effectIndex:number = 0; 
     eventOver = false; 
     eventSpeed:number = 0;
     eventPriority:number = 0;
 
     remainingUses:number = -1;
+
+    totalDamage = 0;
 
     constructor(public user:CreatureChar) {
         let random1 = tempNames[Math.floor(Math.random()*tempNames.length)];
@@ -64,23 +66,49 @@ export class FightAction {
                 if (this.effectIndex < this.actionEffects.length)
                 {
                     const currentEffect = this.actionEffects[this.effectIndex];  
+                    let targetChar = fightMatch.getCharFromNumber(this.currentTarget);
+                    let message = "";
+
                     switch (currentEffect[0])
                     {
                         case "fightMessage":
-                            const message = this.parseText(this.actionEffects[this.effectIndex][1]);
+                             message = this.parseText(this.actionEffects[this.effectIndex][1],fightMatch);
                             fightMatch.actionsMessage = message;
                         break;
-                        case "createAnim":
-                         
+                        case "fightMessage2":
+                             message = this.parseText(this.actionEffects[this.effectIndex][1],fightMatch);
+                            fightMatch.actionsMessage2 = message;
                         break;
-                        case "characterAnim":
-                         
+                        case "createAnim":
+                            targetChar = fightMatch.getCharFromNumber(this.currentTarget);
+                            fightMatch.createAnim(targetChar.x,targetChar.y);
+                        break;
+                        case "targetAnim":
+                            if (this.actionEffectTimers[this.effectIndex] === 1)
+                            {
+                                console.log("cat")
+                                targetChar = fightMatch.getCharFromNumber(this.currentTarget);
+                                targetChar.animations.push("flash");
+                                targetChar.animations.push(30);
+                            }
                         break;
                         case "physicalAttack":
-                         
+                            if (this.actionEffectTimers[this.effectIndex] === 1)
+                            {
+                                targetChar = fightMatch.getCharFromNumber(this.currentTarget);
+
+                                let finalDamage = Math.round((this.power*this.user.muscle/10) - targetChar.armor);
+                                if (finalDamage < 0){finalDamage = 0};
+                                targetChar.damaged += finalDamage;
+                                targetChar.HP -= finalDamage;
+                                this.totalDamage += finalDamage;
+                            } 
                         break;
                         case "magicAttack":
                          
+                        break;
+                        case "wait":
+                            
                         break;
                     }
                     
@@ -104,7 +132,7 @@ export class FightAction {
     }
 
 
-    parseText = (text:string) => {
+    parseText = (text:string,fightMatch:FightMatch) => {
         let tempString = text;
         let newString = "";
 
@@ -113,7 +141,9 @@ export class FightAction {
             {
                 tempString = tempString.replace("@user",this.user.name);
                 tempString = tempString.replace("@name",this.name); 
-                tempString = tempString.replace("@","");
+                tempString = tempString.replace("@target",fightMatch.getCharFromNumber(this.currentTarget).name);
+                tempString = tempString.replace("@total",String(this.totalDamage));
+                tempString = tempString.replace("@",""); 
             } 
         return tempString;
     }

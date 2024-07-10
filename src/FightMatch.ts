@@ -54,6 +54,7 @@ export class FightMatch extends GameElement {
 
     choiceMessage:string = "";
     actionsMessage:string = "actions message";
+    actionsMessage2:string = "";
 
     spriteCanvas:HTMLCanvasElement;
     spriteContext:CanvasRenderingContext2D;
@@ -473,10 +474,11 @@ export class FightMatch extends GameElement {
                     {
                         this.currentChar = this.activeChars[i][j]; 
                         const currentChoice = this.playerChoices[i][j*2];
+                        const currentTarget = this.playerChoices[i][1+j*2];
 
                         if (currentChoice < 4)
                             {
-                                this.eventsList.push(this.currentChar.makeEventFromAction(this,currentChoice));
+                                this.eventsList.push(this.currentChar.makeEventFromAction(this,currentChoice,currentTarget));
                             }
                         else if (currentChoice < 6)
                             {
@@ -517,9 +519,10 @@ export class FightMatch extends GameElement {
         context.fillStyle = "black"; 
         context.font = "16px '04b03'";   
         context.fillText(this.actionsMessage,70,258);  
+        context.fillText(this.actionsMessage2,70,278);  
          
         const currentEvent = this.eventsList[this.eventIndex];
-        console.log("evento",currentEvent);
+        //console.log("evento",currentEvent);
         context.fillText("speed:"+String(currentEvent.eventSpeed),70,238);  
         
         if (currentEvent.user != null)
@@ -531,6 +534,7 @@ export class FightMatch extends GameElement {
         if (currentEvent.eventOver)
             {
                 this.eventIndex+=1;
+                console.log("events length",this.eventsList.length);
                 if (this.eventIndex >= this.eventsList.length)
                     {
                         this.fightPhase = "turnEnd";
@@ -542,6 +546,7 @@ export class FightMatch extends GameElement {
     createAnim = (animX:number,animY:number) => {
 
         const newAnim = new FightAnimation(this.engine,this.spriteContext,animX,animY,0);  
+        this.animationsList.push(newAnim);
         return newAnim;
     } 
 
