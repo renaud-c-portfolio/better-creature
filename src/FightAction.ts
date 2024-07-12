@@ -24,7 +24,7 @@ export class FightAction {
 
     otherEffects:object = {};  
 
-    actionEffects:Array<Array<string>> = [["fightMessage","@user uses @name on @target"],["createAnim","target"], ["targetAnim"], ["physicalAttack","target"],["wait"],["fightMessage2","@total damage!"],["wait"]];
+    actionEffects:Array<Array<string>> = [["fightMessage","@user uses @name on @target"],["createAnim","target"], ["flashChar"], ["physicalAttack","target"],["wait"],["fightMessage2","@total damage!"],["wait"]];
     actionEffectTimers:Array<number> = [20,5,2,2,10,5,120];
     effectIndex:number = 0; 
     eventOver = false; 
@@ -82,6 +82,13 @@ export class FightAction {
                         case "createAnim":
                             targetChar = fightMatch.getCharFromNumber(this.currentTarget);
                             fightMatch.createAnim(targetChar.x,targetChar.y);
+                        break;
+                        case "flashChar":
+                            targetChar.flash = 30;
+                            targetChar.flashMax = 30;
+                            targetChar.flashColor = "white";
+                            targetChar.flashType = "normal";
+
                         break;
                         case "targetAnim":
                             if (this.actionEffectTimers[this.effectIndex] === 1)

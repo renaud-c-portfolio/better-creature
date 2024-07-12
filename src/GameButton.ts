@@ -9,6 +9,7 @@ class GameButton extends GameElement {
     public clickConfirm:number = 0;
  
     public sprite:string = "";
+    public topLeftText:string = "";
 
     constructor(engine:GameEngine,public x:number = 0,public y:number = 0,public width:number = 50, public height:number = 30,public text:string = "",public depth:number = 0, public type:BUTTONT = "text") {
         super(engine,x,y,depth);

@@ -24,12 +24,13 @@ export class CreatureChar extends GameElement {
     public HP:number = 100;
     public maxHP:number = 100; 
     public damaged:number = 0;
+    public maxDamaged:number = 0;
 
     public dodgePoint: number = 1;
     public dodgeMax: number = 1;
 
 
-    public muscle:number = 10;
+    public muscle:number = 50;
     public magic:number = 10;
     public armor:number = 1;
     public resistance:number = 1;
@@ -46,7 +47,9 @@ export class CreatureChar extends GameElement {
 
     animations:Array<any> = [];
     flash:number = 0;
+    flashMax:number = 30;
     flashColor:string = "white";
+    flashType:string = "normal";
 
     displayLifebar = false;
     displayExtraTimer = 0;
@@ -85,10 +88,8 @@ export class CreatureChar extends GameElement {
                      const animType = this.animations[i];
                      switch (animType)
                      {
-                        case "flash": 
-                         context.filter = "contrast(0) sepia(100%) hue-rotate(116deg) brightness(2.4) saturate(0.28) opacity("+String(this.animations[i+1]/30*100)+"%)";
-                        break;
-                        default:  
+                         
+                        default: break;  
                      }
                      this.animations[i+1] -= 1;
                      if (this.animations[i+1] <= 0)
@@ -102,23 +103,35 @@ export class CreatureChar extends GameElement {
                 if (this.dir == -1)
                 { 
                     context.translate(640, 0);
-                    context.scale(-1, 1);
-                    if (this.animations.length > 0){ context.drawImage(this.imageElem,640-this.x-64,this.y,64,64); }
+                    context.scale(-1, 1); 
                     context.filter = "none"; 
                     context.drawImage(this.imageElem,640-this.x-64,this.y,64,64);
+                    if (this.flash > 0)
+                    {
+                        context.filter = "contrast(0) sepia(100%) hue-rotate(116deg) brightness(2.4) saturate(0.28) opacity("+String(this.flash/this.flashMax*100)+"%)";
+                        this.flash -= 1;
+                        context.drawImage(this.imageElem,640-this.x-64,this.y,64,64);
+                    }
                 } 
-                else{
-                    if (this.animations.length > 0){ context.drawImage(this.imageElem,this.x,this.y,64,64); }
+                else{ 
                     context.filter = "none"; 
                     context.drawImage(this.imageElem,this.x,this.y,64,64);
+                    if (this.flash > 0)
+                    {
+                        context.filter = "contrast(0) sepia(100%) hue-rotate(116deg) brightness(2.4) saturate(0.28) opacity("+String(this.flash/this.flashMax*100)+"%)";
+                        this.flash -= 1;
+                        context.drawImage(this.imageElem,this.x,this.y,64,64);
+                    }
                 } 
                 context.restore();
                 context.filter = "none";
                 
 
             }
+
             if (this.damaged > 0 || this.displayExtraTimer > 0)
             {
+                if (this.HP < 0) {this.damaged += this.HP; this.HP = 0;}
                 this.displayLifebar = true;
                 if (this.displayExtraTimer > 0) {this.displayExtraTimer -= 1; if (this.displayExtraTimer <= 0) {this.displayLifebar=false;}}
             }
@@ -136,9 +149,10 @@ export class CreatureChar extends GameElement {
                 if (this.damaged > 0)
                 {
                     context.fillStyle = "maroon";
-                    context.fillRect(this.x-12+hpRatio,this.y+72,this.damaged,5); 
+                    context.fillRect(this.x-12+hpRatio,this.y+72,this.damaged*0.84,5); 
+
                     this.damaged -= 0.5;
-                    if (this.damaged <= 0){this.displayLifebar=false; this.displayExtraTimer = 30;}
+                    if (this.damaged <= 0){this.displayLifebar=false; this.displayExtraTimer = 50;}
                 }
                 context.closePath();
                 context.fill();  
