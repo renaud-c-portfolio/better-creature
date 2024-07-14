@@ -157,6 +157,11 @@ class GameEngine {
          let multiFrame = 0;
          while (this.frameTime >= this.frameRate)
             { 
+                if (this.frameTime > this.frameRate *30)
+                {
+                    this.frameTime = this.frameRate*30;
+                    console.log("frame limit break");
+                }
                 this.frameTime -= this.frameRate;
                 multiFrame += 1;
             
