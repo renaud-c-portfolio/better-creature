@@ -16,7 +16,7 @@ import FightMatch from "./FightMatch";
 
 export class CreatureChar extends GameElement {
 
-    public name:string = "animal" + String(Math.floor(Math.random()*1000)); 
+    public name:string = "animal" + String(Math.floor(Math.random()*100)); 
     public dir:number = 1;
     public defaultX:number = 0;
     public defaultY:number = 0;
@@ -30,13 +30,15 @@ export class CreatureChar extends GameElement {
     public dodgeMax: number = 1;
 
 
-    public muscle:number = 50;
+    public muscle:number = 500;
     public magic:number = 10;
     public armor:number = 1;
     public resistance:number = 1;
     public speed:number = 5;
 
     public turnOver:boolean = false;
+
+    public activeSlot:number = -1;
 
     actions:Array<FightAction> = [
         new FightAction(this),
@@ -50,6 +52,8 @@ export class CreatureChar extends GameElement {
     flashMax:number = 30;
     flashColor:string = "white";
     flashType:string = "normal";
+    fainting:number = 0;
+
 
     displayLifebar = false;
     displayExtraTimer = 0;
@@ -64,6 +68,7 @@ export class CreatureChar extends GameElement {
     tempUrlArray:Array<any> = [crambUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl];
  
     imageElem:HTMLImageElement = document.createElement("img");  
+    imageAlpha:number = 1;
 
     constructor (public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0,public type1:MTYPE,public type2:MTYPE,public shape1:MSHAPE,public shape2:MSHAPE,public team = -1){
         super(engine,x,y,depth)
@@ -100,11 +105,23 @@ export class CreatureChar extends GameElement {
                 
                 context.save();
                 //_context.drawImage(this.imageElem,this.x+64,this.y,64,64);
+                context.globalAlpha = this.imageAlpha;
+                
                 if (this.dir == -1)
                 { 
                     context.translate(640, 0);
                     context.scale(-1, 1); 
-                    context.filter = "none"; 
+                    context.filter = "none";  
+                    if (this.fainting > 0)
+                        {
+                            context.filter = "grayscale("+String(Math.min(100,this.fainting))+"%)"
+                            if (this.fainting > 60)
+                                {
+                                    if (this.imageAlpha > 0.02){this.imageAlpha -= 0.02;} else {this.imageAlpha = 0;}
+                                }
+                             
+                        this.fainting += 1;
+                        }
                     context.drawImage(this.imageElem,640-this.x-64,this.y,64,64);
                     if (this.flash > 0)
                     {
@@ -112,9 +129,25 @@ export class CreatureChar extends GameElement {
                         this.flash -= 1;
                         context.drawImage(this.imageElem,640-this.x-64,this.y,64,64);
                     }
+                    else if (this.flash < 0)
+                    {
+                        console.log("flashy flash:",(1/this.flash/this.flashMax)*10000)
+                        context.filter = "contrast(0) sepia(100%) hue-rotate(116deg) brightness(2.4) saturate(0.28) opacity("+String((10000)*(1/this.flash/this.flashMax))+"%)"; 
+                        context.drawImage(this.imageElem,640-this.x-64,this.y,64,64); 
+                        this.flash += 1;
+                    }
                 } 
                 else{ 
                     context.filter = "none"; 
+                    if (this.fainting > 0)
+                        {
+                            context.filter = "grayscale("+String(Math.min(100,this.fainting))+"%)" 
+                            if (this.fainting > 60)
+                                {
+                                    if (this.imageAlpha > 0.02){this.imageAlpha -= 0.02;} else {this.imageAlpha = 0;}
+                                }
+                        this.fainting += 1;
+                        }
                     context.drawImage(this.imageElem,this.x,this.y,64,64);
                     if (this.flash > 0)
                     {
@@ -122,7 +155,15 @@ export class CreatureChar extends GameElement {
                         this.flash -= 1;
                         context.drawImage(this.imageElem,this.x,this.y,64,64);
                     }
+                    else if (this.flash < 0)
+                        {
+                            console.log("flashy flash:",(1/this.flash/this.flashMax)*10000)
+                            context.filter = "contrast(0) sepia(100%) hue-rotate(116deg) brightness(2.4) saturate(0.28) opacity("+String((10000)*(1/this.flash/this.flashMax))+"%)"; 
+                            context.drawImage(this.imageElem,this.x,this.y,64,64);
+                            this.flash += 1;
+                        }
                 } 
+                context.globalAlpha = 1; 
                 context.restore();
                 context.filter = "none";
                 
@@ -131,11 +172,11 @@ export class CreatureChar extends GameElement {
 
             if (this.damaged > 0 || this.displayExtraTimer > 0)
             {
-                if (this.HP < 0) {this.damaged += this.HP; this.HP = 0;}
+                if (this.HP < 0) {this.damaged += this.HP; this.HP = 0; this.displayExtraTimer = 20;}
                 this.displayLifebar = true;
-                if (this.displayExtraTimer > 0) {this.displayExtraTimer -= 1; if (this.displayExtraTimer <= 0) {this.displayLifebar=false;}}
-            }
-
+                if (this.displayExtraTimer > 0) {this.displayExtraTimer -= 1; if (this.displayExtraTimer <= 0) {this.displayLifebar=false; this.displayExtraTimer = 0;}}
+            } 
+            //lifebar display during events
             if (this.displayLifebar)
             {
                 context.fillStyle = "black";
@@ -152,8 +193,9 @@ export class CreatureChar extends GameElement {
                     context.fillRect(this.x-12+hpRatio,this.y+72,this.damaged*0.84,5); 
 
                     this.damaged -= 0.5;
-                    if (this.damaged <= 0){this.displayLifebar=false; this.displayExtraTimer = 50;}
+                    if (this.damaged <= 0){this.displayLifebar=false; this.displayExtraTimer = 50; this.damaged = 0;}
                 }
+                else if (!this.displayExtraTimer) {this.displayLifebar = false;} 
                 context.closePath();
                 context.fill();  
             }

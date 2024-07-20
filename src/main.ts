@@ -12,7 +12,8 @@ const StartApp = async () => {
   const gameCanvas =  document.createElement("canvas");
   gameCanvas.width = gameWidth;
   gameCanvas.height = gameHeight;
-  gameCanvas.style.width = "1280px"; 
+  gameCanvas.style.width = "1280px";
+  gameCanvas.setAttribute("image-rendering","crisp-edges");
   
   window.addEventListener("resize", (event) => {
     ResizeCanvas(gameCanvas);

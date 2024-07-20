@@ -1,4 +1,3 @@
-const types = [];
-const shapes = [];
+const aspects = new Map();
+const shapes = new Map();
 
-shapes.push("");

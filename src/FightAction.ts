@@ -20,16 +20,24 @@ export class FightAction {
     statusPower:number = 0; 
 
     currentTarget:number = 0;
+    targetList:Array<CreatureChar> = [];
+    switchTarget:CreatureChar|null = null;
 
 
     otherEffects:object = {};  
 
-    actionEffects:Array<Array<string>> = [["fightMessage","@user uses @name on @target"],["createAnim","target"], ["flashChar"], ["physicalAttack","target"],["wait"],["fightMessage2","@total damage!"],["wait"]];
+    actionEffects:Array<Array<string>> = [["fightMessage","@sametime@user uses @name on @target"],["createAnim","target"], ["flashChar","30","white","target"], ["physicalAttack","target"],["wait"],["fightMessage2","@total damage!"],["wait"]];
     actionEffectTimers:Array<number> = [20,5,2,2,10,5,120];
     effectIndex:number = 0; 
     eventOver = false; 
     eventSpeed:number = 0;
     eventPriority:number = 0;
+
+    canSwitchFaintedTarget:boolean = true;
+
+    isSwitchAction:boolean = false;
+    isProtectAction:boolean = false;
+    isCancelled:boolean = false;
 
     remainingUses:number = -1;
 
@@ -61,7 +69,11 @@ export class FightAction {
     }  
 
     ExecuteEvent = (fightMatch:FightMatch) => {
-        if (this.actionEffects.length > 0)
+        if (this.isCancelled === true)
+            {
+                this.eventOver = true
+            }
+        else if (this.actionEffects.length > 0)
             {
                 if (this.effectIndex < this.actionEffects.length)
                 {
@@ -72,11 +84,11 @@ export class FightAction {
                     switch (currentEffect[0])
                     {
                         case "fightMessage":
-                             message = this.parseText(this.actionEffects[this.effectIndex][1],fightMatch);
+                             message = this.parseText(currentEffect[1],fightMatch);
                             fightMatch.actionsMessage = message;
                         break;
                         case "fightMessage2":
-                             message = this.parseText(this.actionEffects[this.effectIndex][1],fightMatch);
+                             message = this.parseText(currentEffect[1],fightMatch);
                             fightMatch.actionsMessage2 = message;
                         break;
                         case "createAnim":
@@ -84,21 +96,15 @@ export class FightAction {
                             fightMatch.createAnim(targetChar.x,targetChar.y);
                         break;
                         case "flashChar":
-                            targetChar.flash = 30;
-                            targetChar.flashMax = 30;
-                            targetChar.flashColor = "white";
+                            if (currentEffect[3] === "self"){targetChar = this.user; console.log("hey!flash",parseInt(currentEffect[1]))}
+                            else if (currentEffect[3] === "switch" && this.switchTarget != null){targetChar = this.switchTarget;}
+                            targetChar.flash = parseInt(currentEffect[1])*1.2; 
+                            console.log(targetChar.flash);
+                            targetChar.flashMax = parseInt(currentEffect[1]);
+                            targetChar.flashColor = currentEffect[2];
                             targetChar.flashType = "normal";
 
-                        break;
-                        case "targetAnim":
-                            if (this.actionEffectTimers[this.effectIndex] === 1)
-                            {
-                                console.log("cat")
-                                targetChar = fightMatch.getCharFromNumber(this.currentTarget);
-                                targetChar.animations.push("flash");
-                                targetChar.animations.push(30);
-                            }
-                        break;
+                        break; 
                         case "physicalAttack":
                             if (this.actionEffectTimers[this.effectIndex] === 1)
                             {
@@ -116,6 +122,50 @@ export class FightAction {
                         break;
                         case "wait":
                             
+                        break;
+                        case "switchAction":
+                            if (this.actionEffectTimers[this.effectIndex] === 1)
+                                { 
+                                    if (this.switchTarget != null)
+                                        {
+                                            this.switchTarget.activeSlot = this.user.activeSlot;
+                                            this.user.activeSlot = -1;
+                                            this.switchTarget.x = this.user.x;
+                                            this.switchTarget.y = this.user.y;
+                                            fightMatch.activeChars[this.user.team][this.switchTarget.activeSlot] = this.switchTarget;
+                                        }
+                                    
+                                }
+                             
+                        break;
+                        case "switchMenu":
+                             
+                        break;
+                        case "faintAction":
+                            message = "";
+                            if (this.actionEffectTimers[this.effectIndex] === 1)
+                                { 
+                                    for (let i=0; i < this.targetList.length; i++)
+                                        {
+                                            let currentFaint = this.targetList[i]; 
+                                            currentFaint.fainting = 1;
+                                            if (i > 0 && i === this.targetList.length-1)
+                                            {
+                                                message += "and "
+                                            }
+                                            else if (i > 0)
+                                            {
+                                                message += ", "
+                                            }
+                                            message += currentFaint.name;
+                                        }
+                                    if (this.targetList.length === 1) {message += " is defeated!"}
+                                    else {message+= " are defeated!"}
+
+                                    fightMatch.actionsMessage = message;
+                                    fightMatch.actionsMessage2 = "";
+                                }
+                                
                         break;
                     }
                     
@@ -142,15 +192,17 @@ export class FightAction {
     parseText = (text:string,fightMatch:FightMatch) => {
         let tempString = text;
         let newString = "";
-
-        //$U:user, $A:action name, $T:target
+ 
         if (tempString.indexOf("@") != -1)
             {
                 tempString = tempString.replace("@user",this.user.name);
                 tempString = tempString.replace("@name",this.name); 
                 tempString = tempString.replace("@target",fightMatch.getCharFromNumber(this.currentTarget).name);
                 tempString = tempString.replace("@total",String(this.totalDamage));
-                tempString = tempString.replace("@",""); 
+                tempString = tempString.replace("@playeuser",fightMatch.getPlayerNameFromNumber(this.user.team)); 
+                if (this.eventSpeed === fightMatch.prevSpeed && this.eventPriority === fightMatch.prevPriority) {tempString = tempString.replace("@sametime","at the same time, ");}
+                else {tempString = tempString.replace("@sametime","");}
+                if (this.isSwitchAction && this.switchTarget != null)  { tempString = tempString.replace("@switchtarget",this.switchTarget.name); }
             } 
         return tempString;
     }
@@ -163,6 +215,13 @@ export class SwitchAction extends FightAction {
 
     constructor(user:CreatureChar) {
         super(user); 
+         
+        this.isSwitchAction = true;
+        this.actionEffects = [];
+        this.actionEffects = [["fightMessage","@playeuser switches @user with @switchtarget!"], ["flashChar","-20","white","self"],["wait"],["switchAction"],["flashChar","10","white","switch"],["wait"]];
+        this.actionEffectTimers = [20,2,20,2,2,90];
+        this.priority = 9999;
+        this.eventPriority = 9999;
     }
 
 }
@@ -174,6 +233,16 @@ export class ProtectAction extends FightAction {
         this.remainingUses = 1;
     } 
 
+}
+
+export class FaintAction extends FightAction {
+    constructor(user:CreatureChar) {
+        super(user); 
+        this.actionEffects = [];
+        this.actionEffects = [["faintAction"], ["wait"]];
+        this.actionEffectTimers = [2,200];
+    } 
+     
 }
  
 

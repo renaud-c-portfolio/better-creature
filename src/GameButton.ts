@@ -1,7 +1,8 @@
+import CreatureChar from "./CreatureChar";
 import GameElement from "./GameElement";
 import GameEngine from "./GameEngine";
 
-type BUTTONT = "text" | "image" | "labeledImage"
+type BUTTONT = "text" | "image" | "labeledImage" | "labeledChar"
 
 class GameButton extends GameElement {
 
@@ -11,24 +12,29 @@ class GameButton extends GameElement {
     public sprite:string = "";
     public topLeftText:string = "";
 
+    public spriteContext:CanvasRenderingContext2D|null = null;
+    public switchCreature:CreatureChar|null = null;
+
+    public disabled:boolean = false;
+
     constructor(engine:GameEngine,public x:number = 0,public y:number = 0,public width:number = 50, public height:number = 30,public text:string = "",public depth:number = 0, public type:BUTTONT = "text") {
         super(engine,x,y,depth);
 
     }
 
 
-    drawFunction = (_context:CanvasRenderingContext2D) => {
+    drawFunction = (context:CanvasRenderingContext2D) => {
 
         
 
-        _context.fillStyle = "black";
-        _context.beginPath();
-        _context.roundRect(this.x-1,this.y-1,this.width+2,this.height+3,5); 
-        _context.closePath();
-        _context.fill();  
+        context.fillStyle = "black";
+        context.beginPath();
+        context.roundRect(this.x-1,this.y-1,this.width+2,this.height+3,5); 
+        context.closePath();
+        context.fill();  
         
-        if (this.engine.MouseInRect(this.x,this.y,this.width,this.height))
-            {_context.fillStyle = "rgb(100,100,150)"; 
+        if (this.engine.MouseInRect(this.x,this.y,this.width,this.height) && !this.disabled)
+            {context.fillStyle = "rgb(100,100,150)"; 
                 document.body.style.cursor = 'pointer';
 
                 if (this.engine.leftClick === 1)
@@ -47,31 +53,52 @@ class GameButton extends GameElement {
             {
                 this.clicked = 0;
             }
-            _context.fillStyle = "rgb(80,80,130)";}
+            context.fillStyle = "rgb(80,80,130)";}
         if (this.clicked)
-        { _context.fillStyle= "rgb(60,60,110)";
+        { context.fillStyle= "rgb(60,60,110)";
             //this.x = this.engine.mouseX;
             //this.y = this.engine.mouseY; 
          }
+        else if(this.disabled)
+            {context.fillStyle= "rgb(50,50,80)"   }
  
-        _context.beginPath();
-        _context.roundRect(this.x,this.y+this.clicked,this.width,this.height,5); 
-        _context.closePath();
-        _context.fill();  
-        _context.fillStyle = "black"; 
-        _context.font = "16px '04b03'";  
+        context.beginPath();
+        context.roundRect(this.x,this.y+this.clicked,this.width,this.height,5); 
+        context.closePath();
+        context.fill();  
+        context.fillStyle = "black"; 
+        if(this.disabled)  {context.fillStyle= "rgb(20,20,30)"   }
+        context.font = "16px '04b03'";  
         
         if (this.type === "text")
             {
-                const _txtWidth = _context.measureText(this.text).width;
-                _context.fillText(this.text,this.x+this.width/2-_txtWidth/2,this.y+this.height/2+4+this.clicked);   
+                context.letterSpacing = "-1px"  
+                const _txtWidth = context.measureText(this.text).width;
+                let _halfTxtWidth = Math.floor(_txtWidth/2);
+                context.fillText(this.text,this.x+this.width/2-_halfTxtWidth,this.y+this.height/2+4+this.clicked);   
             }
-        else if (this.type === "labeledImage")
+        else if (this.type === "labeledChar")
             {
-                _context.font = "8px '04b03'";  
-                const _txtWidth = _context.measureText(this.text).width; 
-                _context.fillText(this.text,this.x+this.width/2-_txtWidth/2,this.y+9+this.clicked);   
-            }
+                context.letterSpacing = "0px"  
+                context.font = "8px '04b03'";  
+                let _txtWidth = Math.floor(context.measureText(this.text).width);
+                let _halfTxtWidth = Math.floor(_txtWidth/2);
+                context.fillText(this.text,this.x+this.width/2-_halfTxtWidth,this.y+9+this.clicked);
+                //draw creature's portrait to switch to
+                if (this.spriteContext != null && this.switchCreature != null)
+                    {
+                        if (this.switchCreature.HP <= 0)
+                            {
+                                context.filter = "grayscale(100%)"
+                            }
+                        context.drawImage(this.switchCreature.imageElem,this.x+10,this.y+10+this.clicked);
+                        context.filter = "grayscale(0%)";
+                        _txtWidth = Math.floor(context.measureText(this.switchCreature.name).width);
+                        _halfTxtWidth = Math.floor(_txtWidth/2);
+                        context.fillText(this.switchCreature.name,this.x+(this.width/2)-_halfTxtWidth,this.y+this.height-4+this.clicked); 
+                    }
+                
+            } 
 
 
         
