@@ -13,7 +13,7 @@ const StartApp = async () => {
   gameCanvas.width = gameWidth;
   gameCanvas.height = gameHeight;
   gameCanvas.style.width = "1280px";
-  gameCanvas.setAttribute("image-rendering","crisp-edges");
+  gameCanvas.setAttribute("image-rendering","pixelated");
   
   window.addEventListener("resize", (event) => {
     ResizeCanvas(gameCanvas);
@@ -53,7 +53,7 @@ const drawImageActualSize = (_image:HTMLImageElement,_context:CanvasRenderingCon
 
 const ResizeCanvas = (_canvas:HTMLCanvasElement) => {
   let ratio = Math.floor(Math.max(gameWidth,window.innerWidth)/gameWidth);
-  let ratio2 = Math.floor(Math.max(gameHeight,window.innerHeight)/gameHeight);
+  let ratio2 = Math.floor(Math.max(gameHeight,window.innerHeight)/gameHeight); 
   if (ratio2 >= ratio)
   {
     _canvas.style.width =  String(gameWidth*ratio)+"px";

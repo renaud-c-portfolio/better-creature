@@ -8,13 +8,13 @@ import targetUrl from "./gfx/targettersheet.png";
 
 import { monsType, MTYPE } from "./game/types/monsType";
 import { shape, MSHAPE } from "./game/shapes/shapes"; 
-import { FightAction, ACTIONT, TARGETT, SwitchAction, FaintAction } from "./FightAction";
+import { FightAction, ACTIONT, TARGETT, SwitchAction, FaintAction, MatchStartSendAction, FaintSwitchAction, FightEndAction } from "./FightAction";
 import GameEngine from "./GameEngine";
 import { FightAnimation } from "./FightAnimation"; 
 
 
 type MultiMode = "cpu" | "local" | "online";
-type FightPhase = "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd";
+type FightPhase = "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd" | "turnEndSwitch" | "turnEndSwitchStart";
 
 
 export type EffectType = "actionMessage" | "dealDamage" | "createAnim"
@@ -24,7 +24,7 @@ export class FightMatch extends GameElement {
 
     multiMode:MultiMode = "cpu";
 
-    fightPhase:FightPhase = "choice"; 
+    fightPhase:FightPhase = "actions"; 
 
     currentTurn:number = 0;
     choicePhase = 0;
@@ -40,7 +40,7 @@ export class FightMatch extends GameElement {
     activeChars:Array<Array<CreatureChar>> = [[],[]]; 
     currentChar:CreatureChar|null = null;
     
-    forcedSwitch:Array<Array<number>> = [[],[]];
+    turnDeaths:Array<Array<number>> = [[],[]];
 
     totalTeams:number = 2;
     charsPerTeam:number = 2;
@@ -78,6 +78,9 @@ export class FightMatch extends GameElement {
     prevPriority:number = 0;
 
     environment:CreatureChar;
+    emptyPlayerCreature:Array<CreatureChar> = [];
+
+    suddenDeath:boolean = false;
     
 
     constructor(public engine:GameEngine,public x:number = 0,public y:number = 0,public depth:number = 0){
@@ -102,6 +105,14 @@ export class FightMatch extends GameElement {
         this.selectImg.onload = () => { 
             this.imgLoaded += 1;
           }
+
+        for (let i=0; i < this.totalTeams; i++)
+        {
+            const emptyCreature = new CreatureChar(engine,-999,-999,-999,"fae","fae","beetle","crawler",i);
+            this.emptyPlayerCreature[i] = emptyCreature;
+            this.activeChars[i][0] = emptyCreature;
+            this.activeChars[i][1] = emptyCreature;
+        }
         
         this.environment = new CreatureChar(engine,-999,-999,-999,"fae","fae","beetle","crawler",-1);
     }
@@ -137,29 +148,27 @@ export class FightMatch extends GameElement {
         _parties[0] = [
             new CreatureChar(this.engine,100,30,0,"fae","steel","beetle","crawler",0),
             new CreatureChar(this.engine,50,120,0,"fae","steel","beetle","crawler",0),
+            //new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
+            //new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
             new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
             new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
-        ];
-        this.activeChars[0][0] = _parties[0][0];
-        this.activeChars[0][0].activeSlot = 0;
-        this.activeChars[0][1] = _parties[0][1];
-        this.activeChars[0][1].activeSlot = 1;
+        ]; 
+        let matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[0]);
+        matchStartEvent.targetList.push(_parties[0][0]); 
+        matchStartEvent.targetList.push(_parties[0][1]); 
+        this.eventsList.push(matchStartEvent);
         _parties[1] = [
             new CreatureChar(this.engine,640-100-64,30,0,"fae","steel","beetle","crawler",1),
             new CreatureChar(this.engine,640-50-64,120,0,"fae","steel","beetle","crawler",1),
             new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
             new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
+           // new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
+           // new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
         ];
-
-        this.activeChars[1][0] = _parties[1][0];
-        this.activeChars[1][0].activeSlot = 0;
-        this.activeChars[1][1] = _parties[1][1];
-        this.activeChars[1][1].activeSlot = 1;
-        this.currentChar = this.activeChars[0][0];
+        matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[1]);
+        matchStartEvent.targetList.push(_parties[1][0]); 
+        matchStartEvent.targetList.push(_parties[1][1]);  
+        this.eventsList.push(matchStartEvent);
         
 
     }
@@ -192,7 +201,9 @@ export class FightMatch extends GameElement {
             outputString += char.name;
             if (actionNumber === -1)
                 {
-                    outputString+= " can't do anything";
+                    if (char.HP <= 0){outputString = " - "}
+                    else{outputString+= " can't do anything";}
+                    
                 }
                 else if (actionNumber < 4)
                 {
@@ -301,7 +312,7 @@ export class FightMatch extends GameElement {
                 for (let j =0; j <this.charsPerTeam; j++)
                 {
                     const target = this.activeChars[i][j];
-                    if (this.currentChar != target)
+                    if (this.currentChar != target && target.HP > 0)
                     {
                         if (this.engine.MouseInRect(target.x-3,target.y-3,76,76))
                         {
@@ -447,34 +458,37 @@ export class FightMatch extends GameElement {
                 {
                     let currentButton = this.switchButtons[i];
                     let buttonChar = this.getBenchedCharFromNumber(0,i); 
-                    currentButton.switchCreature = buttonChar;
-                    currentButton.spriteContext = this.spriteContext;
-
-                    currentButton.drawFunction(context);
-                    currentButton.disabled = false;
-
-                    if (buttonChar.HP <= 0) {currentButton.disabled = true;}
-                    if (this.choicePhase > 0)
-                    { 
-                        let prevChoice = this.playerChoices[0][0]; 
-                        if (prevChoice > 5 && prevChoice < 11)
-                            { 
-                                if (i === prevChoice - 6)
-                                    {
-                                        currentButton.disabled = true;
-                                    }
-                                console.log("pee choice",prevChoice) 
-                                
-                            }
-                    }
- 
-
-                    if (currentButton.clickConfirm > 0)
+                    if (buttonChar != undefined)
                     {
-                        this.playerChoices[0][this.choicePhase*2] = 6+i;
-                        this.choicePhase += 1;
-                        currentButton.clickConfirm = 0;
-                    } 
+                        currentButton.switchCreature = buttonChar;
+                        currentButton.spriteContext = this.spriteContext;
+
+                        currentButton.drawFunction(context);
+                        currentButton.disabled = false;
+
+                        if (buttonChar.HP <= 0) {currentButton.disabled = true;}
+                        if (this.choicePhase > 0)
+                        { 
+                            let prevChoice = this.playerChoices[0][0]; 
+                            if (prevChoice > 5 && prevChoice < 11)
+                                { 
+                                    if (i === prevChoice - 6) //can't switch to character other is switching to
+                                        {
+                                            currentButton.disabled = true;
+                                        } 
+                                    
+                                }
+                        }
+    
+
+                        if (currentButton.clickConfirm > 0)
+                        {
+                            this.playerChoices[0][this.choicePhase*2] = 6+i;
+                            this.choicePhase += 1;
+                            currentButton.clickConfirm = 0;
+                        } 
+                    }
+                    
                 }   
         }
 
@@ -498,23 +512,81 @@ export class FightMatch extends GameElement {
         for (let i=0; i < this.charsPerTeam;i++)
             {
                 const cpuChar = this.activeChars[cpuPlayer][i];
-                const cpuAction = Math.floor(Math.random()*4);
-                const cpuTarget = Math.floor(Math.random()*2);
-                this.playerChoices[cpuPlayer][i*2] = cpuAction;
-                this.playerChoices[cpuPlayer][i*2+1] = cpuTarget;
+                if (cpuChar.HP > 0)
+                {
+                    const cpuAction = Math.floor(Math.random()*4);
+                    const cpuTarget = Math.floor(Math.random()*2);
+                    this.playerChoices[cpuPlayer][i*2] = cpuAction;
+                    this.playerChoices[cpuPlayer][i*2+1] = cpuTarget; 
+                }
             } 
 
     }
 
-    CpuRandomSwitch = (cpuPlayer:number) => {
-        for (let i=0; i < this.charsPerTeam;i++)
+    CpuRandomDeathSwitch = (cpuPlayer:number) => {
+        const maxSwitches = this.getPossibleSwitchNumbers(cpuPlayer);
+        const maxCheck = Math.min(maxSwitches,this.turnDeaths[cpuPlayer].length);
+        const switchList:Array<number> = [];
+        const switchSize = this.party[cpuPlayer].length-this.charsPerTeam;
+        console.log("start ",maxSwitches," ",this.turnDeaths[cpuPlayer].length)
+        for (let i=0; i < maxCheck;i++)
             {
-                const cpuChar = this.activeChars[cpuPlayer][i];
-                const cpuAction = Math.floor(Math.random()*4);
-                const cpuTarget = Math.floor(Math.random()*2);
-                this.playerChoices[cpuPlayer][i*2] = cpuAction;
-                this.playerChoices[cpuPlayer][i*2+1] = cpuTarget;
-            } 
+                console.log("loop ",i);
+                const deathSlot = this.turnDeaths[cpuPlayer][i];
+                let cpuAction = Math.floor(Math.random()*switchSize);
+                let cpuSwitchChar = this.getBenchedCharFromNumber(cpuPlayer,cpuAction);
+                console.log("switchlist check ",switchList.length," ",switchList.indexOf(cpuAction));
+                while (switchList.indexOf(cpuAction) != -1 && cpuSwitchChar.HP <= 0 && cpuSwitchChar != this.activeChars[cpuPlayer][0] && cpuSwitchChar != this.activeChars[cpuPlayer][1])
+                    { 
+                        console.log("whilin ",cpuAction);
+                        cpuAction = Math.floor(Math.random()*switchSize);
+                        cpuSwitchChar = this.getBenchedCharFromNumber(cpuPlayer,cpuAction);
+                    } 
+                switchList.push(cpuAction);
+                this.playerChoices[cpuPlayer][deathSlot*2] = cpuAction+6; 
+                console.log("setting switch ",deathSlot," ",cpuAction+6);
+            }
+
+    }
+
+    PostDeathSwitchStartFunction = (context:CanvasRenderingContext2D) => {
+        this.eventsList = [];
+        let switchAct = null; 
+        console.log("choices ",this.playerChoices[0],this.playerChoices[1]);
+       
+        for (let i = 0; i < this.totalTeams; i++)
+            {
+                switchAct = null; 
+                for (let j=0; j < this.charsPerTeam; j++)
+                    { 
+                        this.currentChar = this.activeChars[i][j]; 
+                        const currentChoice = this.playerChoices[i][j*2]; 
+                        if (currentChoice > 5 && currentChoice < 11)
+                            {
+                                if (switchAct === null)
+                                {
+                                    console.log("ye");
+                                    switchAct = new FaintSwitchAction(this.activeChars[i][j]);
+                                    switchAct.targetList = [this.environment,this.environment];
+                                    this.eventsList.push(switchAct);
+                                }
+                                switchAct.currentTarget = currentChoice - 6;
+                                switchAct.targetList[j] = this.getBenchedCharFromNumber(this.currentChar.team,currentChoice-6);
+
+                            }
+                    }
+            }
+
+            this.prevPriority = 99999;
+            this.prevSpeed = 99999;
+            this.fightPhase = "actions";
+            this.currentChar = null;
+            this.currentAction = null;
+            
+            this.eventsList.sort((a:FightAction, b:FightAction) => b.eventSpeed - a.eventSpeed);
+            this.eventsList.sort((a:FightAction, b:FightAction) => b.eventPriority - a.eventPriority);
+            this.turnDeaths = [[],[]]; 
+            this.eventIndex = 0; 
 
     }
 
@@ -528,8 +600,11 @@ export class FightMatch extends GameElement {
                         this.currentChar = this.activeChars[i][j]; 
                         const currentChoice = this.playerChoices[i][j*2];
                         const currentTarget = this.playerChoices[i][1+j*2];
+                        if (currentChoice < 0)
+                        {
 
-                        if (currentChoice < 4)
+                        }
+                        else if (currentChoice < 4)
                             {
                                 this.eventsList.push(this.currentChar.makeEventFromAction(this,currentChoice,currentTarget));
                             }
@@ -564,8 +639,7 @@ export class FightMatch extends GameElement {
         this.currentAction = null;
          
         this.eventsList.sort((a:FightAction, b:FightAction) => b.eventSpeed - a.eventSpeed);
-        this.eventsList.sort((a:FightAction, b:FightAction) => b.eventPriority - a.eventPriority);
-        console.log("speedlist",this.speedsList);
+        this.eventsList.sort((a:FightAction, b:FightAction) => b.eventPriority - a.eventPriority); 
  
         this.eventIndex = 0;
     }
@@ -581,14 +655,13 @@ export class FightMatch extends GameElement {
         context.fillText(this.actionsMessage,70,258);  
         context.fillText(this.actionsMessage2,70,278);  
          
-        const currentEvent = this.eventsList[this.eventIndex];
+        let currentEvent = this.eventsList[this.eventIndex]; 
         //console.log("evento",currentEvent);
         if (currentEvent.eventSpeed % 1 === 0)
             {
-                context.fillText("speed:"+String(currentEvent.eventSpeed),70,238);  
+                context.fillText("speed:"+String(currentEvent.eventSpeed),70,238);   
+                if (currentEvent.eventPriority > 0) {context.fillText("priority:"+String(currentEvent.eventPriority),140,238); }
             }
-        
-        if (currentEvent.eventPriority > 0) {context.fillText("priority:"+String(currentEvent.eventPriority),140,238);  }
         
         if (currentEvent.user != null)
             {
@@ -598,11 +671,37 @@ export class FightMatch extends GameElement {
 
         if (currentEvent.eventOver)
             {
-                if (currentEvent.eventPriority != this.prevPriority || this.prevSpeed != currentEvent.eventSpeed)
+                this.prevPriority = currentEvent.eventPriority;
+                this.prevSpeed = currentEvent.eventSpeed; 
+                
+                this.eventIndex+=1; 
+               
+                    const prevEvent = currentEvent;
+                    currentEvent = this.eventsList[this.eventIndex];
+                    //check for deaths if speed timing changed // if it's over
+                    if (this.eventIndex >= this.eventsList.length)
                     {
-                        this.prevPriority = currentEvent.eventPriority;
-                        this.prevSpeed = currentEvent.eventSpeed; 
-                        //check for deaths if speed timing changed
+                        this.checkForDeaths();
+                    }
+                    else if (currentEvent.eventPriority != prevEvent.eventPriority || prevEvent.eventSpeed != currentEvent.eventSpeed)
+                    {
+                        console.log("death checkin'");
+                        this.checkForDeaths(); 
+                        
+                    }
+                    //if it's still over / no deaths then we end the turn
+                    if (this.eventIndex >= this.eventsList.length)
+                    {
+                        this.fightPhase = "turnEnd";
+                    }
+            }
+
+    }
+
+    checkForDeaths = () => {
+
+         
+                        
                         const deathsArray = [];
                         for (let i = 0; i < this.totalTeams; i++)
                             {
@@ -612,6 +711,7 @@ export class FightMatch extends GameElement {
                                         if (this.currentChar.HP <= 0 && this.currentChar.fainting === 0)
                                         {
                                             deathsArray.push(this.currentChar);
+                                            this.turnDeaths[this.currentChar.team].push(this.currentChar.activeSlot);
                                             for (let k=this.eventIndex; k < this.eventsList.length; k++)
                                                 {
                                                     const eventCheck = this.eventsList[k];
@@ -621,12 +721,12 @@ export class FightMatch extends GameElement {
                                                             eventCheck.eventOver = true;
                                                             eventCheck.eventSpeed += 0.5;
                                                             eventCheck.user = this.environment;
+                                                            
                                                         }
                                                     else if (eventCheck.targetType === "single") //targeting dying man
                                                         {
                                                             if (this.getCharFromNumber(eventCheck.currentTarget) === this.currentChar && this.currentChar.team != eventCheck.user.team && eventCheck.canSwitchFaintedTarget)
-                                                                {
-                                                                    console.log("yeah he dead");
+                                                                { 
                                                                     if (eventCheck.currentTarget % this.charsPerTeam === 0)
                                                                         {
                                                                             eventCheck.currentTarget += this.charsPerTeam-1; 
@@ -643,29 +743,101 @@ export class FightMatch extends GameElement {
                             }
                         if (deathsArray.length > 0)
                             {
+                                
                                 const deathEvent = new FaintAction(this.environment);
                                 deathEvent.targetList = deathsArray;
                                 deathEvent.eventSpeed = this.prevSpeed-0.5;
                                 deathEvent.eventPriority = this.prevPriority - 0.5;
-                                this.eventsList.splice(this.eventIndex+1, 0, deathEvent); 
-                            } 
-                    } 
-                this.eventIndex+=1;
-                console.log("events length",this.eventsList.length);
-                if (this.eventIndex >= this.eventsList.length)
-                    {
-                        this.fightPhase = "turnEnd";
-                    }
-            }
+                                this.eventsList.splice(this.eventIndex, 0, deathEvent);  
+                                
+                                const teamsDead = [];
+                                let teamAlive = -1;
+                                for (let i=0; i < this.totalTeams; i++)
+                                {
+                                    let alive = 0;
+                                    for (let j=0; j < this.party[i].length; j++)
+                                    {
+                                        const creature = this.party[i][j];
+                                        console.log("creature ",i,",",j," HP ",creature.HP);
+                                        if (creature.HP > 0)
+                                        {
+                                            alive += 1;
+                                            teamAlive = i;
+                                        }
+                                    }
+                                    console.log("alive ",i,":",alive);
+                                    if (alive === 0)
+                                    {
+                                        console.log("onedeath");
+                                        teamsDead.push(i);
+                                    }
+                                }
+                                if (teamsDead.length > 0)
+                                {
+                                    if (teamsDead.length === this.totalTeams)
+                                    {
 
+                                    }
+                                    else if (teamsDead.length === this.totalTeams-1)
+                                    {
+                                        const deathEvent = new FightEndAction(this.environment);
+                                        deathEvent.currentTarget = teamAlive;
+                                        this.eventsList.splice(this.eventIndex+1, 0, deathEvent);  
+                                    }
+                                }
+                            }  
     }
 
     TurnEndFunction = (context:CanvasRenderingContext2D) => {
+        for (let i=0; i< this.totalTeams; i++)
+        {
+            for (let j=0; j< this.charsPerTeam; j++)
+            {
+                this.playerChoices[i][j*2] = -1;
+                this.playerChoices[i][1+j*2] = -1;
+            }
+        }
+        if (this.turnDeaths[0].length > 0 && this.getPossibleSwitchNumbers(0) > 0)
+        {
+            this.fightPhase = "turnEndSwitch"; 
+            this.turnDeaths[0].sort((a, b) => a - b);
+            this.turnDeaths[1].sort((a, b) => a - b);
+            for (let i=0; i < this.turnDeaths[0].length; i++)
+            {
+                const deathIndex = this.turnDeaths[0][i]; 
+            }
+            for (let i=0; i < this.turnDeaths[1].length; i++)
+                {
+                    const deathIndex = this.turnDeaths[1][i]; 
+                }
+
+        }
+        else if (this.turnDeaths[1].length > 0 && this.getPossibleSwitchNumbers(1) > 0)
+        {
+            this.turnDeaths[1].sort((a, b) => a - b);
+            this.CpuRandomDeathSwitch(1);
+            this.fightPhase = "turnEndSwitchStart";
+        }
+        else
+        { 
+          this.fightPhase = "choice"; 
+        }
+        this.eventsList = [];
+        this.choicePhase = 0;
+        this.choiceDepth = 0;
+        this.targetting = null;
+        this.actionsMessage = "";
+        this.actionsMessage2 = "";
+    }
+
+    PostDeathSwitchWaitFunction = (context:CanvasRenderingContext2D) => {
 
     }
 
     PostDeathSwitchFunction = (context:CanvasRenderingContext2D) => {
-        if (this.choicePhase == 0)
+
+        const charIndex = this.turnDeaths[0][this.choicePhase];
+        if (charIndex === 0)
             {
                 this.currentChar = this.activeChars[0][0];
                 var _char = this.currentChar;
@@ -678,7 +850,7 @@ export class FightMatch extends GameElement {
                     context.drawImage(this.selectImg,_char.x-4,_char.y-4,72,72);
                 }
             }
-            else if (this.choicePhase == 1)
+            else if (charIndex === 1)
             {
                 this.currentChar = this.activeChars[0][1];
                 const _char = this.currentChar;
@@ -718,35 +890,53 @@ export class FightMatch extends GameElement {
                     {
                         let currentButton = this.switchButtons[i];
                         let buttonChar = this.getBenchedCharFromNumber(0,i); 
-                        currentButton.switchCreature = buttonChar;
-                        currentButton.spriteContext = this.spriteContext;
-    
-                        currentButton.drawFunction(context);
-                        currentButton.disabled = false;
-    
-                        if (buttonChar.HP <= 0) {currentButton.disabled = true;}
-                        if (this.choicePhase > 0)
-                        { 
-                            let prevChoice = this.playerChoices[0][0]; 
-                            if (prevChoice > 5 && prevChoice < 11)
+                        if (buttonChar != undefined)
+                            {
+                                currentButton.switchCreature = buttonChar;
+                                currentButton.spriteContext = this.spriteContext;
+            
+                                currentButton.drawFunction(context);
+                                currentButton.disabled = false;
+            
+                                if (buttonChar.HP <= 0) {currentButton.disabled = true;}
+                                if (this.choicePhase > 0)
                                 { 
-                                    if (i === prevChoice - 6)
-                                        {
-                                            currentButton.disabled = true;
+                                    let prevChoice = this.playerChoices[0][0]; 
+                                    if (prevChoice > 5 && prevChoice < 11)
+                                        { 
+                                            if (i === prevChoice - 6)
+                                                {
+                                                    currentButton.disabled = true;
+                                                } 
+                                            
                                         }
-                                    console.log("pee choice",prevChoice) 
-                                    
                                 }
+            
+            
+                                if (currentButton.clickConfirm > 0)
+                                {
+                                    this.playerChoices[0][charIndex*2] = 6+i;
+                                    this.choicePhase += 1;
+                                    currentButton.clickConfirm = 0;
+                                    if (this.choicePhase >= this.turnDeaths[0].length || this.choicePhase >= this.getPossibleSwitchNumbers(0))
+                                    {
+                                        if (this.turnDeaths[1].length > 0)
+                                            {
+                                                this.turnDeaths[1].sort((a, b) => a - b);
+                                                this.CpuRandomDeathSwitch(1);
+                                                this.fightPhase = "turnEndSwitchStart";
+                                            }
+                                        this.fightPhase = "turnEndSwitchStart";
+                                    }
+                                } 
                         }
-     
-    
-                        if (currentButton.clickConfirm > 0)
-                        {
-                            this.playerChoices[0][this.choicePhase*2] = 6+i;
-                            this.choicePhase += 1;
-                            currentButton.clickConfirm = 0;
-                        } 
                     } 
+    }
+
+    FightOverFunction = (context:CanvasRenderingContext2D) => {
+
+
+
     }
          
 
@@ -801,7 +991,20 @@ export class FightMatch extends GameElement {
              
             break;
             case "choice": 
-                this.ViewCreatures(context);
+                this.ViewCreatures(context); 
+                if (this.choicePhase < this.charsPerTeam)
+                {
+                    while (this.activeChars[0][this.choicePhase].HP <= 0)
+                    {
+                        console.log("char check insanity ",this.activeChars[0][this.choicePhase])
+                        this.choicePhase += 1;
+                        if (this.choicePhase >= this.charsPerTeam)
+                        {
+                            break;
+                        }
+                    }
+                }
+
                 if (this.choicePhase >= this.charsPerTeam)
                 {
                     this.confirmChoiceFunction(context);
@@ -821,16 +1024,25 @@ export class FightMatch extends GameElement {
             case "turnStart":
                 this.TurnStartFunction(context); 
             break;
+            
 
             case "actions":
+
                 this.ActionsFunction(context);
 
             break;
             case "turnEnd":
-                this.fightPhase = "choice"; 
-                this.choicePhase = 0;
-                this.choiceDepth = 0;
-                this.targetting = null;
+                this.TurnEndFunction(context);
+            break;
+            case "turnEndSwitch":
+                this.PostDeathSwitchFunction(context);
+            break;  
+            case "turnEndSwitchStart":
+                this.PostDeathSwitchStartFunction(context);
+            break;  
+
+            case "combatEnd":
+                this.FightOverFunction(context);
             break;
 
             default:
@@ -852,6 +1064,21 @@ export class FightMatch extends GameElement {
         if (num < 0) {return "The Environment"}
         else if (num < this.playerNames.length) {return this.playerNames[num];}
         else {return "?UNKNOWN?"}
+    }
+
+    getPossibleSwitchNumbers = (team:number) => {
+        let total = 0; 
+        let benchChar = this.party[team][0];
+        for (let i =0; i < this.party[team].length; i++)
+            {
+                benchChar = this.party[team][i];
+                if (benchChar != this.activeChars[team][0] && benchChar != this.activeChars[team][1] && benchChar.HP > 0)
+                    { 
+                        total += 1;
+                    }
+            }
+        return total;
+
     }
 
     getBenchedCharFromNumber = (team:number,num:number) =>{

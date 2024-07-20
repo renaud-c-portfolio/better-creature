@@ -79,7 +79,7 @@ export class CreatureChar extends GameElement {
             this.loaded = true;
           }
 
-        this.speed = Math.floor(Math.random()*9);
+        this.speed = Math.floor(Math.random()*2);
 
 
     }

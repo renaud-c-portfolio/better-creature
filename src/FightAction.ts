@@ -98,6 +98,12 @@ export class FightAction {
                         case "flashChar":
                             if (currentEffect[3] === "self"){targetChar = this.user; console.log("hey!flash",parseInt(currentEffect[1]))}
                             else if (currentEffect[3] === "switch" && this.switchTarget != null){targetChar = this.switchTarget;}
+                            else if (currentEffect[3] === "list")
+                            {
+                                let timing = this.actionEffectTimers[this.effectIndex];
+                                if (timing > this.targetList.length-1) {timing -= this.targetList.length}
+                                targetChar = this.targetList[timing];
+                            }
                             targetChar.flash = parseInt(currentEffect[1])*1.2; 
                             console.log(targetChar.flash);
                             targetChar.flashMax = parseInt(currentEffect[1]);
@@ -138,6 +144,36 @@ export class FightAction {
                                 }
                              
                         break;
+                        case "faintedSwitchAction":
+                            message = "@playeuser sends out ";
+                            let numSend = 0; 
+                                 for (let i=0; i < this.targetList.length; i++)
+                                    {
+                                        let currentSend = this.targetList[i];  
+                                        if (currentSend != fightMatch.environment)
+                                        {
+                                            fightMatch.activeChars[this.user.team][i] = currentSend;
+                                            currentSend.activeSlot = i;
+                                            currentSend.x = fightMatch.defaultPos[this.user.team][0+i*2];
+                                            currentSend.y = fightMatch.defaultPos[this.user.team][1+i*2];
+                                            if (numSend > 0 && i === this.targetList.length-1)
+                                            {
+                                                message += " and "
+                                            }
+                                            else if (numSend > 0)
+                                            {
+                                                message += ", "
+                                            }
+                                            numSend+= 1;
+                                            message += currentSend.name;
+                                        } 
+                                    }
+                                    message +="!";
+                                    if (this.user.team === 0)
+                                    {fightMatch.actionsMessage = this.parseText(message,fightMatch);}
+                                    else {fightMatch.actionsMessage2 = this.parseText(message,fightMatch);}
+
+                        break;
                         case "switchMenu":
                              
                         break;
@@ -151,7 +187,7 @@ export class FightAction {
                                             currentFaint.fainting = 1;
                                             if (i > 0 && i === this.targetList.length-1)
                                             {
-                                                message += "and "
+                                                message += " and "
                                             }
                                             else if (i > 0)
                                             {
@@ -166,6 +202,38 @@ export class FightAction {
                                     fightMatch.actionsMessage2 = "";
                                 }
                                 
+                        break;
+                        case "fightEndAction":
+                                message += fightMatch.playerNames[this.currentTarget] + " wins!";
+                                fightMatch.actionsMessage = message;
+                                fightMatch.actionsMessage2 = "";
+                        break;
+                        case "matchStartSend":
+                                 message = "@playeuser sends out ";
+                                 for (let i=0; i < this.targetList.length; i++)
+                                    {
+                                        let currentSend = this.targetList[i];  
+                                        if (currentSend != null)
+                                        {
+                                            fightMatch.activeChars[this.user.team][i] = currentSend;
+                                            currentSend.activeSlot = i;
+                                            currentSend.x = fightMatch.defaultPos[this.user.team][0+i*2];
+                                            currentSend.y = fightMatch.defaultPos[this.user.team][1+i*2];
+                                            if (i > 0 && i === this.targetList.length-1)
+                                            {
+                                                message += " and "
+                                            }
+                                            else if (i > 0)
+                                            {
+                                                message += ", "
+                                            }
+                                            message += currentSend.name;
+                                        } 
+                                    }
+                                    message +="!";
+                                    if (this.user.team === 0)
+                                    {fightMatch.actionsMessage = this.parseText(message,fightMatch);}
+                                    else {fightMatch.actionsMessage2 = this.parseText(message,fightMatch);}
                         break;
                     }
                     
@@ -226,6 +294,38 @@ export class SwitchAction extends FightAction {
 
 }
 
+export class FaintSwitchAction extends FightAction {
+
+    constructor(user:CreatureChar) {
+        super(user); 
+         
+        this.isSwitchAction = true;
+        this.actionEffects = [];
+        this.actionEffects = [["faintedSwitchAction"], ["flashChar","10","white","list"],["wait"]];
+        this.actionEffectTimers = [20,2,20,2,2,90];
+        this.priority = 9999;
+        this.eventPriority = 9999;
+        this.eventSpeed = 0.5;
+    }
+
+}
+
+export class MatchStartSendAction extends FightAction {
+
+    constructor(user:CreatureChar) {
+        super(user); 
+         
+        this.isSwitchAction = true;
+        this.actionEffects = [];
+        this.actionEffects = [["matchStartSend"], ["flashChar","10","white","list"],["wait"]];
+        this.actionEffectTimers = [2,3,90];
+        this.priority = 9999;
+        this.eventPriority = 9999;
+        this.eventSpeed = 0.5;
+    }
+
+}
+
 export class ProtectAction extends FightAction {
 
     constructor(user:CreatureChar) {
@@ -243,6 +343,18 @@ export class FaintAction extends FightAction {
         this.actionEffectTimers = [2,200];
     } 
      
+}
+
+export class FightEndAction extends FightAction {
+    constructor(user:CreatureChar) {
+        super(user); 
+        this.actionEffects = [];
+        this.actionEffects = [["fightEndAction"], ["wait"]];
+        this.actionEffectTimers = [2,9999];
+        this.eventSpeed = 0.5;
+    } 
+
+
 }
  
 
