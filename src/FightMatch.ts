@@ -47,7 +47,7 @@ export class FightMatch extends GameElement {
     
     playerNames:Array<string> = ["baboon","aardvark"];
     playerChoices:Array<any> = [[-1,-1,-1,-1],[-1,-1,-1,-1]];
-    defaultPos:Array<Array<number>> = [[100,30,50,120],[640-100-64,30,640-50-64,120]]
+    defaultPos:Array<Array<number>> = [[140,30,90,120],[640-140-64,30,640-90-64,120]];
     
     selectImg:HTMLImageElement = document.createElement("img");   
     targetImg:HTMLImageElement = document.createElement("img");   
@@ -118,10 +118,10 @@ export class FightMatch extends GameElement {
     }
 
     actionButtons = [
-        new GameButton(this.engine,26,246,140,40,"action1",0),
-        new GameButton(this.engine,176,246,140,40,"action2",0),
-        new GameButton(this.engine,326,246,140,40,"action3",0),
-        new GameButton(this.engine,476,246,140,40,"action4",0)
+        new GameButton(this.engine,26,246,140,40,"action1",0,"action"),
+        new GameButton(this.engine,176,246,140,40,"action2",0,"action"),
+        new GameButton(this.engine,326,246,140,40,"action3",0,"action"),
+        new GameButton(this.engine,476,246,140,40,"action4",0,"action")
 
     ];
 
@@ -148,11 +148,13 @@ export class FightMatch extends GameElement {
         _parties[0] = [
             new CreatureChar(this.engine,100,30,0,"fae","steel","beetle","crawler",0),
             new CreatureChar(this.engine,50,120,0,"fae","steel","beetle","crawler",0),
-            //new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
-            //new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
+            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
+            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
             new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
             new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
         ]; 
+        this.party[0][0].muscle = 900;
+        this.party[0][1].muscle = 900;
         let matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[0]);
         matchStartEvent.targetList.push(_parties[0][0]); 
         matchStartEvent.targetList.push(_parties[0][1]); 
@@ -162,8 +164,8 @@ export class FightMatch extends GameElement {
             new CreatureChar(this.engine,640-50-64,120,0,"fae","steel","beetle","crawler",1),
             new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
             new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
-           // new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
-           // new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
+            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
+            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
         ];
         matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[1]);
         matchStartEvent.targetList.push(_parties[1][0]); 
@@ -367,8 +369,7 @@ export class FightMatch extends GameElement {
 
     }
 
-    actionChoiceFunction = (context:CanvasRenderingContext2D) => {
-
+    actionChoiceFunction = (context:CanvasRenderingContext2D) => { 
 
         if (this.choicePhase == 0)
             {
@@ -428,7 +429,7 @@ export class FightMatch extends GameElement {
 
                     if (this.currentChar != null) {buttonAction = this.currentChar.actions[i];}
                     else { buttonAction.name = "none";} 
-                    if (buttonAction != null) {currentButton.text = buttonAction.name;}
+                    if (buttonAction != null) {currentButton.actionLabel = buttonAction;}
                     
 
                     currentButton.drawFunction(context);
@@ -515,7 +516,11 @@ export class FightMatch extends GameElement {
                 if (cpuChar.HP > 0)
                 {
                     const cpuAction = Math.floor(Math.random()*4);
-                    const cpuTarget = Math.floor(Math.random()*2);
+                    let cpuTarget = Math.floor(Math.random()*2);
+                    while(this.activeChars[0][cpuTarget].HP <= 0)
+                        {
+                            cpuTarget = Math.floor(Math.random()*2); 
+                        }
                     this.playerChoices[cpuPlayer][i*2] = cpuAction;
                     this.playerChoices[cpuPlayer][i*2+1] = cpuTarget; 
                 }
@@ -536,11 +541,12 @@ export class FightMatch extends GameElement {
                 let cpuAction = Math.floor(Math.random()*switchSize);
                 let cpuSwitchChar = this.getBenchedCharFromNumber(cpuPlayer,cpuAction);
                 console.log("switchlist check ",switchList.length," ",switchList.indexOf(cpuAction));
-                while (switchList.indexOf(cpuAction) != -1 && cpuSwitchChar.HP <= 0 && cpuSwitchChar != this.activeChars[cpuPlayer][0] && cpuSwitchChar != this.activeChars[cpuPlayer][1])
+                while (switchList.indexOf(cpuAction) != -1 || cpuSwitchChar.HP <= 0 || cpuSwitchChar === this.activeChars[cpuPlayer][0] || cpuSwitchChar === this.activeChars[cpuPlayer][1])
                     { 
-                        console.log("whilin ",cpuAction);
+                        
                         cpuAction = Math.floor(Math.random()*switchSize);
-                        cpuSwitchChar = this.getBenchedCharFromNumber(cpuPlayer,cpuAction);
+                        cpuSwitchChar = this.getBenchedCharFromNumber(cpuPlayer,cpuAction); 
+                        console.log("whilin ",cpuAction," "+cpuSwitchChar.name);
                     } 
                 switchList.push(cpuAction);
                 this.playerChoices[cpuPlayer][deathSlot*2] = cpuAction+6; 
@@ -757,18 +763,15 @@ export class FightMatch extends GameElement {
                                     let alive = 0;
                                     for (let j=0; j < this.party[i].length; j++)
                                     {
-                                        const creature = this.party[i][j];
-                                        console.log("creature ",i,",",j," HP ",creature.HP);
+                                        const creature = this.party[i][j]; 
                                         if (creature.HP > 0)
                                         {
                                             alive += 1;
                                             teamAlive = i;
                                         }
-                                    }
-                                    console.log("alive ",i,":",alive);
+                                    } 
                                     if (alive === 0)
-                                    {
-                                        console.log("onedeath");
+                                    { 
                                         teamsDead.push(i);
                                     }
                                 }

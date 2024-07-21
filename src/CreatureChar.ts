@@ -30,7 +30,7 @@ export class CreatureChar extends GameElement {
     public dodgeMax: number = 1;
 
 
-    public muscle:number = 500;
+    public muscle:number = 10;
     public magic:number = 10;
     public armor:number = 1;
     public resistance:number = 1;

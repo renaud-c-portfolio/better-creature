@@ -5,7 +5,7 @@ import FightMatch from "./FightMatch";
 export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special" | "switch";
 export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal" | "other";
 
-const tempNames:Array<string> = ["slash","bash","gash","fire","ash","clash","crush","pincer","claw","zap","needle","bite","light","heavy","banana","destruction","laser","breath","sever"];
+const tempNames:Array<string> = ["slash","bash","gash","fire","ash","clash","crush","pincer","claw","zap","needle","bite","light","heavy","banana","destroy","laser","breath","sever"];
 
 export class FightAction { 
 
@@ -14,7 +14,7 @@ export class FightAction {
     actionType:ACTIONT = "physical";
     targetType:TARGETT = "single";
     priority:number = 0;
-    power:number = 1+Math.random()*20;
+    power:number = 10;
     public moddedPower = 0;
     statusEffect:string = "";
     statusPower:number = 0; 

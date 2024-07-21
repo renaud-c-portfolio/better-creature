@@ -1,8 +1,9 @@
 import CreatureChar from "./CreatureChar";
+import { FightAction } from "./FightAction";
 import GameElement from "./GameElement";
 import GameEngine from "./GameEngine";
 
-type BUTTONT = "text" | "image" | "labeledImage" | "labeledChar"
+type BUTTONT = "text" | "action" | "image" | "labeledImage" | "labeledChar"
 
 class GameButton extends GameElement {
 
@@ -14,6 +15,7 @@ class GameButton extends GameElement {
 
     public spriteContext:CanvasRenderingContext2D|null = null;
     public switchCreature:CreatureChar|null = null;
+    public actionLabel:FightAction|null = null;
 
     public disabled:boolean = false;
 
@@ -60,7 +62,7 @@ class GameButton extends GameElement {
             //this.y = this.engine.mouseY; 
          }
         else if(this.disabled)
-            {context.fillStyle= "rgb(50,50,80)"   }
+            {context.fillStyle= "rgb(50,50,80)";}
  
         context.beginPath();
         context.roundRect(this.x,this.y+this.clicked,this.width,this.height,5); 
@@ -76,6 +78,17 @@ class GameButton extends GameElement {
                 const _txtWidth = context.measureText(this.text).width;
                 let _halfTxtWidth = Math.floor(_txtWidth/2);
                 context.fillText(this.text,this.x+this.width/2-_halfTxtWidth,this.y+this.height/2+4+this.clicked);   
+            }
+        else if (this.type === "action" && this.actionLabel != null)
+            {
+                this.text = this.actionLabel.name;
+                context.letterSpacing = "-1px";
+                const _txtWidth = context.measureText(this.text).width;
+                let _halfTxtWidth = Math.floor(_txtWidth/2);
+                context.fillText(this.text,this.x+this.width/2-_halfTxtWidth,this.y+this.height/2-3+this.clicked);   
+                context.font = "8px '04b03'";  
+                context.letterSpacing = "0px";
+                context.fillText("TYPE",this.x+7,this.y+this.height-5+this.clicked);   
             }
         else if (this.type === "labeledChar")
             {
