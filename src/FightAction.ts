@@ -6,6 +6,7 @@ export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | 
 export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal" | "other";
 
 const tempNames:Array<string> = ["slash","bash","gash","fire","ash","clash","crush","pincer","claw","zap","needle","bite","light","heavy","banana","destroy","laser","breath","sever"];
+import * as DATA from './Data.ts';
 
 export class FightAction { 
 
@@ -13,6 +14,9 @@ export class FightAction {
     name:string = "default action"+String(Math.floor(Math.random()*1000));
     actionType:ACTIONT = "physical";
     targetType:TARGETT = "single";
+
+    actionAspect:DATA.aspectsType = "fire";
+    
     priority:number = 0;
     power:number = 10;
     public moddedPower = 0;
@@ -318,7 +322,7 @@ export class MatchStartSendAction extends FightAction {
         this.isSwitchAction = true;
         this.actionEffects = [];
         this.actionEffects = [["matchStartSend"], ["flashChar","10","white","list"],["wait"]];
-        this.actionEffectTimers = [2,3,90];
+        this.actionEffectTimers = [2,3,30];
         this.priority = 9999;
         this.eventPriority = 9999;
         this.eventSpeed = 0.5;

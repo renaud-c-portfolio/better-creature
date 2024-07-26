@@ -1,23 +1,27 @@
-const aspectsMap = new Map();
-const shapesMap = new Map();
+export const aspectsMap = new Map();
+export const shapesMap = new Map();
 
-type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "speed" | "agility" | "none";
-type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
-type aspectsType = "fire" | "steel" | "fae" | "bugs" | "beast" | "bone" | "blood" | "hell" | "forest" | "solar" | "stars" | "abyss" | "machine" | "void" | "sands" | "rot" | "curse" | "heavens" | "storms" | "none";
-type shapesType = "beetle" | "crawler"| "stinger" | "nightmare" | "canine" | "feline" | "critter" | "antler" | "winged" | "fruit" | "mycon" | "worldtree" | "worm" | "crab" | "kraken" | "leviathan" | "hydra" | "dinosaur" | "behemoth" | "dragon" | "none";
-type attackInteract = "normal" | "strong" | "resisted" | "nothing" | "rot" | "resistedrot";
-type defenseInteract = "neutral" | "resist" | "weak" | "immune" | "rotted" | "resistrotted"; 
-type relationships = "strong" | "weak" | "neutral" | "harmony" | "burst" | "catalyst" | "mutate" | "unique"; 
-type statusEffect = "poison" | "rot" | "rust" | "none";
+const iconUrls = import.meta.glob('./gfx/aspecticons/*.png');
 
-const aspectsList:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms"];
-const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","winged","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
+export type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "speed" | "agility" | "none";
+export type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
+export type aspectsType = "fire" | "steel" | "fae" | "bugs" | "beast" | "bone" | "blood" | "hell" | "forest" | "solar" | "stars" | "abyss" | "machine" | "void" | "sands" | "rot" | "curse" | "heavens" | "storms" | "none";
+export type shapesType = "beetle" | "crawler"| "stinger" | "nightmare" | "canine" | "feline" | "critter" | "antler" | "winged" | "fruit" | "mycon" | "worldtree" | "worm" | "crab" | "kraken" | "leviathan" | "hydra" | "dinosaur" | "behemoth" | "dragon" | "none";
+export type attackInteract = "normal" | "strong" | "resisted" | "nothing" | "rot" | "resistedrot";
+export type defenseInteract = "neutral" | "resist" | "weak" | "immune" | "rotted" | "resistrotted"; 
+export type relationships = "strong" | "weak" | "neutral" | "harmony" | "burst" | "catalyst" | "mutate" | "unique"; 
+export type statusEffect = "poison" | "rot" | "rust" | "none";
 
-const statusEffects = [];
+export const aspectsList:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms"];
+export const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","winged","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
+
+export const statusEffects = [];
 
 const blankAspectAttackList:Array<attackInteract> = [];
 const blankAspectDefenseList:Array<defenseInteract> = [];
 const blankRelationshipsList:Array<relationships> = [];
+
+
 
 for (let i= 0; i < aspectsList.length; i++)
     {
@@ -92,6 +96,8 @@ export class Aspect {
         earthlyAspect:aspectsType = "none";
         ascendedAspect:aspectsType = "none";
         phantasmAspect:aspectsType = "none";
+        
+        iconURL:string = "";
 
         color:string = "#ffffff";
 
@@ -243,6 +249,8 @@ for (let i =0 ;i < shapesList.length; i++)
     /// aspect details =========================================================
     // aspect 0: FIRE ----------------------------------------------
     currentAspect = aspectsMap.get("fire");
+    currentAspect.iconURL = iconUrls["./gfx/aspecticons/icon-fire.png"];
+    console.log(iconUrls["./gfx/aspecticons/icon-fire.png"]);
     addAttackInteract(currentAspect,"strong","bugs");
     addAttackInteract(currentAspect,"strong","beast");
     addAttackInteract(currentAspect,"strong","bone"); 

@@ -3,6 +3,10 @@ import { FightAction } from "./FightAction";
 import GameElement from "./GameElement";
 import GameEngine from "./GameEngine";
 
+import iconURL from "./gfx/icon test2.png";
+
+import * as DATA from './Data.ts';
+
 type BUTTONT = "text" | "action" | "image" | "labeledImage" | "labeledChar"
 
 class GameButton extends GameElement {
@@ -19,8 +23,16 @@ class GameButton extends GameElement {
 
     public disabled:boolean = false;
 
+    public imageElem:HTMLImageElement = document.createElement("img"); 
+    public iconUrl:string = "./gfx/aspecticons/icon-unknown.png";
+    public loaded = false;  
+
     constructor(engine:GameEngine,public x:number = 0,public y:number = 0,public width:number = 50, public height:number = 30,public text:string = "",public depth:number = 0, public type:BUTTONT = "text") {
-        super(engine,x,y,depth);
+        super(engine,x,y,depth); 
+
+        this.imageElem.onload = () => { 
+            this.loaded = true;
+          }
 
     }
 
@@ -88,7 +100,16 @@ class GameButton extends GameElement {
                 context.fillText(this.text,this.x+this.width/2-_halfTxtWidth,this.y+this.height/2-3+this.clicked);   
                 context.font = "8px '04b03'";  
                 context.letterSpacing = "0px";
-                context.fillText("TYPE",this.x+7,this.y+this.height-5+this.clicked);   
+                const labelAspect:DATA.aspectsType = this.actionLabel.actionAspect;
+                const capsAspect = labelAspect.toUpperCase(); 
+                const aspectObj = DATA.aspectsMap.get(labelAspect);
+                console.log(aspectObj.iconURL);
+                if (this.imageElem.src != aspectObj.iconURL)
+                    {this.imageElem.src = aspectObj.iconURL;}
+                if (this.loaded)
+                    {context.drawImage(this.imageElem,this.x+7,this.y+this.height-16+this.clicked,14,14);}
+                context.fillText(capsAspect,this.x+23,this.y+this.height-6+this.clicked);
+                
             }
         else if (this.type === "labeledChar")
             {

@@ -10,6 +10,7 @@ import nekoUrl from "./gfx/evil_neko.png";
 import centiUrl from "./gfx/centip.png";
 import sharkyUrl from "./gfx/sharky.png";
 import melonUrl from "./gfx/watermelone.png";
+import treeUrl from "./gfx/heaven-tree.png";
 import { FightAction } from "./FightAction"; 
 import FightMatch from "./FightMatch";
 
@@ -65,7 +66,7 @@ export class CreatureChar extends GameElement {
     shapes:Array<shape> = [];
     loaded:boolean = false;
 
-    tempUrlArray:Array<any> = [crambUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl];
+    tempUrlArray:Array<any> = [crambUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl];
  
     imageElem:HTMLImageElement = document.createElement("img");  
     imageAlpha:number = 1;
