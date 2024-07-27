@@ -5,6 +5,11 @@ import CreatureChar from "./CreatureChar";
 
 import { MTYPE } from "./game/types/monsType";
 import { MSHAPE } from "./game/shapes/shapes";
+import { CreatePartyMenu } from "./CreatePartyMenu";
+
+import physUrl from "./gfx/physIcon.png";
+import magUrl from "./gfx/magIcon.png";
+import specUrl from "./gfx/specialIcon.png";
 
 class GameEngine {
     
@@ -25,7 +30,14 @@ class GameEngine {
     public rightClick: number = 0;
     public rightRelease: number = 0;
 
+    public wheel:number = 0;
+
     public currentMatch:FightMatch = new FightMatch(this,0,0,-100);
+    public partyMenu:CreatePartyMenu = new CreatePartyMenu(this,0,0,-100);
+
+    public physImage = document.createElement("img");
+    public magImage = document.createElement("img");
+    public specImage = document.createElement("img");
 
     constructor(public canvas:HTMLCanvasElement){ 
 
@@ -37,6 +49,10 @@ class GameEngine {
                 this.context = ctx;
             }
             else {throw new Error("sometimes things can be null");}
+            
+        this.physImage.src = physUrl;
+        this.magImage.src = magUrl;
+        this.specImage.src = specUrl;
     }
 
 
@@ -56,8 +72,13 @@ class GameEngine {
             this.ReleaseMouse(event,this.canvas);
         });  
 
+        document.addEventListener("wheel",(event:WheelEvent)=>{ 
+            this.MouseWheel(event,this.canvas);
+        });  
+
         this.currentMatch.defaultParty(); //until we import parties from data
-        this.gameElements.push(this.currentMatch);
+        //this.gameElements.push(this.currentMatch);
+        this.gameElements.push(this.partyMenu);
         this.depthList.push(-100);  
     }
     
@@ -72,6 +93,13 @@ class GameEngine {
         const scaleY = _canvas.height / rect.height; 
         this.mouseX = Math.floor((event.clientX - rect.left)*scaleX);
         this.mouseY =  Math.floor((event.clientY - rect.top)*scaleY);
+    }
+
+    MouseWheel = (event:WheelEvent,canvas:HTMLCanvasElement) => { 
+        if (event.deltaY != 0)
+        { 
+            this.wheel = event.deltaY;
+        } 
     }
 
     ClickMouse = (event:MouseEvent,_canvas:HTMLCanvasElement) => {
@@ -198,7 +226,7 @@ class GameEngine {
                 console.log("frames skipped:",multiFrame);
                 multiFrame = 0;
             }
-
+            this.wheel = 0;
           requestAnimationFrame(()=>{this.gameTick()});  
       }
 

@@ -12,6 +12,8 @@ import { FightAction, ACTIONT, TARGETT, SwitchAction, FaintAction, MatchStartSen
 import GameEngine from "./GameEngine";
 import { FightAnimation } from "./FightAnimation"; 
 
+import * as DATA from './Data.ts';
+
 
 type MultiMode = "cpu" | "local" | "online";
 type FightPhase = "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd" | "turnEndSwitch" | "turnEndSwitchStart";
@@ -65,6 +67,8 @@ export class FightMatch extends GameElement {
     popupCanvas:HTMLCanvasElement;
     popupContext:CanvasRenderingContext2D;
 
+    viewTime:number = 0;
+
     speedsList:Array<number> = [];
     eventsList:Array<any> = [];
     interruptsList:Array<any> = [];
@@ -81,7 +85,8 @@ export class FightMatch extends GameElement {
     emptyPlayerCreature:Array<CreatureChar> = [];
 
     suddenDeath:boolean = false;
-    
+
+
 
     constructor(public engine:GameEngine,public x:number = 0,public y:number = 0,public depth:number = 0){
         super(engine,x,y,depth); 
@@ -108,13 +113,13 @@ export class FightMatch extends GameElement {
 
         for (let i=0; i < this.totalTeams; i++)
         {
-            const emptyCreature = new CreatureChar(engine,-999,-999,-999,"fae","fae","beetle","crawler",i);
+            const emptyCreature = new CreatureChar(engine,-999,-999,-999,i);
             this.emptyPlayerCreature[i] = emptyCreature;
             this.activeChars[i][0] = emptyCreature;
             this.activeChars[i][1] = emptyCreature;
         }
         
-        this.environment = new CreatureChar(engine,-999,-999,-999,"fae","fae","beetle","crawler",-1);
+        this.environment = new CreatureChar(engine,-999,-999,-999,-1);
     }
 
     actionButtons = [
@@ -146,26 +151,24 @@ export class FightMatch extends GameElement {
         const _parties = this.party; 
         _parties[0] = [];
         _parties[0] = [
-            new CreatureChar(this.engine,100,30,0,"fae","steel","beetle","crawler",0),
-            new CreatureChar(this.engine,50,120,0,"fae","steel","beetle","crawler",0),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",0),
-        ]; 
-        this.party[0][0].muscle = 900;
-        this.party[0][1].muscle = 900;
+            new CreatureChar(this.engine,100,30,0,0),
+            new CreatureChar(this.engine,50,120,0,0),
+            new CreatureChar(this.engine,0,0,0,0),
+            new CreatureChar(this.engine,0,0,0,0),
+            new CreatureChar(this.engine,0,0,0,0),
+            new CreatureChar(this.engine,0,0,0,0),
+        ];  
         let matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[0]);
         matchStartEvent.targetList.push(_parties[0][0]); 
         matchStartEvent.targetList.push(_parties[0][1]); 
         this.eventsList.push(matchStartEvent);
         _parties[1] = [
-            new CreatureChar(this.engine,640-100-64,30,0,"fae","steel","beetle","crawler",1),
-            new CreatureChar(this.engine,640-50-64,120,0,"fae","steel","beetle","crawler",1),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
-            new CreatureChar(this.engine,0,0,0,"fae","steel","beetle","crawler",1),
+            new CreatureChar(this.engine,640-100-64,30,0,1),
+            new CreatureChar(this.engine,640-50-64,120,0,1),
+            new CreatureChar(this.engine,0,0,0,1),
+            new CreatureChar(this.engine,0,0,0,1),
+            new CreatureChar(this.engine,0,0,0,1),
+            new CreatureChar(this.engine,0,0,0,1),
         ];
         matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[1]);
         matchStartEvent.targetList.push(_parties[1][0]); 
@@ -496,6 +499,7 @@ export class FightMatch extends GameElement {
     }
 
     ViewCreatures = (context:CanvasRenderingContext2D) => {
+        let viewing = false;
         for (let i=0; i < this.totalTeams; i++)
             {
                 for (let j=0; j < this.charsPerTeam; j++)
@@ -503,9 +507,60 @@ export class FightMatch extends GameElement {
                         const viewChar = this.activeChars[i][j];
                         if (this.engine.MouseInRect(viewChar.x,viewChar.y,64,64))
                             {
+                                viewing = true;
+                                this.viewTime += 1;
                                 document.body.style.cursor = 'help';
+                                let windowHelpX = viewChar.x + 40+Math.min(32,this.viewTime*4);
+                                console.log("whelp",windowHelpX);
+                                let windowHelpY = viewChar.y-8;
+                                if (viewChar.x > 320) {windowHelpX -= 178 + Math.min(64,this.viewTime*8);}
+                                context.filter = "opacity("+String(Math.min(100,this.viewTime*8))+"%)"
+                                context.fillStyle = "black";
+                                context.beginPath();
+                                context.roundRect(windowHelpX-2,windowHelpY-2,164,84,5); 
+                                context.closePath();
+                                context.fill();  
+                                context.fillStyle= "rgb(230,230,235)"
+                                context.beginPath();
+                                context.roundRect(windowHelpX,windowHelpY,160,80,5); 
+                                context.closePath();
+                                context.fill();
+                                context.fillStyle = "black";
+                                context.letterSpacing = "-1px";
+                                context.font = "16px '04b03'"; 
+                                context.fillText(viewChar.name,windowHelpX+9,windowHelpY+14);
+                                let typesString = "";
+                                let types = 1;
+                                for (let i=0; i < viewChar.aspectTypes.length;i++)
+                                {   
+                                    const viewAspect = viewChar.aspectTypes[i];
+                                    const viewAspectImage =  DATA.aspectsMap.get(viewAspect).iconImg; 
+                                    context.drawImage(viewAspectImage,windowHelpX+4+i*16,windowHelpY+34);
+                                    if (i > 0) { typesString += "/";}
+                                    typesString += viewAspect;
+                                    types = i+1;
+                                }
+                                const typesWidth = context.measureText(typesString).width;
+                                context.fillText(typesString,windowHelpX+4+types*16,windowHelpY+46);
+                                context.filter = "none";
+                                context.letterSpacing = "0px";
+
+                                context.fillStyle = "black"; 
+                                context.fillRect(windowHelpX+4,windowHelpY+20,88,9);  
+                                const hpRatio = viewChar.HP/viewChar.maxHP*84;
+                                context.fillStyle = "green";
+                                if (hpRatio <= 21) {context.fillStyle = "red";}
+                                else if (hpRatio <= 42) {context.fillStyle = "yellow";}
+                                context.fillRect(windowHelpX+6,windowHelpY+22,hpRatio,5); 
+
                             }
+                        
                     }
+            }
+
+            if (!viewing)
+            {
+                this.viewTime = 0;
             }
     }
 
@@ -677,6 +732,7 @@ export class FightMatch extends GameElement {
 
         if (currentEvent.eventOver)
             {
+                this.actionsMessage2 = "";
                 this.prevPriority = currentEvent.eventPriority;
                 this.prevSpeed = currentEvent.eventSpeed; 
                 
@@ -693,7 +749,6 @@ export class FightMatch extends GameElement {
                     {
                         console.log("death checkin'");
                         this.checkForDeaths(); 
-                        
                     }
                     //if it's still over / no deaths then we end the turn
                     if (this.eventIndex >= this.eventsList.length)
@@ -779,7 +834,7 @@ export class FightMatch extends GameElement {
                                 {
                                     if (teamsDead.length === this.totalTeams)
                                     {
-
+                                         
                                     }
                                     else if (teamsDead.length === this.totalTeams-1)
                                     {

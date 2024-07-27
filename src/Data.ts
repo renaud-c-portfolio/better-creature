@@ -1,7 +1,8 @@
 export const aspectsMap = new Map();
 export const shapesMap = new Map();
-
-const iconUrls = import.meta.glob('./gfx/aspecticons/*.png');
+export const iconImages = new Map();
+ 
+const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspecticons/*.png',{ eager: true });
 
 export type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "speed" | "agility" | "none";
 export type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
@@ -11,15 +12,27 @@ export type attackInteract = "normal" | "strong" | "resisted" | "nothing" | "rot
 export type defenseInteract = "neutral" | "resist" | "weak" | "immune" | "rotted" | "resistrotted"; 
 export type relationships = "strong" | "weak" | "neutral" | "harmony" | "burst" | "catalyst" | "mutate" | "unique"; 
 export type statusEffect = "poison" | "rot" | "rust" | "none";
+export type soulType = "natural" | "mirror" | "shadow" | "symbiosis" | "chaos" | "primordial" | "none";
 
 export const aspectsList:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms"];
 export const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","winged","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
 
-export const statusEffects = [];
+export const statusEffects = []; 
 
 const blankAspectAttackList:Array<attackInteract> = [];
 const blankAspectDefenseList:Array<defenseInteract> = [];
 const blankRelationshipsList:Array<relationships> = [];
+
+const preloader = document.createElement("img");
+
+Object.entries(iconUrls).map(([url, promise])=>{
+    let iconName = url;
+    iconName = iconName.replace("./gfx/aspecticons/icon-","");
+    iconName = iconName.replace(".png","");
+    const imageSource = promise.default;
+    console.log("images ",iconName,)
+    iconImages.set(iconName,imageSource);
+});
 
 
 
@@ -36,6 +49,7 @@ const addAttackInteract = (originAspect:Aspect,interact:attackInteract,targetAsp
     const originIndex = originAspect.index;
     const target = aspectsMap.get(targetAspect);
     const targetIndex = target.index;
+    originAspect.attackMap.set(targetAspect,interact);
     originAspect.attackingList[targetIndex] = interact;
 
     let defendInteract:defenseInteract = "neutral";
@@ -46,6 +60,7 @@ const addAttackInteract = (originAspect:Aspect,interact:attackInteract,targetAsp
         case "nothing": defendInteract = "immune"; break;
         case "rot": defendInteract = "rotted"; break;
     } 
+    target.defenseMap.set(originType,defendInteract);
     target[defendInteract].push(originType);
     target.defendingList[originIndex] = defendInteract;
 
@@ -58,6 +73,8 @@ export class Aspect {
         aspectType:aspectsType = "none";
         index:number = -1;
 
+        attackMap:Map<string,attackInteract> = new Map();
+        defenseMap:Map<string,defenseInteract> = new Map();
         attackingList:Array<attackInteract> = [...blankAspectAttackList];
         defendingList:Array<defenseInteract> = [...blankAspectDefenseList];
         normal:Array<aspectsType> = [];
@@ -97,14 +114,23 @@ export class Aspect {
         ascendedAspect:aspectsType = "none";
         phantasmAspect:aspectsType = "none";
         
+        iconImg:HTMLImageElement = document.createElement("img");
+        iconLoaded:boolean = false;
         iconURL:string = "";
 
-        color:string = "#ffffff";
+        color:string = "rgb(255,255,255)";
+        colorDark:string = "rgb(205,69,3)";
+        colorLight:string = "rgb(255,108,15)"
 
         constructor(aspectType:aspectsType)
         {
             this.name = aspectType;
             this.aspectType = aspectType;
+
+            this.iconImg.onload = () => {
+                this.iconLoaded = true; 
+                console.log("babon!",this.iconLoaded,this.name);
+            }
         }
 
 }
@@ -161,7 +187,7 @@ export class Shape {
 
             protectEffect:Array<string> = [];
 
-            color:string = "#ffffff";
+            color:string = "rgb(200,200,200)";
 
             earthlyAspect:aspectsType = "none";
             ascendedAspect:aspectsType = "none";
@@ -172,13 +198,17 @@ export class Shape {
 for (let i =0 ;i < aspectsList.length; i++)
 {
     const currentAspectString = aspectsList[i];
+    console.log(i," ",currentAspectString);
     const newAspect = new Aspect(currentAspectString);
     newAspect.aspectType = currentAspectString;
     newAspect.index = i;
     newAspect.earthlyAspect = currentAspectString;
+    
+    newAspect.iconImg.src = iconImages.get(currentAspectString);
     aspectsMap.set(currentAspectString,newAspect);
-    aspectsMap.set(i,newAspect); 
+    aspectsMap.set(i,newAspect);  
 }
+console.log("storms ",aspectsMap.get("storms").name);
 
 for (let i =0 ;i < shapesList.length; i++)
     {
@@ -248,9 +278,9 @@ for (let i =0 ;i < shapesList.length; i++)
     ///declaring details
     /// aspect details =========================================================
     // aspect 0: FIRE ----------------------------------------------
-    currentAspect = aspectsMap.get("fire");
-    currentAspect.iconURL = iconUrls["./gfx/aspecticons/icon-fire.png"];
-    console.log(iconUrls["./gfx/aspecticons/icon-fire.png"]);
+    currentAspect = aspectsMap.get("fire");  
+    currentAspect.color = "rgb(255,108,15)";
+    currentAspect.iconImg.src = iconImages.get("fire");
     addAttackInteract(currentAspect,"strong","bugs");
     addAttackInteract(currentAspect,"strong","beast");
     addAttackInteract(currentAspect,"strong","bone"); 
@@ -263,63 +293,78 @@ for (let i =0 ;i < shapesList.length; i++)
     addAttackInteract(currentAspect,"nothing","solar");
 
     // aspect 1: STEEL ----------------------------------------------
-    currentAspect = aspectsMap.get("steel");
+    currentAspect = aspectsMap.get("steel"); 
+    currentAspect.color = "rgb(126,147,169)";
     addAttackInteract(currentAspect,"strong","fae"); 
 
      // aspect 2: FAE ----------------------------------------------
-     currentAspect = aspectsMap.get("fae");
+     currentAspect = aspectsMap.get("fae"); 
+     currentAspect.color = "rgb(112,46,235)";
      addAttackInteract(currentAspect,"strong","beast"); 
     
      // aspect 3: BUGS ----------------------------------------------
-     currentAspect = aspectsMap.get("bugs");
+     currentAspect = aspectsMap.get("bugs"); 
+     currentAspect.color = "rgb(156,166,87)";
      addAttackInteract(currentAspect,"strong","bone"); 
     
      // aspect 4: BEAST ----------------------------------------------
-     currentAspect = aspectsMap.get("beast");
+     currentAspect = aspectsMap.get("beast"); 
+     currentAspect.color = "rgb(74,60,53)";
      addAttackInteract(currentAspect,"strong","bone"); 
 
      // aspect 5: BONE ----------------------------------------------
      currentAspect = aspectsMap.get("bone");
+     currentAspect.color = "rgb(255,243,217)";
      addAttackInteract(currentAspect,"strong","hell"); 
 
      // aspect 6: BLOOD ----------------------------------------------
      currentAspect = aspectsMap.get("blood");
+     currentAspect.color = "rgb(216,16,16)";
      addAttackInteract(currentAspect,"strong","heavens"); 
 
       // aspect 7: HELL ----------------------------------------------
       currentAspect = aspectsMap.get("hell");
+      currentAspect.color = "rgb(201,44,111)";
       addAttackInteract(currentAspect,"nothing","heavens"); 
 
       // aspect 8: FOREST ----------------------------------------------
       currentAspect = aspectsMap.get("forest");
+      currentAspect.color = "rgb(116,164,68)";
       addAttackInteract(currentAspect,"strong","bone"); 
 
       // aspect 9: SOLAR ----------------------------------------------
       currentAspect = aspectsMap.get("solar");
+      currentAspect.color = "rgb(251,203,40)";
       addAttackInteract(currentAspect,"strong","curse"); 
 
       // aspect 10: STARS ----------------------------------------------
       currentAspect = aspectsMap.get("stars");
+      currentAspect.color = "rgb(111,150,255)";
       addAttackInteract(currentAspect,"strong","fae"); 
 
       // aspect 11: ABYSS ----------------------------------------------
        currentAspect = aspectsMap.get("abyss");
+       currentAspect.color = "rgb(65,121,139)";
        addAttackInteract(currentAspect,"strong","fire"); 
 
       // aspect 12: MACHINE ----------------------------------------------
       currentAspect = aspectsMap.get("machine");
+      currentAspect.color = "rgb(147,123,138)";
       addAttackInteract(currentAspect,"strong","fae"); 
 
       // aspect 13: VOID ----------------------------------------------
       currentAspect = aspectsMap.get("void");
+      currentAspect.color = "rgb(61,62,99)";
       addAttackInteract(currentAspect,"strong","solar");
 
       // aspect 14: SANDS ----------------------------------------------
       currentAspect = aspectsMap.get("sands");
+      currentAspect.color = "rgb(186,158,120)";
       addAttackInteract(currentAspect,"strong","fire");
 
       // aspect 15: ROT ----------------------------------------------
       currentAspect = aspectsMap.get("rot");
+      currentAspect.color = "rgb(73,156,98)";
       addAttackInteract(currentAspect,"nothing","steel");
       addAttackInteract(currentAspect,"rot","bugs");
       addAttackInteract(currentAspect,"rot","beast"); 
@@ -327,14 +372,17 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // aspect 16: CURSED ----------------------------------------------
         currentAspect = aspectsMap.get("curse");
+        currentAspect.color = "rgb(112,46,75)";
         addAttackInteract(currentAspect,"strong","steel");
 
         // aspect 17: HEAVENS ----------------------------------------------
         currentAspect = aspectsMap.get("heavens");
+        currentAspect.color = "rgb(254,251,146)";
         addAttackInteract(currentAspect,"strong","hell");
 
         // aspect 18: STORMS ----------------------------------------------
         currentAspect = aspectsMap.get("storms");
+        currentAspect.color = "rgb(63,86,88)";
         addAttackInteract(currentAspect,"strong","fire");
  
 ///================================== shape details ======================================================================

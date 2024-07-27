@@ -14,6 +14,8 @@ import treeUrl from "./gfx/heaven-tree.png";
 import { FightAction } from "./FightAction"; 
 import FightMatch from "./FightMatch";
 
+import * as DATA from './Data.ts';
+
 
 export class CreatureChar extends GameElement {
 
@@ -34,12 +36,22 @@ export class CreatureChar extends GameElement {
     public muscle:number = 10;
     public magic:number = 10;
     public armor:number = 1;
-    public resistance:number = 1;
+    public resistance:number = 10;
     public speed:number = 5;
 
     public turnOver:boolean = false;
 
     public activeSlot:number = -1;
+
+    public statPlus:Array<number> = [0,0,0,0,0,0,0];
+    
+    public itemChoices:Array<string|null> = [null,null];
+    public currentItem:string|null = null;
+    
+    public skill1:string = "";
+    public skill2:string = "";
+    public soulType:DATA.soulType = "natural";
+    public halfSoul:DATA.soulType = "none";
 
     actions:Array<FightAction> = [
         new FightAction(this),
@@ -59,11 +71,9 @@ export class CreatureChar extends GameElement {
     displayLifebar = false;
     displayExtraTimer = 0;
 
+    aspectTypes:Array<DATA.aspectsType> = [];
+    shapes:Array<DATA.shapesType> = [];
 
-    
-    //protect1:fightAction = null;
-    types:Array<monsType> = [];
-    shapes:Array<shape> = [];
     loaded:boolean = false;
 
     tempUrlArray:Array<any> = [crambUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl];
@@ -71,16 +81,35 @@ export class CreatureChar extends GameElement {
     imageElem:HTMLImageElement = document.createElement("img");  
     imageAlpha:number = 1;
 
-    constructor (public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0,public type1:MTYPE,public type2:MTYPE,public shape1:MSHAPE,public shape2:MSHAPE,public team = -1){
+    constructor (public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0,public team = -1){
         super(engine,x,y,depth)
-        var _rando = Math.floor(Math.random()*this.tempUrlArray.length);
-        this.imageElem.src = this.tempUrlArray[_rando];
+        let rando = Math.floor(Math.random()*this.tempUrlArray.length);
+        this.imageElem.src = this.tempUrlArray[rando];
 
         this.imageElem.onload = () => { 
             this.loaded = true;
           }
+        rando = Math.floor(Math.random()*DATA.aspectsList.length);
+        this.aspectTypes.push(DATA.aspectsList[rando]);
+        if (Math.random()> 0.6)
+        {
+            rando = Math.floor(Math.random()*DATA.aspectsList.length);
+            if (this.aspectTypes[0] != DATA.aspectsList[rando])
+            {this.aspectTypes.push(DATA.aspectsList[rando]);}
+        }
 
-        this.speed = Math.floor(Math.random()*2);
+        rando = Math.floor(Math.random()*DATA.shapesList.length);
+        this.shapes.push(DATA.shapesList[rando]);
+        rando = Math.floor(Math.random()*DATA.shapesList.length);
+        this.shapes.push(DATA.shapesList[rando]);
+        while (this.shapes[0] === this.shapes[1])
+        {
+            rando = Math.floor(Math.random()*DATA.shapesList.length);
+            this.shapes[1] = DATA.shapesList[rando];
+        }
+        
+
+        this.speed = Math.floor(Math.random()*7)+1;
 
 
     }
@@ -182,12 +211,13 @@ export class CreatureChar extends GameElement {
             {
                 context.fillStyle = "black";
                 context.beginPath();
-                context.fillRect(this.x-14,this.y+70,88,9);
+                context.fillRect(this.x-14,this.y+70,88,9); 
                 const hpRatio = this.HP/this.maxHP*84;
                 context.fillStyle = "green";
                 if (hpRatio <= 21) {context.fillStyle = "red";}
                 else if (hpRatio <= 42) {context.fillStyle = "yellow";}
                 context.fillRect(this.x-12,this.y+72,hpRatio,5);
+
                 if (this.damaged > 0)
                 {
                     context.fillStyle = "maroon";
@@ -198,7 +228,7 @@ export class CreatureChar extends GameElement {
                 }
                 else if (!this.displayExtraTimer) {this.displayLifebar = false;} 
                 context.closePath();
-                context.fill();  
+                context.fill();
             }
             
             
@@ -210,6 +240,50 @@ export class CreatureChar extends GameElement {
         const newEvent = currentAction.generateEvent(this);
         newEvent.currentTarget = targetNumber;
         return newEvent;
+    }
+
+    resetStats = () => {
+        const shape1 = DATA.shapesMap.get(this.shapes[0]);
+        const shape2 = DATA.shapesMap.get(this.shapes[1]);
+        const aspect1 = DATA.aspectsMap.get(this.aspectTypes[0]);
+
+        this.maxHP = shape1.baseHP + shape2.baseHP;
+        if (this.statPlus[0] === 1) {this.maxHP *= 1.10; this.maxHP+=10}
+        else if (this.statPlus[0] === 2) {this.maxHP *= 1.23; this.maxHP+=20}
+        this.maxHP = Math.round(this.maxHP/4+10);
+        this.HP = this.maxHP;
+
+        this.dodgeMax = shape1.baseAgi + shape2.baseAgi;
+        if (this.statPlus[1] === 1) {this.dodgeMax *= 1.10; this.dodgeMax += 6;}
+        else if (this.statPlus[1] === 2) {this.dodgeMax *= 1.23; this.dodgeMax +=14;}
+        this.dodgeMax = Math.round(this.dodgeMax/12);
+
+        this.speed = shape1.baseSpd + shape2.baseSpd;
+        if (this.statPlus[2] === 1) {this.speed *= 1.10; this.speed += 6;}
+        else if (this.statPlus[2] === 2) {this.speed *= 1.23; this.speed +=14;}
+        this.speed = Math.round(this.speed/12);
+
+        this.muscle = shape1.baseStr + shape2.baseStr;
+        if (this.statPlus[3] === 1) {this.muscle *= 1.10; this.muscle += 6;}
+        else if (this.statPlus[3] === 2) {this.muscle *= 1.23; this.muscle +=14;}
+        this.muscle = Math.round(this.muscle/12);
+
+        
+        this.armor = shape1.baseArm + shape2.baseArm;
+        if (this.statPlus[4] === 1) {this.armor *= 1.10; this.armor += 6;}
+        else if (this.statPlus[4] === 2) {this.armor *= 1.23; this.armor +=14;}
+        this.armor = Math.round(this.armor/12);
+
+        this.magic = shape1.baseMag + shape2.baseMag;
+        if (this.statPlus[5] === 1) {this.magic *= 1.10; this.magic += 6;}
+        else if (this.statPlus[5] === 2) {this.magic *= 1.23; this.magic +=14;}
+        this.magic = Math.round(this.magic/12);
+
+
+        this.resistance = shape1.baseRes + shape2.baseRes;
+        if (this.statPlus[6] === 1) {this.resistance *= 1.10; this.resistance += 6;}
+        else if (this.statPlus[6] === 2) {this.resistance *= 1.23; this.resistance +=14;}
+        this.resistance = Math.round(this.resistance/12);
     }
 
 

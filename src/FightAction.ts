@@ -6,6 +6,7 @@ export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | 
 export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal" | "other";
 
 const tempNames:Array<string> = ["slash","bash","gash","fire","ash","clash","crush","pincer","claw","zap","needle","bite","light","heavy","banana","destroy","laser","breath","sever"];
+
 import * as DATA from './Data.ts';
 
 export class FightAction { 
@@ -30,7 +31,7 @@ export class FightAction {
 
     otherEffects:object = {};  
 
-    actionEffects:Array<Array<string>> = [["fightMessage","@sametime@user uses @name on @target"],["createAnim","target"], ["flashChar","30","white","target"], ["physicalAttack","target"],["wait"],["fightMessage2","@total damage!"],["wait"]];
+    actionEffects:Array<Array<string>> = [["fightMessage","@sametime@user uses @name on @target"],["createAnim","target"], ["flashChar","30","white","target"], ["physicalAttack","target"],["wait"],["addFightMessage2","@total damage!"],["wait"]];
     actionEffectTimers:Array<number> = [20,5,2,2,10,5,120];
     effectIndex:number = 0; 
     eventOver = false; 
@@ -45,12 +46,20 @@ export class FightAction {
 
     remainingUses:number = -1;
 
-    totalDamage = 0;
+    totalDamage:number = 0;
+    totalMult:number = 1;
 
     constructor(public user:CreatureChar) {
         let random1 = tempNames[Math.floor(Math.random()*tempNames.length)];
         let random2 = tempNames[Math.floor(Math.random()*tempNames.length)];
         this.name = random1 + " " + random2;
+        let randomAspect = DATA.aspectsList[Math.floor(Math.random()*DATA.aspectsList.length)];
+        this.actionAspect = randomAspect;
+        let randomType = Math.floor(Math.random()*3);
+        this.power = Math.floor(Math.random()*45)+5;
+        if (randomType === 1) {this.actionType = "magic"; this.actionEffects[3] = ["magicAttack","target"]; }
+        else if (randomType === 2) {this.actionType = "special"; this.power = 0;} 
+
     }
  
     generateEvent = (user:CreatureChar) =>{ 
@@ -92,8 +101,18 @@ export class FightAction {
                             fightMatch.actionsMessage = message;
                         break;
                         case "fightMessage2":
-                             message = this.parseText(currentEffect[1],fightMatch);
-                            fightMatch.actionsMessage2 = message;
+                            if (this.actionEffectTimers[this.effectIndex] === 1)
+                                {
+                                message = this.parseText(currentEffect[1],fightMatch);
+                                fightMatch.actionsMessage2 = message;
+                              }
+                        break;
+                        case "addFightMessage2":
+                            if (this.actionEffectTimers[this.effectIndex] === 1)
+                                {
+                                    message = this.parseText(currentEffect[1],fightMatch);
+                                    fightMatch.actionsMessage2 += message;
+                                }
                         break;
                         case "createAnim":
                             targetChar = fightMatch.getCharFromNumber(this.currentTarget);
@@ -115,19 +134,62 @@ export class FightAction {
                             targetChar.flashType = "normal";
 
                         break; 
-                        case "physicalAttack":
+                        case "physicalAttack": 
                             if (this.actionEffectTimers[this.effectIndex] === 1)
                             {
-                                targetChar = fightMatch.getCharFromNumber(this.currentTarget);
+                                targetChar = fightMatch.getCharFromNumber(this.currentTarget); 
+                                this.totalMult = this.getTypeMult(this.actionAspect,targetChar); 
 
-                                let finalDamage = Math.round((this.power*this.user.muscle/10) - targetChar.armor);
+                                let finalDamage = Math.round(((this.power*this.user.muscle/10) - targetChar.armor)*this.totalMult);
+                                finalDamage *= this.totalMult;
                                 if (finalDamage < 0){finalDamage = 0};
                                 targetChar.damaged += finalDamage;
                                 targetChar.HP -= finalDamage;
                                 this.totalDamage += finalDamage;
+                                /// (user power + 5 - target armor) * move power * mult / 4 - target armor
+                                switch(this.totalMult)
+                                {
+                                    case 2:
+                                        fightMatch.actionsMessage2 = "Very Effective! "
+                                        break;
+                                    case 4: fightMatch.actionsMessage2 = "ULTRA EFFECTIVE! "
+                                        break;
+                                    case 0.5: fightMatch.actionsMessage2 = "Resisted... ";
+                                        break;
+                                    case 0.25: fightMatch.actionsMessage2 = "Ultra resisted...";
+                                        break;
+                                    case 0: fightMatch.actionsMessage2 = "No Effect!! "
+                                        break;
+                                }
                             } 
                         break;
                         case "magicAttack":
+
+                        if (this.actionEffectTimers[this.effectIndex] === 1)
+                            {
+                                targetChar = fightMatch.getCharFromNumber(this.currentTarget); 
+                                this.totalMult = this.getTypeMult(this.actionAspect,targetChar); 
+
+                                let finalDamage = Math.round(((this.power*this.user.magic) / Math.max(1,targetChar.resistance))*this.totalMult); 
+                                if (finalDamage < 0){finalDamage = 0};
+                                targetChar.damaged += finalDamage;
+                                targetChar.HP -= finalDamage;
+                                this.totalDamage += finalDamage;
+                                switch(this.totalMult)
+                                {
+                                    case 2:
+                                        fightMatch.actionsMessage2 = "Very Effective! "
+                                        break;
+                                    case 4: fightMatch.actionsMessage2 = "ULTRA EFFECTIVE! "
+                                        break;
+                                    case 0.5: fightMatch.actionsMessage2 = "Resisted... ";
+                                        break;
+                                    case 0.25: fightMatch.actionsMessage2 = "Ultra resisted...";
+                                        break;
+                                    case 0: fightMatch.actionsMessage2 = "No Effect!! "
+                                        break;
+                                }
+                            } 
                          
                         break;
                         case "wait":
@@ -277,6 +339,37 @@ export class FightAction {
                 if (this.isSwitchAction && this.switchTarget != null)  { tempString = tempString.replace("@switchtarget",this.switchTarget.name); }
             } 
         return tempString;
+
+    }
+
+    getTypeMult = (attackType:DATA.aspectsType,targetCreature:CreatureChar) => {
+        let mult = 1;
+        const attackMap = DATA.aspectsMap.get(attackType);
+        let prevType:DATA.aspectsType = "none";   
+        for (let i =0; i < targetCreature.aspectTypes.length; i++)
+        {
+            let defenseType = targetCreature.aspectTypes[i];
+            if (defenseType != prevType)
+            {
+                switch (attackMap.attackMap.get(defenseType))
+                {
+                    case "strong":
+                          mult *= 2;
+                    break;
+                    case "resisted":
+                          mult *= 0.5;
+                    break;
+                    case "nothing":
+                           mult *= 0;
+                    break;
+                    case "rot":
+                        if (targetCreature.HP <= targetCreature.maxHP/2) { mult *= 2};
+                    break;
+                }
+            }
+            
+        }
+        return mult;
     }
  
 }
