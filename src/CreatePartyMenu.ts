@@ -245,6 +245,7 @@ export class CreatePartyMenu extends GameElement {
 
                     if (this.engine.MouseInRect(charMenuX+134,charMenuY+111+18*i-8,10,16))
                     {
+                        document.body.style.cursor = 'pointer';
                         context.strokeStyle = "rgb(255,0,0)";
                         context.strokeText(plus,charMenuX+137,charMenuY+112+18*i); 
                         if (this.engine.leftClick > 0)
@@ -264,6 +265,7 @@ export class CreatePartyMenu extends GameElement {
                 {
                     if (this.engine.MouseInRect(charMenuX+144,charMenuY+111+18*i-8,8,16))
                     {
+                        document.body.style.cursor = 'pointer';
                         context.strokeStyle = "rgb(50,255,25)";
                         context.strokeText("+",charMenuX+146,charMenuY+112+18*i); 
                         if (this.engine.leftClick > 0)
@@ -290,6 +292,7 @@ export class CreatePartyMenu extends GameElement {
             for (let i=0; i < 4; i++)
             {
                 const button = this.actionButtons[i];
+                button.active = false;
                 button.actionLabel = this.currentChar.actions[i];
                 button.drawFunction(context);
             }

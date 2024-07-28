@@ -137,6 +137,7 @@ export class Aspect {
 
 export class Shape {
             name:string = "new shape";
+            shapeType:shapesType = "none";
             index:number = -1;
 
             baseHP:number = 0;
@@ -192,13 +193,26 @@ export class Shape {
             earthlyAspect:aspectsType = "none";
             ascendedAspect:aspectsType = "none";
             phantasmAspect:aspectsType = "none";
+
+            iconImg:HTMLImageElement = document.createElement("img");
+            iconLoaded:boolean = false;
+
+            constructor(shapeType:shapesType)
+            {
+                this.name = shapeType;
+                this.shapeType = shapeType;
+
+                this.iconImg.onload = () => {
+                    this.iconLoaded = true; 
+                    console.log("babon!",this.iconLoaded,this.name);
+                }
+            }
 }
 
 
 for (let i =0 ;i < aspectsList.length; i++)
 {
-    const currentAspectString = aspectsList[i];
-    console.log(i," ",currentAspectString);
+    const currentAspectString = aspectsList[i]; 
     const newAspect = new Aspect(currentAspectString);
     newAspect.aspectType = currentAspectString;
     newAspect.index = i;
@@ -207,69 +221,19 @@ for (let i =0 ;i < aspectsList.length; i++)
     newAspect.iconImg.src = iconImages.get(currentAspectString);
     aspectsMap.set(currentAspectString,newAspect);
     aspectsMap.set(i,newAspect);  
-}
-console.log("storms ",aspectsMap.get("storms").name);
+} 
 
 for (let i =0 ;i < shapesList.length; i++)
     {
         const currentShapeString = shapesList[i];
-        const newShape = {
-            name:currentShapeString,
-            index:i, 
-
-            baseHP: 0,
-            baseStr: 0,
-            baseMag: 0,
-            baseArm: 0,
-            baseRes: 0,
-            baseSpd: 0,
-            baseAgi: 0, 
-            earthlyHP: 0,
-            ascendedHP: 0,
-            phantasmHP: 0,
-            earthlyStr: 0,
-            ascendedStr: 0,
-            phantasmStr: 0,
-            earthlyMag: 0,
-            ascendedMag: 0,
-            phantasmMag: 0,
-            earthlyArm: 0,
-            ascendedArm: 0,
-            phantasmArm: 0,
-            earthlyRes: 0,
-            ascendedRes: 0,
-            phantasmRes: 0,
-            earthlySpd: 0,
-            ascendedSpd: 0,
-            phantasmSpd: 0,
-            earthlyAgi: 0,
-            ascendedAgi: 0,
-            phantasmAgi: 0,
-
-            favStat: "",
-            earthlyStat: "",
-            ascendedStat: "",
-            phantasmStat: "",
-    
-            aspectRelationships: [],
-            shapeRelationships: [],
-    
-            effectStrong: [],
-            effectWeak: [],
-            effectNeutral: [],
-            effectHarmony: [],
-            effectBurst: [],
-            effectCatalyst: [],
-            effectMutate: [],
-            effectUnique: [],
-    
-            earthlyType: "",
-            ascendedType: "",
-            phantasmType: "", 
-    
-        };  
+        const newShape = new Shape(currentShapeString);
+        newShape.shapeType = currentShapeString;
+        newShape.index = i;
+        newShape.earthlyAspect = "fire";
+        
+        newShape.iconImg.src = iconImages.get(currentShapeString);
         shapesMap.set(currentShapeString,newShape);
-        shapesMap.set(i,newShape); 
+        shapesMap.set(i,newShape);   
     }
      
 

@@ -56,7 +56,7 @@ class GameButton extends GameElement {
         context.fillStyle = this.mainColor;
         context.filter = "brightness(1.2) grayscale(0.6)";
         
-        if (this.engine.MouseInRect(this.x,this.y,this.width,this.height) && !this.disabled)
+        if (this.engine.MouseInRect(this.x,this.y,this.width,this.height) && !this.disabled &&this.active)
             {context.filter = "brightness(1.3)";
                 document.body.style.cursor = 'pointer';
 
