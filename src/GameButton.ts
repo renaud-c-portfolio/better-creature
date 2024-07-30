@@ -103,7 +103,7 @@ class GameButton extends GameElement {
                 
                 const labelAspect:DATA.aspectsType = this.actionLabel.actionAspect;
                 const capsAspect = labelAspect.toUpperCase(); 
-                const aspectObj = DATA.aspectsMap.get(labelAspect);   
+                const aspectObj = DATA.aspectsRecord[labelAspect];   
 
                 context.fillStyle= aspectObj.color;
                 context.beginPath();
@@ -130,8 +130,9 @@ class GameButton extends GameElement {
                 let actionImage = this.engine.physImage;
                 switch (actionType)
                 {
-                    case "magic": actionImage = this.engine.magImage; break;
-                    case "special": case "debuff": case "curse": case "powerup": actionImage = this.engine.specImage; break;
+                    case "magical": actionImage = this.engine.magImage; break;
+                    case "strongest": actionImage = this.engine.strongestImage; break;
+                    case "status": actionImage = this.engine.specImage; break;
                 }
                 context.drawImage(actionImage,this.x+102,this.y+this.height-16+this.clicked);
                 if (actionPower != "0"){context.fillText(actionPower,this.x+116,this.y+this.height-6+this.clicked);} 
@@ -173,14 +174,14 @@ class GameButton extends GameElement {
                  if (this.aspectLabel != null)
                  { 
                     const capsAspect = this.aspectLabel.toUpperCase(); 
-                    const aspectObj = DATA.aspectsMap.get(this.aspectLabel);   
+                    const aspectObj = DATA.aspectsRecord[this.aspectLabel];   
 
                     context.fillStyle= aspectObj.color;
-                    context.beginPath();
-                    context.roundRect(this.x,this.y+this.clicked,this.width,this.height,5); 
-                    context.closePath();
-                    context.fill();  
-                    context.fillStyle= "black"; 
+                    context.beginPath();  
+                    context.roundRect(this.x,this.y+this.clicked,this.width,this.height,5);  
+                    context.closePath();  
+                    context.fill();   
+                    context.fillStyle= "black";  
 
                     context.letterSpacing = "-1px"  
                     this.text = capsAspect;
@@ -195,12 +196,12 @@ class GameButton extends GameElement {
                 {
                      if (this.shapeLabel != null)
                      {  
-                        const shapeObj = DATA.shapesMap.get(this.shapeLabel);   
+                        const shapeObj = DATA.shapesRecord[this.shapeLabel];   
     
-                        context.fillStyle= "shapeObj.color;"
-                        context.beginPath();
-                        context.roundRect(this.x,this.y+this.clicked,this.width,this.height,5); 
-                        context.closePath();
+                        context.fillStyle= "shapeObj.color;";
+                        context.beginPath();  
+                        context.roundRect(this.x,this.y+this.clicked,this.width,this.height,5);  
+                        context.closePath();  
                         context.fill();  
                         context.fillStyle= "black"; 
                         context.filter = "none";

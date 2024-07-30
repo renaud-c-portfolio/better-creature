@@ -10,6 +10,10 @@ import { CreatePartyMenu } from "./CreatePartyMenu";
 import physUrl from "./gfx/physIcon.png";
 import magUrl from "./gfx/magIcon.png";
 import specUrl from "./gfx/specialIcon.png";
+import strongUrl from "./gfx/strongestIcon.png";
+
+const whitelisted:Array<string> = ["spicy","spice"];
+const slurs:Array<string> = ["faggot","nigger","nigga","cunt","bitch","1488","hitler","kyke"," spic","spic ","tranny","troon","lolcow","whore","slut"];
 
 class GameEngine {
     
@@ -30,6 +34,9 @@ class GameEngine {
     public rightClick: number = 0;
     public rightRelease: number = 0;
 
+    public lastKeyChar:string = "";
+    public keyPressed:number = 0;
+
     public wheel:number = 0;
 
     public currentMatch:FightMatch = new FightMatch(this,0,0,-100);
@@ -38,6 +45,7 @@ class GameEngine {
     public physImage = document.createElement("img");
     public magImage = document.createElement("img");
     public specImage = document.createElement("img");
+    public strongestImage = document.createElement("img");
 
     constructor(public canvas:HTMLCanvasElement){ 
 
@@ -53,6 +61,7 @@ class GameEngine {
         this.physImage.src = physUrl;
         this.magImage.src = magUrl;
         this.specImage.src = specUrl;
+        this.strongestImage.src = strongUrl;
     }
 
 
@@ -74,6 +83,10 @@ class GameEngine {
 
         document.addEventListener("wheel",(event:WheelEvent)=>{ 
             this.MouseWheel(event,this.canvas);
+        });  
+
+        document.addEventListener("keydown",(event:KeyboardEvent)=>{ 
+            this.KeyboardEvent(event,this.canvas);
         });  
 
         this.currentMatch.defaultParty(); //until we import parties from data
@@ -143,6 +156,22 @@ class GameEngine {
         
     }
 
+    KeyboardEvent = (event:KeyboardEvent,canvas:HTMLCanvasElement) => {
+
+        
+
+        if (this.lastKeyChar === event.key)
+            {
+                this.keyPressed += 1;
+            }
+            else
+            {
+                this.keyPressed = 1;
+                this.lastKeyChar = event.key;
+            } 
+            console.log("baboon "+event.key," ",this.keyPressed);
+    }
+
 
     MouseInRect = (_left:number,_top:number,_width:number,_height:number):boolean => {
 
@@ -171,6 +200,31 @@ class GameEngine {
                 }
             } 
         this.depthList.sort((a, b) => a - b);
+    }
+
+    censorship = (string:string) => {
+
+        let str = string;
+        console.log("str start",str)
+        let checkSlur = true;
+        while (checkSlur)
+        {
+            checkSlur = false;
+            for (let i=0; i < slurs.length;i++)
+                { 
+                    if (str.indexOf(slurs[i]) > -1)
+                    {
+                        str = str.replace(slurs[i],"");  
+                        checkSlur = true;
+                    }
+                }
+        }
+       
+
+        if (str === ""){str = "no";}
+        console.log("str",str,"strend")
+        return str;
+
     }
 
 
@@ -219,6 +273,8 @@ class GameEngine {
                 if (this.leftRelease > 0) {this.leftRelease = 0;}
                 if (this.rightClick > 0)  {this.rightClick +=1;}
                 if (this.rightRelease > 0) {this.rightRelease = 0;}
+                this.wheel = 0;
+                this.keyPressed = 0;
             }
 
           if (multiFrame > 1)
@@ -226,9 +282,10 @@ class GameEngine {
                 console.log("frames skipped:",multiFrame);
                 multiFrame = 0;
             }
-            this.wheel = 0;
           requestAnimationFrame(()=>{this.gameTick()});  
       }
+
+
 
 }
 

@@ -4,6 +4,7 @@ import GameElement from "./GameElement";
 import GameEngine from "./GameEngine";
 
 import * as DATA from "./Data";
+import { ScrollMenu } from "./ScrollMenu";
 
 export class GameParty {
     public partyName:string = "new party";
@@ -11,7 +12,7 @@ export class GameParty {
 
 }
 
-type PartyMenuStep = "start" | "new char" | "choose party" | "change aspect" | "change shape";
+type PartyMenuStep = "basic" | "scrollmenu" | "renameChar";
 
 export class CreatePartyMenu extends GameElement {
 
@@ -22,7 +23,8 @@ export class CreatePartyMenu extends GameElement {
     public selectCharIndex = -1;
     public currentChar:CreatureChar|null = null;
 
-    createPartyButton:GameButton = new GameButton(this.engine,36,32,160,20,"create party",0,"text");
+    createPartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"create party",0,"text");
+    renamePartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"rename",0,"text");
     addCharButton:GameButton = new GameButton(this.engine,36,32,100,30,"add creature",0,"text");
 
     actionButtons:Array<GameButton> = [
@@ -30,6 +32,7 @@ export class CreatePartyMenu extends GameElement {
         new GameButton(this.engine,470,246,140,40,"action2",0,"action"),
         new GameButton(this.engine,290,296,140,40,"action3",0,"action"),
         new GameButton(this.engine,470,296,140,40,"action4",0,"action")]; 
+
 
     aspectButtons:Array<GameButton> = [
         new GameButton(this.engine,350,44,96,26,"fire",0,"aspect"),
@@ -46,16 +49,28 @@ export class CreatePartyMenu extends GameElement {
         new GameButton(this.engine,460,74,96,26,"fire",0,"shape"),
     ];
 
-    createStep:PartyMenuStep = "start";
+    createStep:PartyMenuStep = "basic";
+
+
+    scrollMenu:ScrollMenu = new ScrollMenu(this.engine,100,10,150,240); 
+
+    oldName:string = "";
+
+    changeType = "aspect";
+    changeIndex = 0;
 
     constructor(public engine:GameEngine,public x:number = 0,public y:number = 0,public depth:number = 0){
-        super(engine,x,y,depth); 
-        
-        
+        super(engine,x,y,depth);  
     }
 
 
+    
+
+
     override drawFunction = (context:CanvasRenderingContext2D) => {
+
+        
+
         document.body.style.cursor = 'default';
         //select party
         context.filter = "none";
@@ -76,7 +91,7 @@ export class CreatePartyMenu extends GameElement {
         context.roundRect(14,partyMenuY+2,236,256,5);
         context.closePath();
         context.fill();
-
+ 
         this.createPartyButton.drawFunction(context);
         if (this.createPartyButton.clickConfirm)
         {
@@ -105,7 +120,7 @@ export class CreatePartyMenu extends GameElement {
             }
         }
 
-        if (this.currentParty != null)
+        if (this.currentParty != null) ///display party
         {
             context.fillStyle = "rgb(0,0,110)";
             context.fillText(this.currentParty.partyName,120,20);
@@ -113,8 +128,9 @@ export class CreatePartyMenu extends GameElement {
             for (let i =0; i < numChars;i++)
             {
                 const partyChar = this.currentParty.characterList[i];
-                if (this.engine.MouseInRect(22+i%2*112,partyMenuY+8+Math.floor(i/2)*60,106,50))
+                if (this.engine.MouseInRect(22+i%2*112,partyMenuY+8+Math.floor(i/2)*60,106,50) && this.createStep === "basic")
                 {
+                    document.body.style.cursor = 'pointer';
                     context.filter = "brightness(1.3)";
                     if (this.engine.leftClick > 0)
                     {
@@ -135,11 +151,18 @@ export class CreatePartyMenu extends GameElement {
                 context.closePath();
                 context.fill();
                 if (partyChar.loaded)
-                {context.drawImage(partyChar.imageElem,32+i%2*112,partyMenuY+12+Math.floor(i/2)*60);} 
+                {context.drawImage(partyChar.imageElem,26+i%2*112,partyMenuY+21+Math.floor(i/2)*60);} 
+                context.drawImage(DATA.aspectsRecord[partyChar.aspectTypes[0]].iconImg,66+i%2*112,partyMenuY+21+Math.floor(i/2)*60);
+                if (partyChar.aspectTypes.length > 1)
+                    {context.drawImage(DATA.aspectsRecord[partyChar.aspectTypes[1]].iconImg,81+i%2*112,partyMenuY+21+Math.floor(i/2)*60);}
+                context.drawImage(DATA.shapesRecord[partyChar.shapes[0]].iconImg,96+i%2*112,partyMenuY+21+Math.floor(i/2)*60);
+                context.drawImage(DATA.shapesRecord[partyChar.shapes[1]].iconImg,111+i%2*112,partyMenuY+21+Math.floor(i/2)*60);
+
                 context.font = "8px '04b03'";
                 context.letterSpacing = "0px";  
+                
                 context.fillStyle = "black";
-                context.fillText(partyChar.name,68+i%2*112,partyMenuY+16+Math.floor(i/2)*60);
+                context.fillText(partyChar.name,32+i%2*112,partyMenuY+17+Math.floor(i/2)*60);
                 context.filter = "none";
             }
             if (numChars < 8)
@@ -174,43 +197,84 @@ export class CreatePartyMenu extends GameElement {
         if (this.currentChar != null)
         {
             context.drawImage(this.currentChar.imageElem,charMenuX+6,charMenuY+6,64,64);
-            context.fillStyle = "black";
             context.font = "24px '04b03'";
             context.letterSpacing = "0px";  
             
-            context.fillText(this.currentChar.name,charMenuX+78,charMenuY+24);
+            context.fillStyle = "black";
+            if (this.engine.MouseInRect(charMenuX+78,charMenuY+2,100,22))
+                { 
+                    document.body.style.cursor = 'pointer';
+                    context.fillStyle = "orange";
+                    if (this.engine.leftClick > 0)
+                        {
+                            this.engine.leftClick = 0;
+                            this.createStep = "renameChar";
+                            this.deactivateButtons();
+                            this.oldName = this.currentChar.name;
+                        }
+                }
+            if (this.createStep === "renameChar")
+                {
+                    
+                    context.fillStyle = "blue";
+                    context.fillText(this.currentChar.name+"_",charMenuX+78,charMenuY+24);   
+                }
+                else
+                {
+                    context.fillText(this.currentChar.name,charMenuX+78,charMenuY+24); 
+                }
 
             this.aspectButtons[0].aspectLabel = this.currentChar.aspectTypes[0];
             this.aspectButtons[0].drawFunction(context);
+            
+            if (this.aspectButtons[0].clickConfirm)
+                {
+                    this.aspectButtons[0].clickConfirm = 0;
+                    this.aspectButtons[0].outlineColor = "rgb(255,100,0)"; 
+                    this.changeIndex = 0;
+                    this.scrollMenu.checkType = "aspect";
+                    this.createStep = "scrollmenu";
+                    this.deactivateButtons();
+                }
+
             if (this.currentChar.aspectTypes.length < 2)
             {this.aspectButtons[1].aspectLabel = this.currentChar.aspectTypes[0]; context.globalAlpha = 0.5;}
             else{this.aspectButtons[1].aspectLabel = this.currentChar.aspectTypes[1];}
             this.aspectButtons[1].drawFunction(context);
+            if (this.aspectButtons[1].clickConfirm)
+                {
+                    this.aspectButtons[1].clickConfirm = 0;
+                    this.aspectButtons[1].outlineColor = "rgb(255,100,0)";
+                    this.changeIndex = 1; 
+                    this.scrollMenu.checkType = "aspect";
+                    this.createStep = "scrollmenu";
+                    this.deactivateButtons();
+                }
             context.globalAlpha = 1;
 
             this.shapeButtons[0].shapeLabel = this.currentChar.shapes[0];
             this.shapeButtons[0].drawFunction(context);
             if (this.shapeButtons[0].clickConfirm)
             {
-                this.shapeButtons[0].clickConfirm = 0;
-                let shapeIndex = DATA.shapesList.indexOf(this.currentChar.shapes[0]);
-                shapeIndex+=1;
-                if (shapeIndex >= DATA.shapesList.length)
-                {shapeIndex = 0;}
-                this.currentChar.shapes[0] = DATA.shapesList[shapeIndex];
-                this.currentChar.resetStats(); 
+                this.shapeButtons[0].clickConfirm = 0; 
+                this.shapeButtons[0].outlineColor = "rgb(255,100,0)";
+                
+                this.changeIndex = 0; 
+                this.scrollMenu.checkType = "shape";
+                this.createStep = "scrollmenu";
+                this.deactivateButtons();
             }
             this.shapeButtons[1].shapeLabel = this.currentChar.shapes[1];
             this.shapeButtons[1].drawFunction(context);
             if (this.shapeButtons[1].clickConfirm)
             {
                 this.shapeButtons[1].clickConfirm = 0;
-                let shapeIndex = DATA.shapesList.indexOf(this.currentChar.shapes[1]);
-                shapeIndex+=1;
-                if (shapeIndex >= DATA.shapesList.length)
-                {shapeIndex = 0;}
-                this.currentChar.shapes[1] = DATA.shapesList[shapeIndex];
-                this.currentChar.resetStats(); 
+                this.shapeButtons[1].outlineColor = "rgb(255,100,0)";
+                
+                this.changeIndex = 1; 
+                this.scrollMenu.checkType = "shape";
+                this.createStep = "scrollmenu";
+                this.deactivateButtons();
             }
 
             ///stats
@@ -243,7 +307,7 @@ export class CreatePartyMenu extends GameElement {
                     plusRemain -= 1;
                     if (this.currentChar.statPlus[i] > 1){plus += "!"; plusRemain -= 2;}
 
-                    if (this.engine.MouseInRect(charMenuX+134,charMenuY+111+18*i-8,10,16))
+                    if (this.engine.MouseInRect(charMenuX+134,charMenuY+106+18*i-8,10,16) && this.createStep === "basic")
                     {
                         document.body.style.cursor = 'pointer';
                         context.strokeStyle = "rgb(255,0,0)";
@@ -263,7 +327,7 @@ export class CreatePartyMenu extends GameElement {
             {
                 if (plusRemain > this.currentChar.statPlus[i])
                 {
-                    if (this.engine.MouseInRect(charMenuX+144,charMenuY+111+18*i-8,8,16))
+                    if (this.engine.MouseInRect(charMenuX+144,charMenuY+111+18*i-8,8,16) && this.createStep === "basic")
                     {
                         document.body.style.cursor = 'pointer';
                         context.strokeStyle = "rgb(50,255,25)";
@@ -282,12 +346,12 @@ export class CreatePartyMenu extends GameElement {
 
             //item
             context.fillStyle = "black";
-            context.fillText("ITEM: Penis",charMenuX+192,charMenuY+112);
-            context.fillText("ITEM2: Penis",charMenuX+192,charMenuY+130);
-            context.fillText("SKILL1: Penis",charMenuX+192,charMenuY+148);
-            context.fillText("SKILL2: Penis",charMenuX+192,charMenuY+164);
-            context.fillText("SOUL: Penis",charMenuX+192,charMenuY+182);
-            context.fillText("HALFSOUL: Penis",charMenuX+192,charMenuY+200);
+            context.fillText("ITEM: ",charMenuX+192,charMenuY+112);
+            context.fillText("ITEM2: ",charMenuX+192,charMenuY+130);
+            context.fillText("SKILL1: ",charMenuX+192,charMenuY+148);
+            context.fillText("SKILL2: ",charMenuX+192,charMenuY+164);
+            context.fillText("SOUL: ",charMenuX+192,charMenuY+182);
+            context.fillText("HALFSOUL: ",charMenuX+192,charMenuY+200); 
 
             for (let i=0; i < 4; i++)
             {
@@ -298,6 +362,118 @@ export class CreatePartyMenu extends GameElement {
             }
         }
         
+        
+        if (this.createStep === "scrollmenu") ///scroll menu choosing aspect / shapes / other in future
+            {
+
+                context.fillStyle = "black";
+                this.shadowCenterButton(context,this.aspectButtons[this.changeIndex]); 
+                this.scrollMenu.drawFunction(context);
+                if (this.scrollMenu.indexClicked >= 0)
+                    {
+                        switch (this.scrollMenu.checkType)
+                        {
+                            case "aspect":
+                                if (this.currentChar != null)
+                                    {
+                                        this.currentChar.aspectTypes[this.changeIndex] = DATA.aspectsList[this.scrollMenu.indexClicked]; 
+                                        this.currentChar.resetStats();
+                                        this.engine.leftClick = 0;
+                                    } 
+                            break;
+                            case "shape":
+                                if (this.currentChar != null)
+                                    {
+                                        const otherIndex = Math.abs(this.changeIndex-1);
+                                        if (this.currentChar.shapes[otherIndex] === DATA.shapesList[this.scrollMenu.indexClicked]){
+                                            this.currentChar.shapes[otherIndex] = this.currentChar.shapes[this.changeIndex];
+                                        }
+                                        this.currentChar.shapes[this.changeIndex] = DATA.shapesList[this.scrollMenu.indexClicked]; 
+                                        this.currentChar.resetStats();
+                                        this.engine.leftClick = 0;
+
+                                    } 
+                            break;
+                        }
+                        this.createStep = "basic";
+                        this.reactivateButtons();
+                    }
+                else if (this.engine.rightClick > 0)
+                    {
+                        this.createStep = "basic";
+                        this.reactivateButtons();
+                        
+                    }
+            }
+            else if (this.createStep === "renameChar" && this.currentChar != null)
+                {
+                    if (this.engine.keyPressed === 1)
+                        {
+                            if (this.engine.lastKeyChar.length === 1 && this.currentChar.name.length < 16)
+                                {
+                                    this.currentChar.name += this.engine.lastKeyChar; 
+                                }
+                            else if (this.engine.lastKeyChar === "Backspace" && this.currentChar.name.length > 0)
+                                {
+                                    this.currentChar.name = this.currentChar.name.slice(0,this.currentChar.name.length-1);
+                                }
+                            else if (this.engine.lastKeyChar === "Enter" && this.currentChar.name.length > 0)
+                                {
+                                    this.currentChar.name = this.engine.censorship(this.currentChar.name);
+                                    this.createStep = "basic";
+                                    this.reactivateButtons();
+                                }
+                            
+                        }
+                    else if (this.engine.rightClick > 0)
+                        {
+                            this.currentChar.name = this.oldName;
+                            this.createStep = "basic";
+                            this.reactivateButtons();
+                        }
+                }
+                else if (this.engine.rightClick > 0 && this.currentParty != null)
+                    {
+                        this.jsonParty(this.currentParty)
+                    }
+
+    } /// end drawfunction
+
+    jsonParty = (party:GameParty) => { 
+
     }
 
+    deactivateButtons = () => {
+        this.createPartyButton.active = false;
+        this.addCharButton.active = false;
+        for (let i=0 ;i < this.aspectButtons.length; i++)
+            {
+                this.aspectButtons[i].active = false;
+                this.shapeButtons[i].active = false;
+            }  
+    }
+
+    reactivateButtons = () => {
+        this.createPartyButton.active = true;
+        this.addCharButton.active = true;
+        for (let i=0 ;i < this.aspectButtons.length; i++)
+            {
+                this.aspectButtons[i].active = true;
+                this.shapeButtons[i].active = true;
+                this.aspectButtons[i].outlineColor = "black";
+                this.shapeButtons[i].outlineColor = "black";
+            } 
+    } 
+
+
+    shadowCenterButton = (context:CanvasRenderingContext2D,button:GameButton) => {
+
+                context.globalAlpha = 0.6;
+                context.fillRect(0,0,640,button.y); 
+                context.fillRect(0,button.y+button.height,640,360);
+                context.fillRect(0,button.y,button.x,button.height); 
+                context.fillRect(button.x+button.width,44,999,button.height); 
+                context.globalAlpha = 1;
+
+    }
 }

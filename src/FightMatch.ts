@@ -8,7 +8,7 @@ import targetUrl from "./gfx/targettersheet.png";
 
 import { monsType, MTYPE } from "./game/types/monsType";
 import { shape, MSHAPE } from "./game/shapes/shapes"; 
-import { FightAction, ACTIONT, TARGETT, SwitchAction, FaintAction, MatchStartSendAction, FaintSwitchAction, FightEndAction } from "./FightAction";
+import { FightAction, ACTIONT, SwitchAction, FaintAction, MatchStartSendAction, FaintSwitchAction, FightEndAction } from "./FightAction";
 import GameEngine from "./GameEngine";
 import { FightAnimation } from "./FightAnimation"; 
 
@@ -55,7 +55,7 @@ export class FightMatch extends GameElement {
     targetImg:HTMLImageElement = document.createElement("img");   
     time:number = 0;
 
-    targetting:TARGETT|null = null; 
+    targetting:DATA.targetType|null = null; 
     currentAction:FightAction|null = null;
 
     choiceMessage:string = "";
@@ -534,7 +534,7 @@ export class FightMatch extends GameElement {
                                 for (let i=0; i < viewChar.aspectTypes.length;i++)
                                 {   
                                     const viewAspect = viewChar.aspectTypes[i];
-                                    const viewAspectImage =  DATA.aspectsMap.get(viewAspect).iconImg; 
+                                    const viewAspectImage =  DATA.aspectsRecord[viewAspect].iconImg; 
                                     context.drawImage(viewAspectImage,windowHelpX+4+i*16,windowHelpY+34);
                                     if (i > 0) { typesString += "/";}
                                     typesString += viewAspect;

@@ -2,8 +2,7 @@ import CreatureChar from "./CreatureChar";
 import { FightEvent } from "./FightEvent";
 import FightMatch from "./FightMatch";
 
-export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special" | "switch";
-export type TARGETT = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal" | "other";
+export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special" | "switch"; 
 
 const tempNames:Array<string> = ["slash","bash","gash","fire","ash","clash","crush","pincer","claw","zap","needle","bite","light","heavy","banana","destroy","laser","breath","sever"];
 
@@ -13,8 +12,8 @@ export class FightAction {
 
     
     name:string = "default action"+String(Math.floor(Math.random()*1000));
-    actionType:ACTIONT = "physical";
-    targetType:TARGETT = "single";
+    actionType:DATA.actionType = "physical";
+    targetType:DATA.targetType = "single";
 
     actionAspect:DATA.aspectsType = "fire";
     
@@ -57,8 +56,8 @@ export class FightAction {
         this.actionAspect = randomAspect;
         let randomType = Math.floor(Math.random()*3);
         this.power = Math.floor(Math.random()*45)+5;
-        if (randomType === 1) {this.actionType = "magic"; this.actionEffects[3] = ["magicAttack","target"]; }
-        else if (randomType === 2) {this.actionType = "special"; this.power = 0;} 
+        if (randomType === 1) {this.actionType = "magical"; this.actionEffects[3] = ["magicAttack","target"]; }
+        else if (randomType === 2) {this.actionType = "status"; this.power = 0;} 
 
     }
  
@@ -344,14 +343,14 @@ export class FightAction {
 
     getTypeMult = (attackType:DATA.aspectsType,targetCreature:CreatureChar) => {
         let mult = 1;
-        const attackMap = DATA.aspectsMap.get(attackType);
+        const attackAspect = DATA.aspectsRecord[attackType];
         let prevType:DATA.aspectsType = "none";   
         for (let i =0; i < targetCreature.aspectTypes.length; i++)
         {
             let defenseType = targetCreature.aspectTypes[i];
             if (defenseType != prevType)
             {
-                switch (attackMap.attackMap.get(defenseType))
+                switch (attackAspect.attackRecord[defenseType])
                 {
                     case "strong":
                           mult *= 2;

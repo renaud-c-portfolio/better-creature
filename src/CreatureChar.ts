@@ -11,6 +11,8 @@ import centiUrl from "./gfx/centip.png";
 import sharkyUrl from "./gfx/sharky.png";
 import melonUrl from "./gfx/watermelone.png";
 import treeUrl from "./gfx/heaven-tree.png";
+import foxUrl from "./gfx/fire-canine.png";
+
 import { FightAction } from "./FightAction"; 
 import FightMatch from "./FightMatch";
 
@@ -48,6 +50,8 @@ export class CreatureChar extends GameElement {
     public itemChoices:Array<string|null> = [null,null];
     public currentItem:string|null = null;
     
+
+    public realms:Array<DATA.realm> = ["earthly","earthly"];
     public skill1:string = "";
     public skill2:string = "";
     public soulType:DATA.soulType = "natural";
@@ -76,7 +80,7 @@ export class CreatureChar extends GameElement {
 
     loaded:boolean = false;
 
-    tempUrlArray:Array<any> = [crambUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl];
+    tempUrlArray:Array<any> = [crambUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl,foxUrl];
  
     imageElem:HTMLImageElement = document.createElement("img");  
     imageAlpha:number = 1;
@@ -110,7 +114,7 @@ export class CreatureChar extends GameElement {
         
 
         this.speed = Math.floor(Math.random()*7)+1;
-
+         
 
     }
 
@@ -243,9 +247,16 @@ export class CreatureChar extends GameElement {
     }
 
     resetStats = () => {
-        const shape1 = DATA.shapesMap.get(this.shapes[0]);
-        const shape2 = DATA.shapesMap.get(this.shapes[1]);
-        const aspect1 = DATA.aspectsMap.get(this.aspectTypes[0]);
+        const shape1 = DATA.shapesRecord[this.shapes[0]];
+        const shape2 = DATA.shapesRecord[this.shapes[1]];
+        const aspect1 = DATA.aspectsRecord[this.aspectTypes[0]];
+        if (this.aspectTypes.length > 1)
+            {
+                if (this.aspectTypes[0] === this.aspectTypes[1])
+                    {
+                        this.aspectTypes.splice(1,1);
+                    }
+            }
 
         this.maxHP = shape1.baseHP + shape2.baseHP;
         if (this.statPlus[0] === 1) {this.maxHP *= 1.10; this.maxHP+=10}
@@ -284,8 +295,176 @@ export class CreatureChar extends GameElement {
         if (this.statPlus[6] === 1) {this.resistance *= 1.10; this.resistance += 6;}
         else if (this.statPlus[6] === 2) {this.resistance *= 1.23; this.resistance +=14;}
         this.resistance = Math.round(this.resistance/12);
+
+        this.createActions();
+    } 
+
+    createSingleAction = (creature:CreatureChar, actionHalfObj:[DATA.Aspect|DATA.Shape,DATA.Aspect|DATA.Shape], realms:[DATA.realm,DATA.realm],soul:DATA.soulType) => {
+
+        let newAction = new FightAction(creature);
+
+        let basePower = 1;  
+        let powerMult = 1; 
+        let powerBonus = 0; 
+        
+        let isShape = [actionHalfObj[0].isShape,actionHalfObj[1].isShape]; 
+        let actionHalf:[DATA.aspectsType|DATA.shapesType,DATA.aspectsType|DATA.shapesType] = [actionHalfObj[0].typeStr,actionHalfObj[1].typeStr]; 
+
+        
+        let tieBreaker = 0.5;
+
+        let realmAspects:[DATA.aspectsType,DATA.aspectsType] = [ 
+            actionHalfObj[0].realmAspectRecord[realms[0]],
+            actionHalfObj[1].realmAspectRecord[realms[1]]
+        ];
+
+
+        if (isShape[0] && isShape[1] || !isShape[0] && !isShape[1])
+        {
+            if (actionHalfObj[0].index > actionHalfObj[1].index)
+            { tieBreaker = 0.5;   }
+            else {tieBreaker = -0.5;}
+        }
+        else if (isShape[0])
+        { tieBreaker = -0.5; }
+
+        let relationship:Array<DATA.relationships> = ["neutral","neutral"];  
+        let halfEffect:[Array<[DATA.actionEffects,Array<number>]>,Array<[DATA.actionEffects,Array<number>]>] = [[],[]];
+        let halfName:Array<[string,number]> = [["",0],["",0]];  
+        let targetAspect:Array<[DATA.aspectsType,number]> = [[actionHalfObj[0].realmAspectRecord["earthly"],0],[actionHalfObj[1].realmAspectRecord["earthly"],0]]; 
+        if (isShape[0]) {targetAspect[0][1] -=1;}   
+        if (isShape[1]) {targetAspect[1][1] -=1;}   
+
+        //setup base variables 
+        for (let i =0; i < 2; i++)
+            {
+                const opposite = Math.abs(i-1);
+                if (i === 0 && actionHalf[0] === actionHalf[1])
+                    {  relationship[0] = "unique"; }
+                else {relationship[i] = actionHalfObj[i].relationshipRecord[actionHalf[opposite]][0] }
+                halfName[i] = actionHalfObj[i].effectNameRecord[relationship[i]]; 
+                halfEffect[i] = actionHalfObj[i].effectRecord[relationship[i]];
+            } 
+ 
+        let actionAttackType:number = 0;
+        let actionStrongestType:number = 0;
+        let actionOtherType:number = 0;
+        
+
+        //go through effects
+        for (let i =0; i <2; i++)
+        {
+            const opposite = Math.abs(i-1);
+             for (let j = 0; j < halfEffect[i].length; j++)
+                {
+                    const effectType = halfEffect[i][j][0];
+                    const effectParams = halfEffect[i][j][1];
+                    switch (effectType)
+                    {
+                        case "basepower":
+                            basePower += effectParams[0];
+                        break;
+                        case "physical":
+                            actionAttackType += effectParams[0];
+                        break;
+                        case "magical":
+                            actionAttackType -= effectParams[0];
+                        break;
+                        case "strongest":
+                            actionStrongestType += effectParams[0];
+                        break;
+                        case "setAspect":
+                             targetAspect[i][0] = DATA.aspectsList[effectParams[0]];
+                             targetAspect[i][1] = effectParams[1];
+                        break;
+                        case "setRealmAspect":
+                            targetAspect[i][0] = realmAspects[i];
+                            targetAspect[i][1] = effectParams[0];
+                        break;
+                        case "setOthersRealmAspect":
+                            targetAspect[i][0] = realmAspects[opposite];
+                            targetAspect[i][1] = effectParams[0];
+                        break;
+                        case "targetType":
+                             
+                        break;
+                    }
+                }
+        } 
+
+        if (targetAspect[0][1] + tieBreaker > targetAspect[1][1])
+            { newAction.actionAspect = targetAspect[0][0]; }
+            else {newAction.actionAspect = targetAspect[1][0];} 
+
+        if (actionAttackType > 1)
+        {
+            newAction.actionType = "physical";
+        }
+        else if (actionAttackType < -1)
+        {
+            newAction.actionType = "magical";
+        }
+        else
+        {
+            newAction.actionType = "strongest";
+        }
+
+        basePower = basePower/2; 
+
+        if (halfName[0][1] + tieBreaker > halfName[1][1])
+            {
+                newAction.name = halfName[0][0] + " " + halfName[1][0];
+            }
+            else {newAction.name = halfName[1][0] + " " + halfName[0][0];  }
+        
+        newAction.power = Math.round(basePower*powerMult);
+        return newAction;
+
     }
 
+    createActions = () => { 
+
+        const aspect1 = this.aspectTypes[0];
+        let aspect2 = aspect1 ;
+        if (this.aspectTypes.length > 1) {aspect2 = this.aspectTypes[1];}
+        const shape1 = this.shapes[0];
+        const shape2 = this.shapes[1]; 
+        const aspect1Obj = DATA.aspectsRecord[aspect1];
+        const aspect2Obj = DATA.aspectsRecord[aspect2];
+        const shape1Obj = DATA.shapesRecord[shape1];
+        const shape2Obj = DATA.shapesRecord[shape2];
+        const realm1:DATA.realm = aspect1Obj.relationshipRecord[shape2][1];
+        const realm2:DATA.realm = aspect2Obj.relationshipRecord[shape1][1];
+
+        const soul:DATA.soulType = "natural";
+        const soulHalf:DATA.soulType = "natural";
+
+        //action 0 - double aspect  
+        this.actions[0] = this.createSingleAction(this,[aspect1Obj,aspect2Obj],[realm2,realm1],soul);
+        //action 2 - aspect1 shape1 
+        this.actions[2] = this.createSingleAction(this,[aspect1Obj,shape1Obj],[realm2,realm1],soul);
+        //action 1 - aspect2 shape2 -- making it like this bc of visual positioning 
+        this.actions[1] = this.createSingleAction(this,[aspect2Obj,shape2Obj],[realm1,realm2],soul);
+        //action 3 - double shape 
+        this.actions[3] = this.createSingleAction(this,[shape1Obj,shape2Obj],[realm1,realm2],soul);
+
+    }
+
+    createActionFrom2Shapes = (shape1:DATA.shapesType,shape2:DATA.shapesType) => {
+        let newAction = new FightAction(this); 
+
+        return newAction;
+    } 
+
+    createActionFrom2Aspects = (aspect1:DATA.aspectsType,aspect2:DATA.aspectsType) => {
+        let newAction = new FightAction(this);
+
+        return newAction;
+    }
+
+    createActionFromCombo = () => {
+        
+    }
 
 
 

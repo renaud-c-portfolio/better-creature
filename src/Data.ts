@@ -1,6 +1,6 @@
-export const aspectsMap = new Map();
-export const shapesMap = new Map();
-export const iconImages = new Map();
+import { shape } from "./game/shapes/shapes";
+
+
  
 const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspecticons/*.png',{ eager: true });
 
@@ -8,20 +8,39 @@ export type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "
 export type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
 export type aspectsType = "fire" | "steel" | "fae" | "bugs" | "beast" | "bone" | "blood" | "hell" | "forest" | "solar" | "stars" | "abyss" | "machine" | "void" | "sands" | "rot" | "curse" | "heavens" | "storms" | "none";
 export type shapesType = "beetle" | "crawler"| "stinger" | "nightmare" | "canine" | "feline" | "critter" | "antler" | "winged" | "fruit" | "mycon" | "worldtree" | "worm" | "crab" | "kraken" | "leviathan" | "hydra" | "dinosaur" | "behemoth" | "dragon" | "none";
+
 export type attackInteract = "normal" | "strong" | "resisted" | "nothing" | "rot" | "resistedrot";
 export type defenseInteract = "neutral" | "resist" | "weak" | "immune" | "rotted" | "resistrotted"; 
-export type relationships = "strong" | "weak" | "neutral" | "harmony" | "burst" | "catalyst" | "mutate" | "unique"; 
+export type relationships = "strong" | "weak" | "neutral" | "harmony" | "burst" | "catalyst" | "mutate" | "parasitic" | "devour" | "unique"; 
+
+export type realm = "earthly" | "ascended" | "fallen";
+
 export type statusEffect = "poison" | "rot" | "rust" | "none";
+export type halfStatus = "beast" | "";
+
+
 export type soulType = "natural" | "mirror" | "shadow" | "symbiosis" | "chaos" | "primordial" | "none";
+
+export type actionType = "physical" | "magical" | "strongest" | "status";
+
+export type targetType = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal" | "all" | "other";
+
+export type actionEffects = "physical" | "magical" | "strongest" | "statusonly" |
+ "basepower" | "powerMult" |
+ "setAspect" | "setRealmAspect" | "setOthersRealmAspect" |
+ "targetType"
+ 
+;
 
 export const aspectsList:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms"];
 export const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","winged","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
+export const realmsList:Array<realm> = ["earthly","ascended","fallen"];
+export const targetsList:Array<targetType> = ["single" , "double" , "aoe" , "self" , "ally" , "front" , "diagonal" , "all", "other"];
 
-export const statusEffects = []; 
 
-const blankAspectAttackList:Array<attackInteract> = [];
-const blankAspectDefenseList:Array<defenseInteract> = [];
-const blankRelationshipsList:Array<relationships> = [];
+export const iconImages = new Map();
+
+export const statusEffects = [];  
 
 const preloader = document.createElement("img");
 
@@ -32,87 +51,59 @@ Object.entries(iconUrls).map(([url, promise])=>{
     const imageSource = promise.default;
     console.log("images ",iconName,)
     iconImages.set(iconName,imageSource);
-});
-
-
-
-for (let i= 0; i < aspectsList.length; i++)
-    {
-        blankAspectAttackList.push("normal");
-        blankAspectDefenseList.push("neutral");
-        blankRelationshipsList.push("neutral");
-    }
-
-const addAttackInteract = (originAspect:Aspect,interact:attackInteract,targetAspect:aspectsType) => {
-    originAspect[interact].push(targetAspect);
-    const originType = originAspect.aspectType;
-    const originIndex = originAspect.index;
-    const target = aspectsMap.get(targetAspect);
-    const targetIndex = target.index;
-    originAspect.attackMap.set(targetAspect,interact);
-    originAspect.attackingList[targetIndex] = interact;
-
-    let defendInteract:defenseInteract = "neutral";
-    switch (interact)
-    {
-        case "strong": defendInteract = "weak"; break;
-        case "resisted": defendInteract = "resist"; break;
-        case "nothing": defendInteract = "immune"; break;
-        case "rot": defendInteract = "rotted"; break;
-    } 
-    target.defenseMap.set(originType,defendInteract);
-    target[defendInteract].push(originType);
-    target.defendingList[originIndex] = defendInteract;
-
-}
-
+}); 
 
 export class Aspect {
 
         name:string = "new aspect";
-        aspectType:aspectsType = "none";
-        index:number = -1;
+        typeStr:aspectsType = "fire";
+        index:number = -1; 
+        isShape = false;
 
-        attackMap:Map<string,attackInteract> = new Map();
-        defenseMap:Map<string,defenseInteract> = new Map();
-        attackingList:Array<attackInteract> = [...blankAspectAttackList];
-        defendingList:Array<defenseInteract> = [...blankAspectDefenseList];
-        normal:Array<aspectsType> = [];
-        strong:Array<aspectsType> = [];
-        resisted:Array<aspectsType> = [];
-        nothing:Array<aspectsType> = [];
-        rot:Array<aspectsType> = [];
-        neutral:Array<aspectsType> = [];
-        resist:Array<aspectsType> = [];
-        weak:Array<aspectsType> = [];
-        immune:Array<aspectsType> = [];
-        rotted:Array<aspectsType> = [];
-        resistrotted:Array<aspectsType> = [];
-        resistedrot:Array<aspectsType> = [];
+        attackRecord:Record<aspectsType,attackInteract>;
+        defenseRecord:Record<aspectsType,defenseInteract>;
+        relationshipRecord:Record<aspectsType|shapesType,[relationships,realm]>; 
+        effectNameRecord:Record<relationships,[string,number]> = {
+            "neutral": ["attack",0],
+            "strong": ["attack",0],
+            "weak":  ["attack",0],
+            "burst":  ["attack",0],
+            "harmony":  ["attack",0],
+            "catalyst":  ["attack",0],
+            "mutate":  ["attack",0],
+            "parasitic":  ["attack",0],
+            "devour":  ["attack",0],
+            "unique":  ["attack",0],
+        };
 
+        effectRecord:Record<relationships, Array<[actionEffects,Array<number>]>> = {
+            "neutral": [["basepower",[10]]],
+            "strong": [["basepower",[10]]],
+            "weak": [["basepower",[10]]],
+            "burst": [["basepower",[10]]],
+            "harmony": [["basepower",[10]]],
+            "catalyst": [["basepower",[10]]],
+            "mutate": [["basepower",[10]]],
+            "parasitic": [["basepower",[10]]],
+            "devour": [["basepower",[10]]],
+            "unique": [["basepower",[10]]],
+        };
 
+        realmAspectRecord:Record<realm,aspectsType> = {
+            "earthly": "fire",
+            "ascended": "fire",
+            "fallen": "fire",
+        };
+ 
+
+  
+        protectEffect:Array<string> = [];
+
+ 
         favStat:baseStats = "none";
         earthlyStat:baseStats = "none";
         ascendedStat:baseStats = "none";
-        phantasmStat:baseStats = "none";
-
-        aspectRelationships:Array<relationships> = [];
-        shapeRelationships:Array<relationships> = [];
-
-        effectStrong:Array<string> = [];
-        effectWeak:Array<string> = [];
-        effectNeutral:Array<string> = [];
-        effectHarmony:Array<string> = [];
-        effectBurst:Array<string> = [];
-        effectCatalyst:Array<string> = [];
-        effectMutate:Array<string> = [];
-        effectUnique:Array<string> = [];
-
-        protectEffect:Array<string> = [];
-
-        earthlyAspect:aspectsType = "none";
-        ascendedAspect:aspectsType = "none";
-        phantasmAspect:aspectsType = "none";
+        phantasmStat:baseStats = "none"; 
         
         iconImg:HTMLImageElement = document.createElement("img");
         iconLoaded:boolean = false;
@@ -125,20 +116,58 @@ export class Aspect {
         constructor(aspectType:aspectsType)
         {
             this.name = aspectType;
-            this.aspectType = aspectType;
+            this.typeStr = aspectType;
 
             this.iconImg.onload = () => {
                 this.iconLoaded = true; 
                 console.log("babon!",this.iconLoaded,this.name);
             }
+
+            this.relationshipRecord = Object.fromEntries([...aspectsList.map(k => [k,["neutral","earthly"]]),...shapesList.map(k => [k,["neutral","earthly"]])]);
+            this.attackRecord = Object.fromEntries([...aspectsList.map(k => [k,"normal"]) ]);
+            this.defenseRecord = Object.fromEntries([...aspectsList.map(k => [k,"neutral"]) ]);
         }
 
 }
 
 export class Shape {
             name:string = "new shape";
-            shapeType:shapesType = "none";
+            typeStr:shapesType = "beetle";
+            isShape = true;
             index:number = -1;
+
+            relationshipRecord:Record<aspectsType|shapesType,[relationships,realm]>; 
+            effectNameRecord:Record<relationships,[string,number]> = {
+                "neutral": ["attack",0],
+                "strong": ["attack",0],
+                "weak":  ["attack",0],
+                "burst":  ["attack",0],
+                "harmony":  ["attack",0],
+                "catalyst":  ["attack",0],
+                "mutate":  ["attack",0],
+                "parasitic":  ["attack",0],
+                "devour":  ["attack",0],
+                "unique":  ["attack",0],
+            };
+
+            effectRecord:Record<relationships, Array<[actionEffects,Array<number>]>> = {
+                "neutral": [["basepower",[10]]],
+                "strong": [["basepower",[10]]],
+                "weak": [["basepower",[10]]],
+                "burst": [["basepower",[10]]],
+                "harmony": [["basepower",[10]]],
+                "catalyst": [["basepower",[10]]],
+                "mutate": [["basepower",[10]]],
+                "parasitic": [["basepower",[10]]],
+                "devour": [["basepower",[10]]],
+                "unique": [["basepower",[10]]],
+            };
+
+            realmAspectRecord:Record<realm,aspectsType> = {
+                "earthly": "fire",
+                "ascended": "fire",
+                "fallen": "fire",
+            };
 
             baseHP:number = 0;
             baseStr:number = 0;
@@ -177,6 +206,10 @@ export class Shape {
             aspectRelationships:Array<relationships> = [];
             shapeRelationships:Array<relationships> = [];
 
+            effect:Array<relationships> = [
+                "strong"
+            ];
+
             effectStrong:Array<string> = [];
             effectWeak:Array<string> = [];
             effectNeutral:Array<string> = [];
@@ -200,51 +233,179 @@ export class Shape {
             constructor(shapeType:shapesType)
             {
                 this.name = shapeType;
-                this.shapeType = shapeType;
+                this.typeStr = shapeType;
 
                 this.iconImg.onload = () => {
                     this.iconLoaded = true; 
                     console.log("babon!",this.iconLoaded,this.name);
                 }
+                this.relationshipRecord = Object.fromEntries([...aspectsList.map(k => [k,["neutral","earthly"]]),...shapesList.map(k => [k,["neutral","earthly"]])]);
             }
 }
+
+const dummyAspect = new Aspect("none");
+const dummyShape = new Shape("none");
+
+export const aspectsRecord:Record<aspectsType,Aspect> = Object.fromEntries( [...aspectsList.map(k => [k,dummyAspect])]);
+export const shapesRecord:Record<shapesType,Shape> = Object.fromEntries( [...shapesList.map(k => [k,dummyShape])]);
+
+
+const addAspectRelationship = (aspect:aspectsType,targetAspect:aspectsType|null,targetShape:shapesType|null,aspectRelationship:relationships,targetRelationship:relationships,realm:realm) => {
+
+    const aspectObj = aspectsRecord[aspect];
+    if (targetAspect != null)
+    {
+        const targetAspectObj = aspectsRecord[targetAspect];
+        aspectObj.relationshipRecord[targetAspect] = [aspectRelationship,realm];
+        targetAspectObj.relationshipRecord[aspect] = [targetRelationship,realm];  
+    }
+    else if (targetShape != null)
+    {
+        const targetShapeObj = shapesRecord[targetShape];
+        
+        aspectObj.relationshipRecord[targetShape] = [aspectRelationship,realm];
+        targetShapeObj.relationshipRecord[aspect] = [targetRelationship,realm];   
+    } 
+}
+
+const addShapeRelationship = (shape:shapesType,targetAspect:aspectsType|null,targetShape:shapesType|null,aspectRelationship:relationships,targetRelationship:relationships,realm:realm) => {
+
+    const shapeObj = shapesRecord[shape];
+    if (targetAspect != null)
+    {
+        const targetAspectObj = aspectsRecord[targetAspect];
+        shapeObj.relationshipRecord[targetAspect] = [aspectRelationship,realm];
+        targetAspectObj.relationshipRecord[shape] = [targetRelationship,realm]; 
+    }
+    else if (targetShape != null)
+    {
+        const targetShapeObj = shapesRecord[targetShape];
+        shapeObj.relationshipRecord[targetShape] = [aspectRelationship,realm];
+        targetShapeObj.relationshipRecord[shape] = [targetRelationship,realm]; 
+    } 
+}
+
+const addEffects = (aspect:Aspect|null,shape:Shape|null,relationship:relationships,effectName:string,effectNamePriority:number,effectsArray:Array<[actionEffects,Array<number>]>) => {
+     if (aspect != null)
+        {
+             aspect.effectNameRecord[relationship] = [effectName,effectNamePriority];
+             aspect.effectRecord[relationship] = effectsArray;
+        }
+    else if (shape != null)
+        {
+            shape.effectNameRecord[relationship] = [effectName,effectNamePriority];
+            shape.effectRecord[relationship] = effectsArray;
+        }
+}
+
+const addAttackInteract = (originAspect:Aspect,interact:attackInteract,targetAspect:aspectsType) => { 
+    const originType = originAspect.typeStr; 
+    const target = aspectsRecord[targetAspect]; 
+    originAspect.attackRecord[targetAspect] = interact;  
+
+    let defendInteract:defenseInteract = "neutral";
+    switch (interact)
+    {
+        case "strong": defendInteract = "weak"; break;
+        case "resisted": defendInteract = "resist"; break;
+        case "nothing": defendInteract = "immune"; break;
+        case "rot": defendInteract = "rotted"; break;
+    } 
+    target.defenseRecord[originType] = defendInteract; 
+
+} 
 
 
 for (let i =0 ;i < aspectsList.length; i++)
 {
     const currentAspectString = aspectsList[i]; 
     const newAspect = new Aspect(currentAspectString);
-    newAspect.aspectType = currentAspectString;
-    newAspect.index = i;
-    newAspect.earthlyAspect = currentAspectString;
+    newAspect.typeStr = currentAspectString;
+    newAspect.index = i; 
     
     newAspect.iconImg.src = iconImages.get(currentAspectString);
-    aspectsMap.set(currentAspectString,newAspect);
-    aspectsMap.set(i,newAspect);  
+    newAspect.realmAspectRecord["earthly"] = currentAspectString;
+    aspectsRecord[currentAspectString]  = newAspect; 
 } 
 
 for (let i =0 ;i < shapesList.length; i++)
     {
         const currentShapeString = shapesList[i];
         const newShape = new Shape(currentShapeString);
-        newShape.shapeType = currentShapeString;
+        newShape.typeStr = currentShapeString;
         newShape.index = i;
         newShape.earthlyAspect = "fire";
         
         newShape.iconImg.src = iconImages.get(currentShapeString);
-        shapesMap.set(currentShapeString,newShape);
-        shapesMap.set(i,newShape);   
+        shapesRecord[currentShapeString] = newShape; 
     }
      
 
-    let currentAspect = aspectsMap.get("fire");
-    let currentShape = shapesMap.get("beetle");
+    let currentAspect = aspectsRecord["fire"];
+    let currentShape = shapesRecord["beetle"];
     ///declaring details
     /// aspect details =========================================================
     // aspect 0: FIRE ----------------------------------------------
-    currentAspect = aspectsMap.get("fire");  
+    currentAspect = aspectsRecord["fire"];  
     currentAspect.color = "rgb(255,108,15)";
-    currentAspect.iconImg.src = iconImages.get("fire");
+    currentAspect.iconImg.src = iconImages.get("fire"); 
+
+    addEffects(currentAspect,null,"neutral","flame",0,[ ["basepower",[10]],["magical",[1]] ]);
+    addEffects(currentAspect,null,"strong","burn",0,[]);
+    addEffects(currentAspect,null,"weak","ember",0,[]);
+    addEffects(currentAspect,null,"burst","blaze",0,[ ["basepower",[16]],  [ "targetType", [targetsList.indexOf("aoe")]] ]);
+    addEffects(currentAspect,null,"harmony","fire",0,[]);
+    addEffects(currentAspect,null,"devour","ash",0,[ ["physical",[1]], ["basepower",[8]] , ["setAspect", [aspectsRecord["sands"].index, 999]] ]);
+    addEffects(currentAspect,null,"parasitic","ignite",0,[]);
+    addEffects(currentAspect,null,"catalyst","tinder",0,[]);
+    addEffects(currentAspect,null,"mutate","melting",0,[]);
+    addEffects(currentAspect,null,"unique","inner",0, [ ["basepower",[10]],["strongest",[1]] ]);
+ 
+    addAspectRelationship("fire","fire",null,       "strong","strong","earthly");
+    addAspectRelationship("fire","steel",null,      "strong","weak","earthly");
+    addAspectRelationship("fire","fae",null,        "strong","weak","earthly");
+    addAspectRelationship("fire","bugs",null,       "strong","weak","earthly");
+    addAspectRelationship("fire","beast",null,      "strong","weak","earthly");
+    addAspectRelationship("fire","bone",null,       "strong","weak","earthly");
+    addAspectRelationship("fire","blood",null,      "strong","weak","earthly");
+    addAspectRelationship("fire","hell",null,       "strong","weak","earthly");
+    addAspectRelationship("fire","forest",null,     "strong","weak","earthly");
+    addAspectRelationship("fire","solar",null,      "strong","weak","earthly");
+    addAspectRelationship("fire","stars",null,      "strong","weak","earthly");
+    addAspectRelationship("fire","abyss",null,      "strong","weak","earthly");
+    addAspectRelationship("fire","machine",null,    "strong","weak","earthly");
+    addAspectRelationship("fire","void",null,       "strong","weak","earthly");
+    addAspectRelationship("fire","sands",null,      "strong","weak","earthly");
+    addAspectRelationship("fire","rot",null,        "strong","weak","earthly");
+    addAspectRelationship("fire","curse",null,      "strong","weak","earthly");
+    addAspectRelationship("fire","heavens",null,    "strong","weak","earthly");
+    addAspectRelationship("fire","storms",null,     "strong","weak","earthly");
+    
+    addAspectRelationship("fire",null,"beetle",     "strong","weak","earthly");
+    addAspectRelationship("fire",null,"crawler",    "strong","weak","earthly");
+    addAspectRelationship("fire",null,"stinger",    "strong","weak","earthly");
+    addAspectRelationship("fire",null,"nightmare",  "strong","weak","earthly");
+    addAspectRelationship("fire",null,"canine",     "strong","weak","earthly");
+    addAspectRelationship("fire",null,"feline",     "strong","weak","earthly");
+    addAspectRelationship("fire",null,"critter",    "strong","weak","earthly");
+    addAspectRelationship("fire",null,"antler",     "strong","weak","earthly");
+    addAspectRelationship("fire",null,"winged",     "strong","weak","earthly");
+    addAspectRelationship("fire",null,"fruit",      "strong","weak","earthly");
+    addAspectRelationship("fire",null,"mycon",      "strong","weak","earthly");
+    addAspectRelationship("fire",null,"worldtree",  "strong","weak","earthly");
+    addAspectRelationship("fire",null,"worm",       "strong","weak","earthly");
+    addAspectRelationship("fire",null,"crab",       "strong","weak","earthly");
+    addAspectRelationship("fire",null,"kraken",     "strong","weak","earthly");
+    addAspectRelationship("fire",null,"leviathan",  "strong","weak","earthly");
+    addAspectRelationship("fire",null,"hydra",      "strong","weak","earthly");
+    addAspectRelationship("fire",null,"dinosaur",   "strong","weak","earthly");
+    addAspectRelationship("fire",null,"behemoth",   "strong","weak","earthly");
+    addAspectRelationship("fire",null,"dragon",     "strong","weak","earthly");
+ 
+ 
+    currentAspect.realmAspectRecord["ascended"] = "solar";
+    currentAspect.realmAspectRecord["fallen"] = "hell";
+
     addAttackInteract(currentAspect,"strong","bugs");
     addAttackInteract(currentAspect,"strong","beast");
     addAttackInteract(currentAspect,"strong","bone"); 
@@ -256,102 +417,401 @@ for (let i =0 ;i < shapesList.length; i++)
     addAttackInteract(currentAspect,"resisted","sands");
     addAttackInteract(currentAspect,"nothing","solar");
 
+
+
+    
+
     // aspect 1: STEEL ----------------------------------------------
-    currentAspect = aspectsMap.get("steel"); 
+    currentAspect = aspectsRecord["steel"]
+
+    addEffects(currentAspect,null,"neutral","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"strong","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"weak","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"burst","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"harmony","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"devour","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"parasitic","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"catalyst","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"mutate","steel",0, [ ["basepower",[10]],["strongest",[1]] ]); 
+    addEffects(currentAspect,null,"unique","forged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+    currentAspect.realmAspectRecord["ascended"] = "machine";
+    currentAspect.realmAspectRecord["fallen"] = "steel";  
+
     currentAspect.color = "rgb(126,147,169)";
     addAttackInteract(currentAspect,"strong","fae"); 
 
      // aspect 2: FAE ----------------------------------------------
-     currentAspect = aspectsMap.get("fae"); 
+     currentAspect = aspectsRecord["fae"];
      currentAspect.color = "rgb(112,46,235)";
+
+        addEffects(currentAspect,null,"neutral","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","glitter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","trick",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","change",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","midsummer",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+        currentAspect.realmAspectRecord["ascended"] = "stars";
+        currentAspect.realmAspectRecord["fallen"] = "curse";  
+
      addAttackInteract(currentAspect,"strong","beast"); 
     
      // aspect 3: BUGS ----------------------------------------------
-     currentAspect = aspectsMap.get("bugs"); 
+     currentAspect = aspectsRecord["bugs"];
      currentAspect.color = "rgb(156,166,87)";
+     
+     addEffects(currentAspect,null,"neutral","antlion",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","antlion",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"weak","mosquito",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"burst","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"harmony","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"devour","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"parasitic","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"catalyst","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"mutate","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"unique","swarm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+        currentAspect.realmAspectRecord["ascended"] = "rot";
+        currentAspect.realmAspectRecord["fallen"] = "fae";   
+
      addAttackInteract(currentAspect,"strong","bone"); 
     
      // aspect 4: BEAST ----------------------------------------------
-     currentAspect = aspectsMap.get("beast"); 
+     currentAspect = aspectsRecord["beast"];
      currentAspect.color = "rgb(74,60,53)";
+ 
+     addEffects(currentAspect,null,"neutral","roar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"weak","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"burst","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"harmony","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"devour","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"parasitic","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"catalyst","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"mutate","beast",0, [ ["basepower",[10]],["strongest",[1]] ]); 
+     addEffects(currentAspect,null,"unique","predator",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     
+        currentAspect.realmAspectRecord["ascended"] = "blood";
+        currentAspect.realmAspectRecord["fallen"] = "blood";    
+
      addAttackInteract(currentAspect,"strong","bone"); 
 
      // aspect 5: BONE ----------------------------------------------
-     currentAspect = aspectsMap.get("bone");
+     currentAspect = aspectsRecord["bone"];
      currentAspect.color = "rgb(255,243,217)";
+
+     addEffects(currentAspect,null,"neutral","skeleton",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"weak","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"burst","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"harmony","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"devour","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"parasitic","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"catalyst","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"mutate","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"unique","fracture",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+         currentAspect.realmAspectRecord["ascended"] = "sands";
+        currentAspect.realmAspectRecord["fallen"] = "curse";    
+
      addAttackInteract(currentAspect,"strong","hell"); 
 
      // aspect 6: BLOOD ----------------------------------------------
-     currentAspect = aspectsMap.get("blood");
+     currentAspect = aspectsRecord["blood"];
      currentAspect.color = "rgb(216,16,16)";
+
+     addEffects(currentAspect,null,"neutral","vampire",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"weak","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"burst","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"harmony","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"devour","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"parasitic","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"catalyst","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"mutate","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"unique","clot",-2, [ ["basepower",[10]],["strongest",[1]] ]);
+
+         currentAspect.realmAspectRecord["ascended"] = "beast";
+        currentAspect.realmAspectRecord["fallen"] = "fire";    
+
      addAttackInteract(currentAspect,"strong","heavens"); 
 
       // aspect 7: HELL ----------------------------------------------
-      currentAspect = aspectsMap.get("hell");
+      currentAspect = aspectsRecord["hell"];
       currentAspect.color = "rgb(201,44,111)";
+
+      addEffects(currentAspect,null,"neutral","devil",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"strong","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"weak","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"burst","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"harmony","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"devour","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"parasitic","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"catalyst","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"mutate","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"unique","demonking",10, [ ["basepower",[10]],["strongest",[1]] ]);
+
+        currentAspect.realmAspectRecord["ascended"] = "fire";
+        currentAspect.realmAspectRecord["fallen"] = "machine";  
+
       addAttackInteract(currentAspect,"nothing","heavens"); 
 
       // aspect 8: FOREST ----------------------------------------------
-      currentAspect = aspectsMap.get("forest");
+      currentAspect = aspectsRecord["forest"];
       currentAspect.color = "rgb(116,164,68)";
+
+        addEffects(currentAspect,null,"neutral","woods",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","endless",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentAspect.realmAspectRecord["ascended"] = "solar";
+            currentAspect.realmAspectRecord["fallen"] = "rot";   
+
       addAttackInteract(currentAspect,"strong","bone"); 
 
       // aspect 9: SOLAR ----------------------------------------------
-      currentAspect = aspectsMap.get("solar");
+      currentAspect = aspectsRecord["solar"];
       currentAspect.color = "rgb(251,203,40)";
+
+        addEffects(currentAspect,null,"neutral","sunray",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","sol",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","supernova",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","brightest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        
+            currentAspect.realmAspectRecord["ascended"] = "heavens";
+            currentAspect.realmAspectRecord["fallen"] = "forest"; 
+
+
       addAttackInteract(currentAspect,"strong","curse"); 
 
       // aspect 10: STARS ----------------------------------------------
-      currentAspect = aspectsMap.get("stars");
+      currentAspect = aspectsRecord["stars"];
       currentAspect.color = "rgb(111,150,255)";
+
+        addEffects(currentAspect,null,"neutral","galaxy",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","starfall",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","twinkle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","meteor",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","constellation",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","stars",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","alien",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","stars",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","stars",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","from the",0, [ ["basepower",[10]],["strongest",[1]] ]);
+ 
+            currentAspect.realmAspectRecord["ascended"] = "solar";
+            currentAspect.realmAspectRecord["fallen"] = "void";  
+
       addAttackInteract(currentAspect,"strong","fae"); 
 
       // aspect 11: ABYSS ----------------------------------------------
-       currentAspect = aspectsMap.get("abyss");
+       currentAspect = aspectsRecord["abyss"];
        currentAspect.color = "rgb(65,121,139)";
+
+        addEffects(currentAspect,null,"neutral","deep",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","drown",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","pitch",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","deepest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+        currentAspect.realmAspectRecord["ascended"] = "void";
+        currentAspect.realmAspectRecord["fallen"] = "storms";   
+
        addAttackInteract(currentAspect,"strong","fire"); 
 
       // aspect 12: MACHINE ----------------------------------------------
-      currentAspect = aspectsMap.get("machine");
+      currentAspect = aspectsRecord["machine"];
       currentAspect.color = "rgb(147,123,138)";
+
+        addEffects(currentAspect,null,"neutral","gear",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","cannon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","scrap",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","homing",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","infinite",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+        currentAspect.realmAspectRecord["ascended"] = "bugs";
+        currentAspect.realmAspectRecord["fallen"] = "steel";  
+
       addAttackInteract(currentAspect,"strong","fae"); 
 
       // aspect 13: VOID ----------------------------------------------
-      currentAspect = aspectsMap.get("void");
-      currentAspect.color = "rgb(61,62,99)";
+      currentAspect = aspectsRecord["void"];
+      currentAspect.color = "rgb(78,78,172)";
+
+        addEffects(currentAspect,null,"neutral","vacuum",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","nothingness",1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","endless",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentAspect.realmAspectRecord["ascended"] = "stars";
+            currentAspect.realmAspectRecord["fallen"] = "fae";   
+
       addAttackInteract(currentAspect,"strong","solar");
 
       // aspect 14: SANDS ----------------------------------------------
-      currentAspect = aspectsMap.get("sands");
+      currentAspect = aspectsRecord["sands"];
       currentAspect.color = "rgb(186,158,120)";
+
+        addEffects(currentAspect,null,"neutral","dune",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","desert",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","beach",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","scirocco",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","quicksand",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","sands",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","sands",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","sands",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","sands",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","tallest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        
+            currentAspect.realmAspectRecord["ascended"] = "forest";
+            currentAspect.realmAspectRecord["fallen"] = "abyss";  
+
       addAttackInteract(currentAspect,"strong","fire");
 
       // aspect 15: ROT ----------------------------------------------
-      currentAspect = aspectsMap.get("rot");
+      currentAspect = aspectsRecord["rot"];
       currentAspect.color = "rgb(73,156,98)";
-      addAttackInteract(currentAspect,"nothing","steel");
-      addAttackInteract(currentAspect,"rot","bugs");
-      addAttackInteract(currentAspect,"rot","beast"); 
-      addAttackInteract(currentAspect,"strong","blood");
 
-        // aspect 16: CURSED ----------------------------------------------
-        currentAspect = aspectsMap.get("curse");
+        addEffects(currentAspect,null,"neutral","decay",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","spore",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","fungus",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","mold",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","spoil",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","waste",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","host",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","ferment",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","rust",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","life from",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        
+            currentAspect.realmAspectRecord["ascended"] = "forest";
+            currentAspect.realmAspectRecord["fallen"] = "blood";   
+
+        addAttackInteract(currentAspect,"nothing","steel");
+        addAttackInteract(currentAspect,"rot","bugs");
+        addAttackInteract(currentAspect,"rot","beast"); 
+        addAttackInteract(currentAspect,"strong","blood");
+        addAttackInteract(currentAspect,"resistedrot","heavens");
+
+        // aspect 16: CURSE ----------------------------------------------
+        currentAspect = aspectsRecord["curse"];
         currentAspect.color = "rgb(112,46,75)";
+
+            addEffects(currentAspect,null,"neutral","doom",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"strong","bane",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"weak","hollow",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"burst","evil-eye",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"harmony","hex",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"devour","strife",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"parasitic","jinx",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"catalyst","edge",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"mutate","wretch",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"unique","comforting",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentAspect.realmAspectRecord["ascended"] = "abyss";
+            currentAspect.realmAspectRecord["fallen"] = "bone";   
+
         addAttackInteract(currentAspect,"strong","steel");
 
         // aspect 17: HEAVENS ----------------------------------------------
-        currentAspect = aspectsMap.get("heavens");
+        currentAspect = aspectsRecord["heavens"];
         currentAspect.color = "rgb(254,251,146)";
+
+            addEffects(currentAspect,null,"neutral","banish",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"strong","purify",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"weak","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"burst","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"harmony","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"devour","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"parasitic","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"catalyst","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"mutate","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"unique","evil",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentAspect.realmAspectRecord["ascended"] = "solar";
+            currentAspect.realmAspectRecord["fallen"] = "machine";   
+
         addAttackInteract(currentAspect,"strong","hell");
 
         // aspect 18: STORMS ----------------------------------------------
-        currentAspect = aspectsMap.get("storms");
+        currentAspect = aspectsRecord["storms"];
         currentAspect.color = "rgb(63,86,88)";
+
+            addEffects(currentAspect,null,"neutral","thunder",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"strong","monsoon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"weak","squall",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"burst","typhoon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"harmony","storms",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"devour","flood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"parasitic","storms",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"catalyst","storms",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"mutate","storms",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"unique","echoing",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentAspect.realmAspectRecord["ascended"] = "storms";
+            currentAspect.realmAspectRecord["fallen"] = "abyss";    
+
         addAttackInteract(currentAspect,"strong","fire");
- 
+        
+        /////==============================================
+
+        /////==============================================
 ///================================== shape details ======================================================================
+                    ///shape begins yeah
+        /////==============================================
+        
+        /////==============================================
+
         // shape 0: BEETLE ----------------------------------------------
-        currentShape = shapesMap.get("beetle");
+        currentShape = shapesRecord["beetle"];
+
+            addEffects(null,currentShape,"neutral","mandible",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+ 
+            currentShape.realmAspectRecord["earthly"] = "bugs";
+            currentShape.realmAspectRecord["ascended"] = "fae";
+            currentShape.realmAspectRecord["fallen"] = "rot";    
+
         currentShape.baseHP = 42;
         currentShape.baseSpd = 50;
         currentShape.baseAgi = 30;  
@@ -362,7 +822,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 356
 
         // shape 1: CRAWLER ----------------------------------------------
-        currentShape = shapesMap.get("crawler");
+        currentShape = shapesRecord["crawler"];
+        
+            addEffects(null,currentShape,"neutral","venombite",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "bugs";
+            currentShape.realmAspectRecord["ascended"] = "sands";
+            currentShape.realmAspectRecord["fallen"] = "hell"; 
+
         currentShape.baseHP = 53;
         currentShape.baseSpd = 80;
         currentShape.baseAgi = 60;  
@@ -373,7 +848,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 372
 
         // shape 2: STINGER ----------------------------------------------
-        currentShape = shapesMap.get("stinger");
+        currentShape = shapesRecord["stinger"];
+
+            addEffects(null,currentShape,"neutral","sting",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","inject",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","buzz",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","repeat",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","stinger",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","stinger",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","egg",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","stinger",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","queen",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "bugs";
+            currentShape.realmAspectRecord["ascended"] = "machine";
+            currentShape.realmAspectRecord["fallen"] = "void"; 
+
         currentShape.baseHP = 5;
         currentShape.baseSpd = 90;
         currentShape.baseAgi = 80;
@@ -384,7 +874,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 335
 
         // shape 3: NIGHTMARE ----------------------------------------------
-        currentShape = shapesMap.get("nightmare");
+        currentShape = shapesRecord["nightmare"];
+
+            addEffects(null,currentShape,"neutral","horror",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "curse";
+            currentShape.realmAspectRecord["ascended"] = "void";
+            currentShape.realmAspectRecord["fallen"] = "blood"; 
+
         currentShape.baseHP = 20;
         currentShape.baseSpd = 30;
         currentShape.baseAgi = 90;
@@ -395,7 +900,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 375
 
         // shape 4: CANINE ----------------------------------------------
-        currentShape = shapesMap.get("canine");
+        currentShape = shapesRecord["canine"];
+
+            addEffects(null,currentShape,"neutral","bark",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","lockjaw",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "beast";
+            currentShape.realmAspectRecord["ascended"] = "stars";
+            currentShape.realmAspectRecord["fallen"] = "hell";  
+
         currentShape.baseHP = 66;
         currentShape.baseSpd = 65;
         currentShape.baseAgi = 25;
@@ -406,7 +926,23 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 316
 
         // shape 5: FELINE ----------------------------------------------
-        currentShape = shapesMap.get("feline");
+        currentShape = shapesRecord["feline"];
+
+            addEffects(null,currentShape,"neutral","pounce",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","meow",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "beast";
+            currentShape.realmAspectRecord["ascended"] = "solar";
+            currentShape.realmAspectRecord["fallen"] = "void";   
+
+
         currentShape.baseHP = 45;
         currentShape.baseSpd = 80;
         currentShape.baseAgi = 90;
@@ -417,7 +953,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 370
 
         // shape 6: CRITTER ----------------------------------------------
-        currentShape = shapesMap.get("critter");
+        currentShape = shapesRecord["critter"];
+
+            addEffects(null,currentShape,"neutral","swift",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "blood";
+            currentShape.realmAspectRecord["ascended"] = "forest";
+            currentShape.realmAspectRecord["fallen"] = "fae";    
+
         currentShape.baseHP = 20;
         currentShape.baseSpd = 75;
         currentShape.baseAgi = 100;
@@ -428,7 +979,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 319
 
         // shape 7: ANTLER ----------------------------------------------
-        currentShape = shapesMap.get("antler");
+        currentShape = shapesRecord["antler"];
+
+            addEffects(null,currentShape,"neutral","gore",0, [ ["basepower",[10]],["physical",[5]] ]);
+            addEffects(null,currentShape,"strong","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "bone";
+            currentShape.realmAspectRecord["ascended"] = "fae";
+            currentShape.realmAspectRecord["fallen"] = "storms";  
+
         currentShape.baseHP = 65;
         currentShape.baseSpd = 25;
         currentShape.baseAgi = 70;
@@ -439,7 +1005,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 368
 
         // shape 8: WINGED ----------------------------------------------
-        currentShape = shapesMap.get("winged");
+        currentShape = shapesRecord["winged"];
+
+            addEffects(null,currentShape,"neutral","flying",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "storms";
+            currentShape.realmAspectRecord["ascended"] = "heavens";
+            currentShape.realmAspectRecord["fallen"] = "hell";   
+
         currentShape.baseHP = 12;
         currentShape.baseSpd = 60;
         currentShape.baseAgi = 80;
@@ -450,7 +1031,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 256
 
         // shape 9: FRUIT ----------------------------------------------
-        currentShape = shapesMap.get("fruit");
+        currentShape = shapesRecord["fruit"];
+
+            addEffects(null,currentShape,"neutral","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "forest";
+            currentShape.realmAspectRecord["ascended"] = "heavens";
+            currentShape.realmAspectRecord["fallen"] = "rot";   
+
         currentShape.baseHP = 12;
         currentShape.baseSpd = 60;
         currentShape.baseAgi = 80;
@@ -461,7 +1057,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 256
 
         // shape 10: MYCON ----------------------------------------------
-        currentShape = shapesMap.get("mycon");
+        currentShape = shapesRecord["mycon"];
+ 
+        addEffects(null,currentShape,"neutral","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","cordycep",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "rot";
+            currentShape.realmAspectRecord["ascended"] = "stars";
+            currentShape.realmAspectRecord["fallen"] = "void";   
+
         currentShape.baseHP = 68;
         currentShape.baseSpd = 30;
         currentShape.baseAgi = 10;
@@ -472,7 +1083,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 329
 
         // shape 11: WORLDTREE ----------------------------------------------
-        currentShape = shapesMap.get("worldtree");
+        currentShape = shapesRecord["worldtree"];
+
+        addEffects(null,currentShape,"neutral","branch",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","trunk",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","bud",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "forest";
+            currentShape.realmAspectRecord["ascended"] = "solar";
+            currentShape.realmAspectRecord["fallen"] = "blood";  
+
         currentShape.baseHP = 120;
         currentShape.baseSpd = 0;
         currentShape.baseAgi = 0;
@@ -483,7 +1109,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 297
 
         // shape 12: WORM ----------------------------------------------
-        currentShape = shapesMap.get("worm");
+        currentShape = shapesRecord["worm"];
+
+        addEffects(null,currentShape,"neutral","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "rot";
+            currentShape.realmAspectRecord["ascended"] = "sands";
+            currentShape.realmAspectRecord["fallen"] = "abyss";  
+
         currentShape.baseHP = 80;
         currentShape.baseSpd = 30;
         currentShape.baseAgi = 20;
@@ -494,7 +1135,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 292
 
         // shape 13: CRAB ----------------------------------------------
-        currentShape = shapesMap.get("crab");
+        currentShape = shapesRecord["crab"];
+
+        addEffects(null,currentShape,"neutral","pinch",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "sands";
+            currentShape.realmAspectRecord["ascended"] = "steel";
+            currentShape.realmAspectRecord["fallen"] = "bugs"; 
+
         currentShape.baseHP = 34;
         currentShape.baseSpd = 40;
         currentShape.baseAgi = 40;
@@ -505,7 +1161,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 322
 
         // shape 14: KRAKEN ----------------------------------------------
-        currentShape = shapesMap.get("kraken");
+        currentShape = shapesRecord["kraken"];
+
+        addEffects(null,currentShape,"neutral","tentacle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "abyss";
+            currentShape.realmAspectRecord["ascended"] = "stars";
+            currentShape.realmAspectRecord["fallen"] = "curse"; 
+
         currentShape.baseHP = 81;
         currentShape.baseSpd = 40;
         currentShape.baseAgi = 41;
@@ -516,7 +1187,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 347
 
         // shape 15: LEVIATHAN ----------------------------------------------
-        currentShape = shapesMap.get("leviathan");
+        currentShape = shapesRecord["leviathan"];
+
+        addEffects(null,currentShape,"neutral","engulf",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "abyss";
+            currentShape.realmAspectRecord["ascended"] = "heavens";
+            currentShape.realmAspectRecord["fallen"] = "sands"; 
+
         currentShape.baseHP = 74;
         currentShape.baseSpd = 73;
         currentShape.baseAgi = 54;
@@ -526,7 +1212,22 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape.baseRes = 59;
 
         // shape 16: HYDRA ----------------------------------------------
-        currentShape = shapesMap.get("hydra");
+        currentShape = shapesRecord["hydra"];
+
+        addEffects(null,currentShape,"neutral","multibite",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+           currentShape.realmAspectRecord["earthly"] = "beast";
+            currentShape.realmAspectRecord["ascended"] = "forest";
+            currentShape.realmAspectRecord["fallen"] = "hell"; 
+
         currentShape.baseHP = 92;
         currentShape.baseSpd = 11;
         currentShape.baseAgi = 31;
@@ -536,7 +1237,22 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape.baseRes = 45;
 
         // shape 17: DINOSAUR ----------------------------------------------
-        currentShape = shapesMap.get("dinosaur");
+        currentShape = shapesRecord["dinosaur"];
+ 
+        addEffects(null,currentShape,"neutral","stomp",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","dinosaur",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","dinosaur",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","dinosaur",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","dinosaur",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","dinosaur",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","dinosaur",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","dinosaur",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","dinosaur",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "bone";
+            currentShape.realmAspectRecord["ascended"] = "solar";
+            currentShape.realmAspectRecord["fallen"] = "beast"; 
+
         currentShape.baseHP = 92;
         currentShape.baseSpd = 11;
         currentShape.baseAgi = 14;
@@ -547,7 +1263,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 385
 
         // shape 18: BEHEMOTH ----------------------------------------------
-        currentShape = shapesMap.get("behemoth");
+        currentShape = shapesRecord["behemoth"];
+
+        addEffects(null,currentShape,"neutral","stampede",0,        [ ["basepower",[22]],["physical",[4]],["setOthersRealmAspect",[3]]]);
+        addEffects(null,currentShape,"strong","behemoth",0,         [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","behemoth",0,           [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","behemoth",0,          [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","behemoth",0,        [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","behemoth",0,         [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","behemoth",0,      [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","behemoth",0,       [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","behemoth",0,         [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentShape.realmAspectRecord["earthly"] = "beast";
+            currentShape.realmAspectRecord["ascended"] = "fire";
+            currentShape.realmAspectRecord["fallen"] = "stars"; 
+
         currentShape.baseHP = 100;
         currentShape.baseSpd = 40;
         currentShape.baseAgi = 5;
@@ -558,7 +1289,22 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 385
 
         // shape 19: DRAGON ----------------------------------------------
-        currentShape = shapesMap.get("dragon");
+        currentShape = shapesRecord["dragon"];
+
+        addEffects(null,currentShape,"neutral","breath",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","noble",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","dragon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","outrage",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","dragon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","dragon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","dragon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","dragon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","dragon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+           currentShape.realmAspectRecord["earthly"] = "fire";
+            currentShape.realmAspectRecord["ascended"] = "storms";
+            currentShape.realmAspectRecord["fallen"] = "beast"; 
+
         currentShape.baseHP = 85;
         currentShape.baseSpd = 53;
         currentShape.baseAgi = 11;
