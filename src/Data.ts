@@ -60,8 +60,27 @@ export class Aspect {
         index:number = -1; 
         isShape = false;
 
+        desc = "";
+
         attackRecord:Record<aspectsType,attackInteract>;
         defenseRecord:Record<aspectsType,defenseInteract>;
+        reverseAttackRecord:Record<attackInteract,Array<aspectsType>> = {
+            "normal": [],
+            "strong": [],
+            "nothing": [],
+            "resisted": [],
+            "rot": [],
+            "resistedrot":[],
+        }
+        reverseDefenseRecord:Record<defenseInteract,Array<aspectsType>> = {
+            "neutral": [],
+            "resist": [],
+            "immune": [],
+            "weak": [],
+            "rotted": [],
+            "resistrotted":[],
+        }
+
         relationshipRecord:Record<aspectsType|shapesType,[relationships,realm]>; 
         effectNameRecord:Record<relationships,[string,number]> = {
             "neutral": ["attack",0],
@@ -125,7 +144,7 @@ export class Aspect {
 
             this.relationshipRecord = Object.fromEntries([...aspectsList.map(k => [k,["neutral","earthly"]]),...shapesList.map(k => [k,["neutral","earthly"]])]);
             this.attackRecord = Object.fromEntries([...aspectsList.map(k => [k,"normal"]) ]);
-            this.defenseRecord = Object.fromEntries([...aspectsList.map(k => [k,"neutral"]) ]);
+            this.defenseRecord = Object.fromEntries([...aspectsList.map(k => [k,"neutral"]) ]); 
         }
 
 }
@@ -135,6 +154,8 @@ export class Shape {
             typeStr:shapesType = "beetle";
             isShape = true;
             index:number = -1;
+
+            desc = "";
 
             relationshipRecord:Record<aspectsType|shapesType,[relationships,realm]>; 
             effectNameRecord:Record<relationships,[string,number]> = {
@@ -302,6 +323,7 @@ const addAttackInteract = (originAspect:Aspect,interact:attackInteract,targetAsp
     const originType = originAspect.typeStr; 
     const target = aspectsRecord[targetAspect]; 
     originAspect.attackRecord[targetAspect] = interact;  
+    originAspect.reverseAttackRecord[interact].push(targetAspect);
 
     let defendInteract:defenseInteract = "neutral";
     switch (interact)
@@ -311,7 +333,8 @@ const addAttackInteract = (originAspect:Aspect,interact:attackInteract,targetAsp
         case "nothing": defendInteract = "immune"; break;
         case "rot": defendInteract = "rotted"; break;
     } 
-    target.defenseRecord[originType] = defendInteract; 
+    target.defenseRecord[originType] = defendInteract;  
+    target.reverseDefenseRecord[defendInteract].push(originType);
 
 } 
 
@@ -349,6 +372,8 @@ for (let i =0 ;i < shapesList.length; i++)
     currentAspect = aspectsRecord["fire"];  
     currentAspect.color = "rgb(255,108,15)";
     currentAspect.iconImg.src = iconImages.get("fire"); 
+
+    currentAspect.desc = "the volatile power of fire, creating and consuming";
 
     addEffects(currentAspect,null,"neutral","flame",0,[ ["basepower",[10]],["magical",[1]] ]);
     addEffects(currentAspect,null,"strong","burn",0,[]);
@@ -422,7 +447,9 @@ for (let i =0 ;i < shapesList.length; i++)
     
 
     // aspect 1: STEEL ----------------------------------------------
-    currentAspect = aspectsRecord["steel"]
+    currentAspect = aspectsRecord["steel"];
+ 
+    currentAspect.desc = "the solid power of steel, hard yet malleable";
 
     addEffects(currentAspect,null,"neutral","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
     addEffects(currentAspect,null,"strong","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -444,6 +471,8 @@ for (let i =0 ;i < shapesList.length; i++)
      // aspect 2: FAE ----------------------------------------------
      currentAspect = aspectsRecord["fae"];
      currentAspect.color = "rgb(112,46,235)";
+ 
+    currentAspect.desc = "the alluring power of the fae, transforming yet illusory";
 
         addEffects(currentAspect,null,"neutral","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -464,6 +493,8 @@ for (let i =0 ;i < shapesList.length; i++)
      // aspect 3: BUGS ----------------------------------------------
      currentAspect = aspectsRecord["bugs"];
      currentAspect.color = "rgb(156,166,87)";
+
+     currentAspect.desc = "the  power of bugs, ";
      
      addEffects(currentAspect,null,"neutral","antlion",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"strong","antlion",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -483,7 +514,9 @@ for (let i =0 ;i < shapesList.length; i++)
     
      // aspect 4: BEAST ----------------------------------------------
      currentAspect = aspectsRecord["beast"];
-     currentAspect.color = "rgb(74,60,53)";
+     currentAspect.color = "rgb(74,60,53)"; 
+     
+     currentAspect.desc = "the untamed power of beasts, relentlessly hungry";
  
      addEffects(currentAspect,null,"neutral","roar",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"strong","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -504,6 +537,8 @@ for (let i =0 ;i < shapesList.length; i++)
      // aspect 5: BONE ----------------------------------------------
      currentAspect = aspectsRecord["bone"];
      currentAspect.color = "rgb(255,243,217)";
+ 
+     currentAspect.desc = "the  power of bone, grim yet supportive";
 
      addEffects(currentAspect,null,"neutral","skeleton",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"strong","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -524,6 +559,8 @@ for (let i =0 ;i < shapesList.length; i++)
      // aspect 6: BLOOD ----------------------------------------------
      currentAspect = aspectsRecord["blood"];
      currentAspect.color = "rgb(216,16,16)";
+ 
+     currentAspect.desc = "the  power of blood, ";
 
      addEffects(currentAspect,null,"neutral","vampire",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"strong","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -545,6 +582,8 @@ for (let i =0 ;i < shapesList.length; i++)
       currentAspect = aspectsRecord["hell"];
       currentAspect.color = "rgb(201,44,111)";
 
+      currentAspect.desc = "the forsaken power of hell, ";
+
       addEffects(currentAspect,null,"neutral","devil",0, [ ["basepower",[10]],["strongest",[1]] ]);
       addEffects(currentAspect,null,"strong","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
       addEffects(currentAspect,null,"weak","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -563,7 +602,9 @@ for (let i =0 ;i < shapesList.length; i++)
 
       // aspect 8: FOREST ----------------------------------------------
       currentAspect = aspectsRecord["forest"];
-      currentAspect.color = "rgb(116,164,68)";
+      currentAspect.color = "rgb(116,164,68)"; 
+      
+     currentAspect.desc = "the ever-growing power of forests, ";
 
         addEffects(currentAspect,null,"neutral","woods",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -584,6 +625,9 @@ for (let i =0 ;i < shapesList.length; i++)
       // aspect 9: SOLAR ----------------------------------------------
       currentAspect = aspectsRecord["solar"];
       currentAspect.color = "rgb(251,203,40)";
+
+      
+     currentAspect.desc = "the incandescent power of the sun, hopeful but cyclical";
 
         addEffects(currentAspect,null,"neutral","sunray",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","sol",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -606,6 +650,9 @@ for (let i =0 ;i < shapesList.length; i++)
       currentAspect = aspectsRecord["stars"];
       currentAspect.color = "rgb(111,150,255)";
 
+      
+     currentAspect.desc = "the faraway power of the stars, subtle but ever-watching";
+
         addEffects(currentAspect,null,"neutral","galaxy",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","starfall",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"weak","twinkle",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -625,6 +672,8 @@ for (let i =0 ;i < shapesList.length; i++)
       // aspect 11: ABYSS ----------------------------------------------
        currentAspect = aspectsRecord["abyss"];
        currentAspect.color = "rgb(65,121,139)";
+ 
+        currentAspect.desc = "the sunken power of the abyss, quiet and ";
 
         addEffects(currentAspect,null,"neutral","deep",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","drown",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -644,7 +693,9 @@ for (let i =0 ;i < shapesList.length; i++)
 
       // aspect 12: MACHINE ----------------------------------------------
       currentAspect = aspectsRecord["machine"];
-      currentAspect.color = "rgb(147,123,138)";
+      currentAspect.color = "rgb(147,123,138)"; 
+
+      currentAspect.desc = "the efficient power of machines, designed and specialized";
 
         addEffects(currentAspect,null,"neutral","gear",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","cannon",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -665,6 +716,8 @@ for (let i =0 ;i < shapesList.length; i++)
       // aspect 13: VOID ----------------------------------------------
       currentAspect = aspectsRecord["void"];
       currentAspect.color = "rgb(78,78,172)";
+ 
+      currentAspect.desc = "the empty power of the void, infinite yet nothing";
 
         addEffects(currentAspect,null,"neutral","vacuum",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -685,6 +738,8 @@ for (let i =0 ;i < shapesList.length; i++)
       // aspect 14: SANDS ----------------------------------------------
       currentAspect = aspectsRecord["sands"];
       currentAspect.color = "rgb(186,158,120)";
+      
+      currentAspect.desc = "the eroding power of the sands, diminutive yet overwhelming";
 
         addEffects(currentAspect,null,"neutral","dune",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","desert",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -705,6 +760,8 @@ for (let i =0 ;i < shapesList.length; i++)
       // aspect 15: ROT ----------------------------------------------
       currentAspect = aspectsRecord["rot"];
       currentAspect.color = "rgb(73,156,98)";
+ 
+      currentAspect.desc = "the inevitable power of rot, both beginning and end";
 
         addEffects(currentAspect,null,"neutral","decay",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","spore",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -729,6 +786,8 @@ for (let i =0 ;i < shapesList.length; i++)
         // aspect 16: CURSE ----------------------------------------------
         currentAspect = aspectsRecord["curse"];
         currentAspect.color = "rgb(112,46,75)";
+         
+         currentAspect.desc = "the burdensome power of curses, hateful and obsessive";
 
             addEffects(currentAspect,null,"neutral","doom",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"strong","bane",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -750,6 +809,8 @@ for (let i =0 ;i < shapesList.length; i++)
         currentAspect = aspectsRecord["heavens"];
         currentAspect.color = "rgb(254,251,146)";
 
+        currentAspect.desc = "the immaculate power of the heavens, praising yet intolerant";
+
             addEffects(currentAspect,null,"neutral","banish",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"strong","purify",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"weak","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -769,6 +830,8 @@ for (let i =0 ;i < shapesList.length; i++)
         // aspect 18: STORMS ----------------------------------------------
         currentAspect = aspectsRecord["storms"];
         currentAspect.color = "rgb(63,86,88)";
+        
+        currentAspect.desc = "the unstoppable power of storms, aimless and momentary";
 
             addEffects(currentAspect,null,"neutral","thunder",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"strong","monsoon",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -1291,7 +1354,7 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 19: DRAGON ----------------------------------------------
         currentShape = shapesRecord["dragon"];
 
-        addEffects(null,currentShape,"neutral","breath",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"neutral","breath",-2, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","noble",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"weak","dragon",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"burst","outrage",0, [ ["basepower",[10]],["strongest",[1]] ]);

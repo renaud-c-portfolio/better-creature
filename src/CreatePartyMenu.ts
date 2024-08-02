@@ -13,6 +13,7 @@ export class GameParty {
 }
 
 type PartyMenuStep = "basic" | "scrollmenu" | "renameChar";
+type PartyPopupTypes = "none" | "renameChar" | "renameCharExtended" | "changeAspect" | "changeEmptyAspect";
 
 export class CreatePartyMenu extends GameElement {
 
@@ -49,6 +50,9 @@ export class CreatePartyMenu extends GameElement {
         new GameButton(this.engine,460,74,96,26,"fire",0,"shape"),
     ];
 
+ 
+    tooltipPopup:PartyMenuTooltip;
+
     createStep:PartyMenuStep = "basic";
 
 
@@ -61,6 +65,9 @@ export class CreatePartyMenu extends GameElement {
 
     constructor(public engine:GameEngine,public x:number = 0,public y:number = 0,public depth:number = 0){
         super(engine,x,y,depth);  
+
+        this.tooltipPopup =  new PartyMenuTooltip(engine,this,0,0,200,30);
+
     }
 
 
@@ -136,6 +143,7 @@ export class CreatePartyMenu extends GameElement {
                     {
                         this.currentChar = partyChar;
                     }
+
                 }
                 if (partyChar === this.currentChar)
                 {
@@ -201,8 +209,10 @@ export class CreatePartyMenu extends GameElement {
             context.letterSpacing = "0px";  
             
             context.fillStyle = "black";
-            if (this.engine.MouseInRect(charMenuX+78,charMenuY+2,100,22))
+            if (this.engine.MouseInRect(charMenuX+78,charMenuY+2,100,22) && this.createStep === "basic")
                 { 
+                    
+                    this.tooltipPopup.tooltipFunction(charMenuX+68,charMenuY+32,"renameChar");
                     document.body.style.cursor = 'pointer';
                     context.fillStyle = "orange";
                     if (this.engine.leftClick > 0)
@@ -227,6 +237,11 @@ export class CreatePartyMenu extends GameElement {
             this.aspectButtons[0].aspectLabel = this.currentChar.aspectTypes[0];
             this.aspectButtons[0].drawFunction(context);
             
+            if (this.aspectButtons[0].highlighted)
+            {
+                this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.aspectButtons[0].y+40,"changeAspect");
+                this.changeIndex = 0;
+            }
             if (this.aspectButtons[0].clickConfirm)
                 {
                     this.aspectButtons[0].clickConfirm = 0;
@@ -407,6 +422,10 @@ export class CreatePartyMenu extends GameElement {
             }
             else if (this.createStep === "renameChar" && this.currentChar != null)
                 {
+                    
+                    this.tooltipPopup.tooltipFunction(charMenuX+68,charMenuY+32,"renameCharExtended");
+                    this.tooltipPopup.tooltipPrevious = "renameCharExtended";
+                    this.tooltipPopup.tooltipTime = 99;
                     if (this.engine.keyPressed === 1)
                         {
                             if (this.engine.lastKeyChar.length === 1 && this.currentChar.name.length < 16)
@@ -436,6 +455,10 @@ export class CreatePartyMenu extends GameElement {
                     {
                         this.jsonParty(this.currentParty)
                     }
+
+
+            ///draw tooltip
+            this.tooltipPopup.drawFunction(context);
 
     } /// end drawfunction
 
@@ -476,4 +499,103 @@ export class CreatePartyMenu extends GameElement {
                 context.globalAlpha = 1;
 
     }
+}
+
+class PartyMenuTooltip extends GameElement {
+ 
+    
+    public tooltipType:PartyPopupTypes = "none";
+    public tooltipPrevious:string = "";
+    public tooltipTime:number = 0;
+     
+    constructor(engine:GameEngine,public partyMenu:CreatePartyMenu,x:number,y:number,public width:number,public height:number){
+        super(engine,x,y,0);
+    }
+
+
+    override drawFunction = (context:CanvasRenderingContext2D) => { 
+        if (this.tooltipType === this.tooltipPrevious && this.tooltipType != "none")
+        {this.tooltipTime += 1;} 
+        else {this.tooltipTime = 0;}
+
+        if (this.tooltipTime > 0)
+        {
+            const appear = Math.max(0,(this.tooltipTime - 30));
+            //context.filter =  "opacity("+String(Math.min(appear/4,0.8))+")"; 
+            context.globalAlpha = Math.min(appear/4,0.85);
+            context.fillStyle = "black";
+            context.fillRect(this.x-2,this.y-2,this.width+4,this.height+4);
+            context.fillStyle = "white";
+            context.fillRect(this.x,this.y,this.width,this.height); 
+            context.globalAlpha = Math.min(appear/4,0.9);
+            
+            switch(this.tooltipType)
+            {
+                case "renameChar":
+                    this.width = 220;
+                    this.height = 20;
+                    context.font = "16px '04b03'";
+                    context.fillStyle = "blue";
+                    context.fillText("click to rename creature",this.x+2,this.y+14);
+                break;
+                case "renameCharExtended":
+                    this.width = 220;
+                    this.height = 60;
+                    context.font = "16px '04b03'";
+                    context.fillStyle = "black";
+                    context.fillText("renaming creature",this.x+2,this.y+14);
+                    context.fillStyle = "blue";
+                    context.fillText("press enter to accept",this.x+2,this.y+32);
+                    context.fillText("right click to cancel",this.x+2,this.y+50);
+                break;
+                case "changeAspect":
+                    this.width = 320;
+                    this.height = 120;
+                    context.font = "16px '04b03'";
+                    context.fillStyle = "blue";
+                    context.fillText("click to change aspect",this.x+2,this.y+14); 
+ 
+                    context.fillStyle = "black";
+                    const currentAspect = this.partyMenu.aspectButtons[0].aspectLabel;
+                    if (currentAspect!= null){const currentAspectObj = DATA.aspectsRecord[currentAspect];
+
+                        let textLine = 0;
+                        context.drawImage(currentAspectObj.iconImg,this.x+4,this.y+22);
+                        context.fillText(currentAspectObj.name.toUpperCase(),this.x+20,this.y+34); 
+                        context.fillText(currentAspectObj.desc,this.x+20,this.y+50,this.width);  
+                        let aspectsString = "";
+                        if (currentAspectObj.reverseAttackRecord.strong.length > 0)
+                        {
+                            currentAspectObj.reverseAttackRecord.strong.map((aspectName) => aspectsString += aspectName+",");
+                            context.fillText("STRONG AGAINST: "+aspectsString,this.x+4,this.y+68+textLine*18); 
+                            aspectsString = aspectsString.slice(0,aspectsString.length-1);
+                            textLine += 1;  
+                        }
+                        if (currentAspectObj.reverseAttackRecord.resisted.length > 0)
+                            {
+                                aspectsString = "";
+                                currentAspectObj.reverseAttackRecord.resisted.map((aspectName) => aspectsString += aspectName+",");
+                                context.fillText("RESISTED BY: "+aspectsString,this.x+4,this.y+68+textLine*18); 
+                                textLine += 1;  
+                            }
+
+                    }
+
+                break;
+            }
+            context.globalAlpha = 1;
+        }
+
+        this.tooltipPrevious = this.tooltipType;
+        this.tooltipType = "none";
+        
+    }
+
+    tooltipFunction = (x:number,y:number,tooltipType:PartyPopupTypes) => {
+        this.x = x;
+        this.y = y;
+        this.tooltipType = tooltipType; 
+
+    }
+
 }

@@ -28,6 +28,8 @@ class GameButton extends GameElement {
     public disabled:boolean = false;
     public active:boolean = true;
 
+    public highlighted:boolean = false;
+
     public imageElem:HTMLImageElement = document.createElement("img"); 
     public iconUrl:string = "./gfx/aspecticons/icon-unknown.png";
     public loaded = false;  
@@ -56,8 +58,10 @@ class GameButton extends GameElement {
         context.fillStyle = this.mainColor;
         context.filter = "brightness(1.2) grayscale(0.6)";
         
-        if (this.engine.MouseInRect(this.x,this.y,this.width,this.height) && !this.disabled &&this.active)
-            {context.filter = "brightness(1.3)";
+        if (this.engine.MouseInRect(this.x,this.y,this.width,this.height) && !this.disabled && this.active)
+            {
+                context.filter = "brightness(1.3)";
+                this.highlighted = true;
                 document.body.style.cursor = 'pointer';
 
                 if (this.engine.leftClick === 1)
@@ -72,6 +76,7 @@ class GameButton extends GameElement {
                     
             }
         else {
+            this.highlighted = false;
             if (this.clicked > 0 && this.engine.leftRelease)
             {
                 this.clicked = 0;
