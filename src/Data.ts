@@ -6,7 +6,7 @@ const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspectico
 
 export type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "speed" | "agility" | "none";
 export type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
-export type aspectsType = "fire" | "steel" | "fae" | "bugs" | "beast" | "bone" | "blood" | "hell" | "forest" | "solar" | "stars" | "abyss" | "machine" | "void" | "sands" | "rot" | "curse" | "heavens" | "storms" | "none";
+export type aspectsType = "fire" | "steel" | "fae" | "bugs" | "beast" | "bone" | "blood" | "hell" | "forest" | "solar" | "stars" | "abyss" | "machine" | "void" | "sands" | "rot" | "curse" | "heavens" | "storms" | "lifespring" | "none";
 export type shapesType = "beetle" | "crawler"| "stinger" | "nightmare" | "canine" | "feline" | "critter" | "antler" | "winged" | "fruit" | "mycon" | "worldtree" | "worm" | "crab" | "kraken" | "leviathan" | "hydra" | "dinosaur" | "behemoth" | "dragon" | "none";
 
 export type attackInteract = "normal" | "strong" | "resisted" | "nothing" | "rot" | "resistedrot";
@@ -32,7 +32,7 @@ export type actionEffects = "physical" | "magical" | "strongest" | "statusonly" 
  
 ;
 
-export const aspectsList:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms"];
+export const aspectsList:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms","lifespring"];
 export const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","winged","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
 export const realmsList:Array<realm> = ["earthly","ascended","fallen"];
 export const targetsList:Array<targetType> = ["single" , "double" , "aoe" , "self" , "ally" , "front" , "diagonal" , "all", "other"];
@@ -848,7 +848,30 @@ for (let i =0 ;i < shapesList.length; i++)
             currentAspect.realmAspectRecord["fallen"] = "abyss";    
 
         addAttackInteract(currentAspect,"strong","fire");
+
+                // aspect 19: LIFESPRING ----------------------------------------------
+                currentAspect = aspectsRecord["lifespring"];
+                currentAspect.color = "rgb(63,86,88)";
+                
+                currentAspect.desc = "the quenching power of the lifespring, trickling down with life";
         
+                    addEffects(currentAspect,null,"neutral","stream",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"strong","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"weak","dewdrop",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"burst","splash",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"harmony","fountain",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"devour","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"parasitic","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"catalyst","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"mutate","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+                    addEffects(currentAspect,null,"unique","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        
+                    currentAspect.realmAspectRecord["ascended"] = "blood";
+                    currentAspect.realmAspectRecord["fallen"] = "abyss";    
+        
+                addAttackInteract(currentAspect,"strong","fire");
+        
+
         /////==============================================
 
         /////==============================================
