@@ -194,7 +194,8 @@ class GameButton extends GameElement {
                     let _halfTxtWidth = Math.floor(_txtWidth/2);
                     if (aspectObj.iconLoaded)
                     {context.drawImage(aspectObj.iconImg,this.x+this.width/2-_halfTxtWidth,this.y+this.height/2+4+this.clicked-12,14,14);}
-                    context.fillText(this.text,16+this.x+this.width/2-_halfTxtWidth,this.y+this.height/2+4+this.clicked);  
+                    context.filter = "none";
+                    context.fillText(this.text,15+this.x+this.width/2-_halfTxtWidth,this.y+this.height/2+4+this.clicked);  
                  }
             }
             else if (this.type === "shape")

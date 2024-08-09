@@ -386,46 +386,46 @@ for (let i =0 ;i < shapesList.length; i++)
     addEffects(currentAspect,null,"mutate","melting",0,[]);
     addEffects(currentAspect,null,"unique","inner",0, [ ["basepower",[10]],["strongest",[1]] ]);
  
-    addAspectRelationship("fire","fire",null,       "strong","strong","earthly");
-    addAspectRelationship("fire","steel",null,      "strong","weak","earthly");
-    addAspectRelationship("fire","fae",null,        "strong","weak","earthly");
-    addAspectRelationship("fire","bugs",null,       "strong","weak","earthly");
-    addAspectRelationship("fire","beast",null,      "strong","weak","earthly");
-    addAspectRelationship("fire","bone",null,       "strong","weak","earthly");
-    addAspectRelationship("fire","blood",null,      "strong","weak","earthly");
-    addAspectRelationship("fire","hell",null,       "strong","weak","earthly");
-    addAspectRelationship("fire","forest",null,     "strong","weak","earthly");
-    addAspectRelationship("fire","solar",null,      "strong","weak","earthly");
-    addAspectRelationship("fire","stars",null,      "strong","weak","earthly");
-    addAspectRelationship("fire","abyss",null,      "strong","weak","earthly");
-    addAspectRelationship("fire","machine",null,    "strong","weak","earthly");
-    addAspectRelationship("fire","void",null,       "strong","weak","earthly");
-    addAspectRelationship("fire","sands",null,      "strong","weak","earthly");
-    addAspectRelationship("fire","rot",null,        "strong","weak","earthly");
-    addAspectRelationship("fire","curse",null,      "strong","weak","earthly");
-    addAspectRelationship("fire","heavens",null,    "strong","weak","earthly");
-    addAspectRelationship("fire","storms",null,     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"fire",null,       "strong","strong","earthly");
+    addAspectRelationship(currentAspect.typeStr,"steel",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"fae",null,        "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"bugs",null,       "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"beast",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"bone",null,       "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"blood",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"hell",null,       "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"forest",null,     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"solar",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"stars",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"abyss",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"machine",null,    "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"void",null,       "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"sands",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"rot",null,        "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"curse",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"heavens",null,    "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"storms",null,     "strong","weak","earthly");
     
-    addAspectRelationship("fire",null,"beetle",     "strong","weak","earthly");
-    addAspectRelationship("fire",null,"crawler",    "strong","weak","earthly");
-    addAspectRelationship("fire",null,"stinger",    "strong","weak","earthly");
-    addAspectRelationship("fire",null,"nightmare",  "strong","weak","earthly");
-    addAspectRelationship("fire",null,"canine",     "strong","weak","earthly");
-    addAspectRelationship("fire",null,"feline",     "strong","weak","earthly");
-    addAspectRelationship("fire",null,"critter",    "strong","weak","earthly");
-    addAspectRelationship("fire",null,"antler",     "strong","weak","earthly");
-    addAspectRelationship("fire",null,"winged",     "strong","weak","earthly");
-    addAspectRelationship("fire",null,"fruit",      "strong","weak","earthly");
-    addAspectRelationship("fire",null,"mycon",      "strong","weak","earthly");
-    addAspectRelationship("fire",null,"worldtree",  "strong","weak","earthly");
-    addAspectRelationship("fire",null,"worm",       "strong","weak","earthly");
-    addAspectRelationship("fire",null,"crab",       "strong","weak","earthly");
-    addAspectRelationship("fire",null,"kraken",     "strong","weak","earthly");
-    addAspectRelationship("fire",null,"leviathan",  "strong","weak","earthly");
-    addAspectRelationship("fire",null,"hydra",      "strong","weak","earthly");
-    addAspectRelationship("fire",null,"dinosaur",   "strong","weak","earthly");
-    addAspectRelationship("fire",null,"behemoth",   "strong","weak","earthly");
-    addAspectRelationship("fire",null,"dragon",     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"beetle",     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"crawler",    "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"stinger",    "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"nightmare",  "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"canine",     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
  
  
     currentAspect.realmAspectRecord["ascended"] = "solar";
@@ -849,30 +849,30 @@ for (let i =0 ;i < shapesList.length; i++)
 
         addAttackInteract(currentAspect,"strong","fire");
 
-                // aspect 19: LIFESPRING ----------------------------------------------
-                currentAspect = aspectsRecord["lifespring"];
-                currentAspect.color = "rgb(63,86,88)";
-                
-                currentAspect.desc = "the quenching power of the lifespring, trickling down with life";
+        // aspect 19: LIFESPRING ----------------------------------------------
+        currentAspect = aspectsRecord["lifespring"];
+        currentAspect.color = "rgb(100,255,208)";
         
-                    addEffects(currentAspect,null,"neutral","stream",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"strong","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"weak","dewdrop",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"burst","splash",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"harmony","fountain",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"devour","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"parasitic","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"catalyst","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"mutate","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-                    addEffects(currentAspect,null,"unique","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        
-                    currentAspect.realmAspectRecord["ascended"] = "blood";
-                    currentAspect.realmAspectRecord["fallen"] = "abyss";    
-        
-                addAttackInteract(currentAspect,"strong","fire");
-        
+        currentAspect.desc = "the quenching power of the lifespring, trickling down with life";
 
-        /////==============================================
+            addEffects(currentAspect,null,"neutral","stream",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"strong","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"weak","dewdrop",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"burst","splash",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"harmony","fountain",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"devour","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"parasitic","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"catalyst","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"mutate","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"unique","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            currentAspect.realmAspectRecord["ascended"] = "blood";
+            currentAspect.realmAspectRecord["fallen"] = "abyss";    
+
+        addAttackInteract(currentAspect,"strong","fire");
+
+
+    /////==============================================
 
         /////==============================================
 ///================================== shape details ======================================================================

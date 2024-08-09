@@ -23,8 +23,8 @@ export class ScrollMenu extends GameElement {
     scroll:number = 0;
 
     aspectNone:boolean = false;
-    aspectButton:GameButton = new GameButton(this.engine,350,44,96,26,"fire",0,"aspect");
-    shapeButton:GameButton = new GameButton(this.engine,350,44,96,26,"beetle",0,"shape");
+    aspectButton:GameButton = new GameButton(this.engine,350,44,102,26,"fire",0,"aspect");
+    shapeButton:GameButton = new GameButton(this.engine,350,44,102,26,"beetle",0,"shape");
 
 
     constructor(engine:GameEngine, public x:number = 0,public y:number = 0,public width:number = 50, public height:number = 30,public text:string = "",public depth:number = 0) {
@@ -53,7 +53,7 @@ export class ScrollMenu extends GameElement {
             case "aspect":
 
                 this.indexClicked = -1; 
-                this.width = 218;
+                this.width = 224;
                 this.height = 342; 
                 context.font = "16px '04b03'";
 
@@ -61,7 +61,7 @@ export class ScrollMenu extends GameElement {
                 for (let i=0; i < DATA.aspectsList.length; i++)
                     {
                         this.aspectButton.aspectLabel = DATA.aspectsList[i];
-                        this.aspectButton.x = this.x + 10 + (i % 2)*104;
+                        this.aspectButton.x = this.x + 6 + (i % 2)*110;
                         this.aspectButton.y = this.y + 21 + Math.floor(i / 2)*32;
                         this.aspectButton.drawFunction(context);
                         if (this.aspectButton.clicked)
@@ -74,7 +74,7 @@ export class ScrollMenu extends GameElement {
                 if (this.aspectNone)
                     {
                         this.aspectButton.aspectLabel = "none";
-                        this.aspectButton.x = this.x + 2 + (indexI % 2)*100;
+                        this.aspectButton.x = this.x + 2 + (indexI % 2)*110;
                         this.aspectButton.y = this.y + 2 + Math.floor(indexI / 2)*30;
                         this.aspectButton.drawFunction(context);
                     }
@@ -82,7 +82,7 @@ export class ScrollMenu extends GameElement {
             case "shape":
 
             this.indexClicked = -1; 
-            this.width = 218;
+            this.width = 224;
             this.height = 342; 
             context.font = "16px '04b03'";
 
@@ -90,7 +90,7 @@ export class ScrollMenu extends GameElement {
             for (let i=0; i < DATA.shapesList.length; i++)
                 {
                     this.shapeButton.shapeLabel = DATA.shapesList[i];
-                    this.shapeButton.x = this.x + 10 + (i % 2)*104;
+                    this.shapeButton.x = this.x + 6 + (i % 2)*110;
                     this.shapeButton.y = this.y + 21 + Math.floor(i / 2)*32;
                     this.shapeButton.drawFunction(context);
                     if (this.shapeButton.clicked)
@@ -103,7 +103,7 @@ export class ScrollMenu extends GameElement {
             if (this.aspectNone)
                 {
                     this.shapeButton.shapeLabel = "none";
-                    this.shapeButton.x = this.x + 2 + (indexI % 2)*100;
+                    this.shapeButton.x = this.x + 2 + (indexI % 2)*110;
                     this.shapeButton.y = this.y + 2 + Math.floor(indexI / 2)*30;
                     this.shapeButton.drawFunction(context);
                 }

@@ -36,8 +36,8 @@ export class CreatePartyMenu extends GameElement {
 
 
     aspectButtons:Array<GameButton> = [
-        new GameButton(this.engine,350,44,96,26,"fire",0,"aspect"),
-        new GameButton(this.engine,460,44,96,26,"fire",0,"aspect"),
+        new GameButton(this.engine,350,44,102,26,"fire",0,"aspect"),
+        new GameButton(this.engine,460,44,102,26,"fire",0,"aspect"),
     ];
 
     protectButtons:Array<GameButton> = [
@@ -46,8 +46,8 @@ export class CreatePartyMenu extends GameElement {
     ];
     
     shapeButtons:Array<GameButton> = [
-        new GameButton(this.engine,350,74,96,26,"fire",0,"shape"),
-        new GameButton(this.engine,460,74,96,26,"fire",0,"shape"),
+        new GameButton(this.engine,350,74,102,26,"fire",0,"shape"),
+        new GameButton(this.engine,460,74,102,26,"fire",0,"shape"),
     ];
 
  
