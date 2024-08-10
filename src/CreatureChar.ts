@@ -261,7 +261,7 @@ export class CreatureChar extends GameElement {
         this.maxHP = shape1.baseHP + shape2.baseHP;
         if (this.statPlus[0] === 1) {this.maxHP *= 1.10; this.maxHP+=10}
         else if (this.statPlus[0] === 2) {this.maxHP *= 1.23; this.maxHP+=20}
-        this.maxHP = Math.round(this.maxHP/4+16);
+        this.maxHP = Math.round(this.maxHP/4+26);
         this.HP = this.maxHP;
 
         this.dodgeMax = shape1.baseAgi + shape2.baseAgi;

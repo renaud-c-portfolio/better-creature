@@ -27,7 +27,7 @@ export type targetType = "single" | "double" | "aoe" | "self" | "ally" | "front"
 
 export type actionEffects = "physical" | "magical" | "strongest" | "statusonly" |
  "basepower" | "powerMult" |
- "setAspect" | "setRealmAspect" | "setOthersRealmAspect" |
+ "setAspect" | "setOthersAspect" | "setRealmAspect" | "setOthersRealmAspect" |
  "targetType"
  
 ;
@@ -452,25 +452,25 @@ for (let i =0 ;i < shapesList.length; i++)
  
     currentAspect.desc = "the solid power of steel, hard yet malleable";
 
-    addEffects(currentAspect,null,"neutral","steel",2, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"neutral","steel",3, [ ["basepower",[10]],["strongest",[1]] ]);
     addEffects(currentAspect,null,"strong","blade",-3, [ ["basepower",[12]],["physical",[9]] ]);
     addEffects(currentAspect,null,"weak","cold iron",9, [ ["basepower",[10]],["strongest",[1]] ]);
     addEffects(currentAspect,null,"burst","hammer",-3, [ ["basepower",[10]],["strongest",[1]] ]);
     addEffects(currentAspect,null,"harmony","armor",-1, [ ["basepower",[10]],["strongest",[1]] ]);
     addEffects(currentAspect,null,"devour","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
-    addEffects(currentAspect,null,"parasitic","weld",0, [ ["basepower",[10]],["strongest",[1]] ]);
+    addEffects(currentAspect,null,"parasitic","welding",0, [ ["basepower",[10]],["strongest",[1]] ]);
     addEffects(currentAspect,null,"catalyst","steel",0, [ ["basepower",[10]],["strongest",[1]] ]);
     addEffects(currentAspect,null,"mutate","chain",0, [ ["basepower",[10]],["strongest",[1]] ]); 
     addEffects(currentAspect,null,"unique","forged",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
     
     addAspectRelationship(currentAspect.typeStr,"steel",null,      "burst","burst","earthly");
-    addAspectRelationship(currentAspect.typeStr,"fae",null,        "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"fae",null,        "mutate","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"bugs",null,       "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"beast",null,      "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"bone",null,       "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"blood",null,      "strong","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,"hell",null,       "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"hell",null,       "weak","strong","earthly");
     addAspectRelationship(currentAspect.typeStr,"forest",null,     "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"solar",null,      "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"stars",null,      "strong","weak","earthly");
@@ -517,19 +517,19 @@ for (let i =0 ;i < shapesList.length; i++)
  
     currentAspect.desc = "the alluring power of the fae, transforming yet illusory";
 
-        addEffects(currentAspect,null,"neutral","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"strong","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"neutral","illusion",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","magick",5, [ ["basepower",[10]],["magical",[10]] ]);
         addEffects(currentAspect,null,"weak","glitter",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"burst","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"harmony","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"devour","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"parasitic","fae",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","bewitch",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","royal",50, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","vaporize",-5, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","pique",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"catalyst","trick",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"mutate","change",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"unique","midsummer",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","morph",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","midsummer",99, [ ["basepower",[10]],["strongest",[1]] ]);
         
-        addAspectRelationship(currentAspect.typeStr,"fae",null,        "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,"bugs",null,       "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,"fae",null,        "parasitic","parasitic","earthly");
+        addAspectRelationship(currentAspect.typeStr,"bugs",null,       "harmony","strong","earthly");
         addAspectRelationship(currentAspect.typeStr,"beast",null,      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,"bone",null,       "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,"blood",null,      "strong","weak","earthly");
@@ -579,18 +579,18 @@ for (let i =0 ;i < shapesList.length; i++)
 
      currentAspect.desc = "the  power of bugs, ";
      
-     addEffects(currentAspect,null,"neutral","antlion",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"strong","antlion",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"neutral","locust",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","mantis",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"weak","mosquito",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"burst","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"harmony","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"devour","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"parasitic","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"catalyst","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"mutate","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"unique","swarm",0, [ ["basepower",[10]],["strongest",[1]] ]); 
+     addEffects(currentAspect,null,"burst","centipede",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"harmony","wasp",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"devour","antlion",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"parasitic","tick",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"catalyst","cicada",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"mutate","grub",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"unique","swarm",-20, [ ["basepower",[20]],["strongest",[1]] ]); 
      
-     addAspectRelationship(currentAspect.typeStr,"bugs",null,       "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,"bugs",null,       "neutral","neutral","earthly");
      addAspectRelationship(currentAspect.typeStr,"beast",null,      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"bone",null,       "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"blood",null,      "strong","weak","earthly");
@@ -608,9 +608,9 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,"storms",null,     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"lifespring",null, "strong","weak","earthly");
      
-     addAspectRelationship(currentAspect.typeStr,null,"beetle",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"beetle",     "mutate","strong","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"crawler",    "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"stinger",    "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"stinger",    "harmony","mutate","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"nightmare",  "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"canine",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
@@ -633,6 +633,68 @@ for (let i =0 ;i < shapesList.length; i++)
         currentAspect.realmAspectRecord["fallen"] = "fae";   
 
      addAttackInteract(currentAspect,"strong","bone"); 
+
+     ///--------------------------bonus aspect - bugs imago
+
+         /*currentAspect = aspectsRecord["bugs"];
+          currentAspect.color = "rgb(156,166,87)";
+     
+          currentAspect.desc = "the  power of bugs, ";
+          
+          addEffects(currentAspect,null,"neutral","locust",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"strong","mantis",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"weak","mosquito",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"burst","centipede",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"harmony","wasp",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"devour","antlion",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"parasitic","tick",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"catalyst","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"mutate","bugs",0, [ ["basepower",[10]],["strongest",[1]] ]);
+          addEffects(currentAspect,null,"unique","swarm",-20, [ ["basepower",[20]],["strongest",[1]] ]); 
+          
+          addAspectRelationship(currentAspect.typeStr,"bugs",null,       "neutral","neutral","earthly");
+          addAspectRelationship(currentAspect.typeStr,"beast",null,      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"bone",null,       "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"blood",null,      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"hell",null,       "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"forest",null,     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"solar",null,      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"stars",null,      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"abyss",null,      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"machine",null,    "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"void",null,       "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"sands",null,      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"rot",null,        "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"curse",null,      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"heavens",null,    "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"storms",null,     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,"lifespring",null, "strong","weak","earthly");
+          
+          addAspectRelationship(currentAspect.typeStr,null,"beetle",     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"crawler",    "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"stinger",    "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"nightmare",  "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"canine",     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+     
+             currentAspect.realmAspectRecord["ascended"] = "rot";
+             currentAspect.realmAspectRecord["fallen"] = "fae";   
+     
+          addAttackInteract(currentAspect,"strong","bone"); */     
     
      // aspect 4: BEAST ----------------------------------------------
      currentAspect = aspectsRecord["beast"];
@@ -640,16 +702,16 @@ for (let i =0 ;i < shapesList.length; i++)
      
      currentAspect.desc = "the untamed power of beasts, relentlessly hungry";
  
-     addEffects(currentAspect,null,"neutral","roar",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"strong","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"weak","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"burst","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"harmony","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"devour","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"parasitic","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"catalyst","beast",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"mutate","beast",0, [ ["basepower",[10]],["strongest",[1]] ]); 
-     addEffects(currentAspect,null,"unique","predator",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"neutral","fang",4, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","claw",3, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"weak","snarl",2, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"burst","roar",3, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"harmony","hunt",-5, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"devour","feast",2, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"parasitic","instinct",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"catalyst","relentless",-4, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"mutate","frenzy",2, [ ["basepower",[10]],["strongest",[1]] ]); 
+     addEffects(currentAspect,null,"unique","predator",99, [ ["basepower",[10]],["strongest",[1]] ]);
 
      
      addAspectRelationship(currentAspect.typeStr,"beast",null,      "strong","weak","earthly");
@@ -683,7 +745,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","harmony","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
@@ -701,19 +763,19 @@ for (let i =0 ;i < shapesList.length; i++)
  
      currentAspect.desc = "the  power of bone, grim yet supportive";
 
-     addEffects(currentAspect,null,"neutral","skeleton",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"strong","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"neutral","skeleton",4, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","tooth",-2, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"weak","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"burst","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"harmony","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"devour","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"parasitic","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"catalyst","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"mutate","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"unique","fracture",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"mutate","skull",-3, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"unique","enlarge",99, [ ["basepower",[10]],["strongest",[1]] ]);
 
      
-     addAspectRelationship(currentAspect.typeStr,"bone",null,       "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,"bone",null,       "neutral","neutral","earthly");
      addAspectRelationship(currentAspect.typeStr,"blood",null,      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"hell",null,       "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"forest",null,     "strong","weak","earthly");
@@ -761,13 +823,13 @@ for (let i =0 ;i < shapesList.length; i++)
  
      currentAspect.desc = "the  power of blood, ";
 
-     addEffects(currentAspect,null,"neutral","vampire",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"neutral","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"strong","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"weak","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"weak","wound",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"burst","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"harmony","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"harmony","transfusion",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"devour","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"parasitic","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"parasitic","vampire",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"catalyst","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"mutate","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"unique","clot",-2, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -820,19 +882,19 @@ for (let i =0 ;i < shapesList.length; i++)
 
       currentAspect.desc = "the forsaken power of hell, ";
 
-      addEffects(currentAspect,null,"neutral","devil",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"strong","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"weak","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"burst","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"harmony","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"devour","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"parasitic","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"catalyst","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"mutate","hell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-      addEffects(currentAspect,null,"unique","demonking",10, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"neutral","gaol",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"strong","hellfire",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"weak","punish",-2, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"burst","sin",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"harmony","forbid",0, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"devour","fall of",99, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"parasitic","devil",9, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"catalyst","damnation",1, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"mutate","chaos",2, [ ["basepower",[10]],["strongest",[1]] ]);
+      addEffects(currentAspect,null,"unique","demon king",99, [ ["basepower",[10]],["strongest",[1]] ]);
 
       
-     addAspectRelationship(currentAspect.typeStr,"hell",null,       "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,"hell",null,       "burst","burst","earthly");
      addAspectRelationship(currentAspect.typeStr,"forest",null,     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"solar",null,      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"stars",null,      "strong","weak","earthly");
@@ -936,19 +998,19 @@ for (let i =0 ;i < shapesList.length; i++)
       
      currentAspect.desc = "the incandescent power of the sun, hopeful but cyclical";
 
-        addEffects(currentAspect,null,"neutral","sunray",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"neutral","sunbeam",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","sol",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"weak","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","lunar",0, [ ["basepower",[10]],["strongest",[1]],["setOthersRealmAspect",[4]] ]);
         addEffects(currentAspect,null,"burst","supernova",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"harmony","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"devour","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"parasitic","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"catalyst","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"mutate","solar",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"unique","brightest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","morning",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","refraction",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","eclipse",1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","morning",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","dusk",1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","brightest",99, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-     addAspectRelationship(currentAspect.typeStr,"solar",null,      "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,"solar",null,      "harmony","harmony","earthly");
      addAspectRelationship(currentAspect.typeStr,"stars",null,      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"abyss",null,      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"machine",null,    "strong","weak","earthly");
@@ -994,19 +1056,19 @@ for (let i =0 ;i < shapesList.length; i++)
       
      currentAspect.desc = "the faraway power of the stars, subtle but ever-watching";
 
-        addEffects(currentAspect,null,"neutral","galaxy",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"strong","starfall",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"weak","twinkle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"burst","meteor",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"neutral","starfall",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","galaxy",1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","twinkle",1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","comet",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"harmony","constellation",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"devour","stars",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","disaster",1, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"parasitic","alien",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"catalyst","stars",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"mutate","stars",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","infinity",2, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","cosmos",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"unique","from beyond",-99, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-     addAspectRelationship(currentAspect.typeStr,"stars",null,      "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,"stars",null,      "weak","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"abyss",null,      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"machine",null,    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"void",null,       "strong","weak","earthly");
@@ -1047,17 +1109,17 @@ for (let i =0 ;i < shapesList.length; i++)
        currentAspect = aspectsRecord["abyss"];
        currentAspect.color = "rgb(65,121,139)";
  
-        currentAspect.desc = "the sunken power of the abyss, quiet and ";
+        currentAspect.desc = "the sunken power of the abyss, quiet terror";
 
         addEffects(currentAspect,null,"neutral","deep",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","drown",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"weak","pitch",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"burst","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"harmony","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"devour","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"parasitic","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"catalyst","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"mutate","abyss",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","castaway",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","maelstrom",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","bottomless",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","luminesce",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","pressure",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","pitch",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","gigantis",3, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"unique","deepest",0, [ ["basepower",[10]],["strongest",[1]] ]);
         
      addAspectRelationship(currentAspect.typeStr,"abyss",null,      "strong","weak","earthly");
@@ -1067,7 +1129,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,"rot",null,        "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"curse",null,      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"heavens",null,    "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,"storms",null,     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,"storms",null,     "burst","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,"lifespring",null, "strong","weak","earthly");
      
      addAspectRelationship(currentAspect.typeStr,null,"beetle",     "strong","weak","earthly");
@@ -1084,12 +1146,12 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"kraken",     "burst","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"dragon",     "burst","weak","earthly");
 
         currentAspect.realmAspectRecord["ascended"] = "void";
         currentAspect.realmAspectRecord["fallen"] = "storms";   
@@ -1103,17 +1165,17 @@ for (let i =0 ;i < shapesList.length; i++)
       currentAspect.desc = "the efficient power of machines, designed and specialized";
 
         addEffects(currentAspect,null,"neutral","gear",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"strong","cannon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","cannon",-2, [ ["basepower",[30]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"weak","scrap",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"burst","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","driver",0, [ ["basepower",[20]],["physical",[1]] ]);
         addEffects(currentAspect,null,"harmony","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"devour","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"parasitic","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"catalyst","homing",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"mutate","machine",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"unique","infinite",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","drill",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","homing",10, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","cyber",10, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","clockwork",99, [ ["basepower",[10]],["strongest",[1]] ]);
  
-        addAspectRelationship(currentAspect.typeStr,"machine",null,    "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,"machine",null,    "strong","strong","earthly");
         addAspectRelationship(currentAspect.typeStr,"void",null,       "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,"sands",null,      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,"rot",null,        "strong","mutate","earthly");
@@ -1155,16 +1217,16 @@ for (let i =0 ;i < shapesList.length; i++)
       currentAspect.desc = "the empty power of the void, infinite yet nothing";
 
         addEffects(currentAspect,null,"neutral","vacuum",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"strong","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"weak","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","implosion",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","removal",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"burst","nothingness",1, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"harmony","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"devour","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"parasitic","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"catalyst","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"mutate","void",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","gravity",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","frozen",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","desire",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","empty",5, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"unique","endless",-1, [ ["basepower",[10]],["strongest",[1]] ]);
-
+        //protect action: blackhole
         
         addAspectRelationship(currentAspect.typeStr,"void",null,       "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,"sands",null,      "strong","weak","earthly");
@@ -1210,11 +1272,11 @@ for (let i =0 ;i < shapesList.length; i++)
         addEffects(currentAspect,null,"strong","desert",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"weak","beach",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"burst","scirocco",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"harmony","quicksand",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"devour","sands",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"parasitic","sands",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"catalyst","sands",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"mutate","sands",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"harmony","polish",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"devour","quicksand",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","hourglass",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"catalyst","glass",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"mutate","drying",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"unique","tallest",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
@@ -1258,12 +1320,12 @@ for (let i =0 ;i < shapesList.length; i++)
       currentAspect.desc = "the inevitable power of rot, both beginning and end";
 
         addEffects(currentAspect,null,"neutral","decay",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"strong","spore",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","miasma",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"weak","fungus",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"burst","mold",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"harmony","spoil",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"devour","waste",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"parasitic","host",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","bud",-5, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"catalyst","ferment",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"mutate","rust",5, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"unique","life from",99, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -1317,7 +1379,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addEffects(currentAspect,null,"burst","evil-eye",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"harmony","hex",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"devour","strife",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"parasitic","jinx",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"parasitic","gloom",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"catalyst","edge",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"mutate","wretch",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"unique","comforting",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -1363,16 +1425,16 @@ for (let i =0 ;i < shapesList.length; i++)
             addEffects(currentAspect,null,"neutral","banish",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"strong","purify",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"weak","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"burst","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"harmony","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"devour","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"parasitic","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"catalyst","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"mutate","heavens",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"unique","evil",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"burst","smite",-4, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"harmony","blessing",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"devour","anathema",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"parasitic","sacrament",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"catalyst","halo",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"mutate","exorcise",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"unique","all evil",-99, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-        addAspectRelationship(currentAspect.typeStr,"heavens",null,    "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,"heavens",null,    "burst","burst","earthly");
         addAspectRelationship(currentAspect.typeStr,"storms",null,     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,"lifespring",null, "strong","weak","earthly");
         
@@ -1408,15 +1470,15 @@ for (let i =0 ;i < shapesList.length; i++)
         
         currentAspect.desc = "the unstoppable power of storms, aimless and momentary";
 
-            addEffects(currentAspect,null,"neutral","thunder",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"neutral","lightning",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"strong","monsoon",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"weak","squall",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"burst","typhoon",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"harmony","storms",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"harmony","tailwind",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"devour","flood",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"parasitic","storms",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"catalyst","storms",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"mutate","storms",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"parasitic","stormcloud",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"catalyst","thunder",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"mutate","drench",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"unique","echoing",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
@@ -1456,15 +1518,15 @@ for (let i =0 ;i < shapesList.length; i++)
         currentAspect.desc = "the quenching power of the lifespring, trickling down with life";
 
             addEffects(currentAspect,null,"neutral","stream",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"strong","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"weak","dewdrop",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"strong","vigor",-4, [ ["basepower",[10]],["physical",[2]],["setOthersRealmAspect",[1]]]);
+            addEffects(currentAspect,null,"weak","dewdrop",1, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(currentAspect,null,"burst","splash",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"harmony","fountain",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"devour","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"parasitic","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"catalyst","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"mutate","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(currentAspect,null,"unique","lifespring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"harmony","fountain",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"devour","revitalize",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"parasitic","mist",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"catalyst","drink",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"mutate","crying",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(currentAspect,null,"unique","revival",99, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
         addAspectRelationship(currentAspect.typeStr,"lifespring",null, "strong","weak","earthly");
@@ -1484,11 +1546,11 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "harmony","burst","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "mutate","burst","earthly");
 
             currentAspect.realmAspectRecord["ascended"] = "blood";
             currentAspect.realmAspectRecord["fallen"] = "abyss";    
@@ -1508,35 +1570,35 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 0: BEETLE ----------------------------------------------
         currentShape = shapesRecord["beetle"];
 
-            addEffects(null,currentShape,"neutral","mandible",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"neutral","elytra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","mandible",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","bore",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","suplex",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","orb gather",-5, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"devour","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"parasitic","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"catalyst","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"mutate","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
-            addAspectRelationship(currentAspect.typeStr,null,"crawler",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"stinger",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"nightmare",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"canine",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crawler",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"stinger",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"nightmare",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"canine",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
  
             currentShape.realmAspectRecord["earthly"] = "bugs";
             currentShape.realmAspectRecord["ascended"] = "fae";
@@ -1554,35 +1616,35 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 1: CRAWLER ----------------------------------------------
         currentShape = shapesRecord["crawler"];
         
-            addEffects(null,currentShape,"neutral","venombite",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"neutral","chelicerae",0, [ ["basepower",[10]],["physical",[1]] ]);
+            addEffects(null,currentShape,"strong","legcrush",0, [ ["basepower",[10]],["physical",[2]] ]);
+            addEffects(null,currentShape,"weak","skitter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","sudden",10, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","scissor",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","liquefy",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","toxishock",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"catalyst","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","web",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"stinger",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"nightmare",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"canine",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"stinger",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"nightmare",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"canine",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "bugs";
             currentShape.realmAspectRecord["ascended"] = "sands";
@@ -1602,32 +1664,32 @@ for (let i =0 ;i < shapesList.length; i++)
 
             addEffects(null,currentShape,"neutral","sting",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"strong","inject",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","buzz",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","needle",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"burst","repeat",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","stinger",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","stinger",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","buzz",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","hold",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"parasitic","egg",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","stinger",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","dart",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"mutate","queen",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"nightmare",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"canine",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"nightmare",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"canine",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "bugs";
             currentShape.realmAspectRecord["ascended"] = "machine";
@@ -1647,31 +1709,31 @@ for (let i =0 ;i < shapesList.length; i++)
 
             addEffects(null,currentShape,"neutral","horror",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"strong","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","stalking",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","fright",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","dozing",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"devour","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"parasitic","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"catalyst","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"mutate","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"canine",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"canine",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "curse";
             currentShape.realmAspectRecord["ascended"] = "void";
@@ -1689,32 +1751,32 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 4: CANINE ----------------------------------------------
         currentShape = shapesRecord["canine"];
 
-            addEffects(null,currentShape,"neutral","bark",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"neutral","barking",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"strong","lockjaw",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","panting",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","takedown",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","howl",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"devour","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","scent",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","pack",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"mutate","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "beast";
             currentShape.realmAspectRecord["ascended"] = "stars";
@@ -1733,30 +1795,30 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape = shapesRecord["feline"];
 
             addEffects(null,currentShape,"neutral","pounce",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","ambush",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"weak","meow",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","ripper",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","cleanup",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"devour","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"parasitic","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"catalyst","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"mutate","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "beast";
             currentShape.realmAspectRecord["ascended"] = "solar";
@@ -1775,9 +1837,9 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 6: CRITTER ----------------------------------------------
         currentShape = shapesRecord["critter"];
 
-            addEffects(null,currentShape,"neutral","swift",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"neutral","swift",3, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","dismantle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","squeak",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"burst","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"harmony","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"devour","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -1786,19 +1848,19 @@ for (let i =0 ;i < shapesList.length; i++)
             addEffects(null,currentShape,"mutate","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "blood";
             currentShape.realmAspectRecord["ascended"] = "forest";
@@ -1816,29 +1878,29 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 7: ANTLER ----------------------------------------------
         currentShape = shapesRecord["antler"];
 
-            addEffects(null,currentShape,"neutral","gore",0, [ ["basepower",[10]],["physical",[5]] ]);
-            addEffects(null,currentShape,"strong","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","antler",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"neutral","headbutt",0, [ ["basepower",[10]],["physical",[5]] ]);
+            addEffects(null,currentShape,"strong","goring",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","hibernate",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","majesty",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","serenity",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","compete",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","prance",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","guardian",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","antlered",10, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "bone";
             currentShape.realmAspectRecord["ascended"] = "fae";
@@ -1867,17 +1929,17 @@ for (let i =0 ;i < shapesList.length; i++)
             addEffects(null,currentShape,"mutate","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "storms";
             currentShape.realmAspectRecord["ascended"] = "heavens";
@@ -1906,16 +1968,16 @@ for (let i =0 ;i < shapesList.length; i++)
             addEffects(null,currentShape,"mutate","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "forest";
             currentShape.realmAspectRecord["ascended"] = "heavens";
@@ -1933,26 +1995,26 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 10: MYCON ----------------------------------------------
         currentShape = shapesRecord["mycon"];
  
-        addEffects(null,currentShape,"neutral","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"strong","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"burst","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"harmony","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"devour","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"neutral","cap",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","amanita",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","stinkhorn",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","spore",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","symbiosis",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","infection",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"parasitic","cordycep",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"catalyst","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"mutate","mycon",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","terraform",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","psyshroom",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "rot";
             currentShape.realmAspectRecord["ascended"] = "stars";
@@ -1973,22 +2035,22 @@ for (let i =0 ;i < shapesList.length; i++)
         addEffects(null,currentShape,"neutral","branch",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","trunk",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"weak","bud",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"burst","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"harmony","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"devour","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"parasitic","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"catalyst","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","blooming",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","flower",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","uproot",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","graft",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","ecosystem",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"mutate","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "forest";
             currentShape.realmAspectRecord["ascended"] = "solar";
@@ -2006,24 +2068,24 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 12: WORM ----------------------------------------------
         currentShape = shapesRecord["worm"];
 
-        addEffects(null,currentShape,"neutral","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"strong","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"burst","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"neutral","bristle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","capture",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","burrow",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","surfacing",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"harmony","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"devour","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"parasitic","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","leech",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","hook",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"catalyst","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"mutate","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","slime",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "rot";
             currentShape.realmAspectRecord["ascended"] = "sands";
@@ -2042,22 +2104,22 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape = shapesRecord["crab"];
 
         addEffects(null,currentShape,"neutral","pinch",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"strong","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"burst","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","crusher",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","slicer",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","shell",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"harmony","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"devour","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"parasitic","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","scuttle",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"catalyst","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"mutate","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "sands";
             currentShape.realmAspectRecord["ascended"] = "steel";
@@ -2076,21 +2138,21 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape = shapesRecord["kraken"];
 
         addEffects(null,currentShape,"neutral","tentacle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"strong","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"burst","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"harmony","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"devour","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"parasitic","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"catalyst","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"mutate","kraken",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","drag and",99, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","envenom",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","8-arm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","bioelectric",-2, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","wrap",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","harpoon",0, [ ["basepower",[10]],["strongest",[1]],["setAspect", [aspectsRecord["bone"].index, 2]] ]);
+        addEffects(null,currentShape,"catalyst","regenerate",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","ink",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "abyss";
             currentShape.realmAspectRecord["ascended"] = "stars";
@@ -2109,20 +2171,20 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape = shapesRecord["leviathan"];
 
         addEffects(null,currentShape,"neutral","engulf",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"strong","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"burst","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"harmony","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"devour","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","ramming",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","sonar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","spout",-2, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","sing",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","breach",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"parasitic","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"catalyst","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"mutate","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "abyss";
             currentShape.realmAspectRecord["ascended"] = "heavens";
@@ -2139,20 +2201,20 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 16: HYDRA ----------------------------------------------
         currentShape = shapesRecord["hydra"];
 
-        addEffects(null,currentShape,"neutral","multibite",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"strong","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"burst","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"harmony","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"devour","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"parasitic","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"catalyst","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"mutate","hydra",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"neutral","venomfang",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","tri-bite",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","coil",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","tri-spit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","constrict",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","jaw unhinge",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","head fork",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","slither",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","shedskin",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
            currentShape.realmAspectRecord["earthly"] = "beast";
             currentShape.realmAspectRecord["ascended"] = "forest";
@@ -2180,8 +2242,8 @@ for (let i =0 ;i < shapesList.length; i++)
         addEffects(null,currentShape,"mutate","feather",2, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "bone";
             currentShape.realmAspectRecord["ascended"] = "solar";
@@ -2201,8 +2263,8 @@ for (let i =0 ;i < shapesList.length; i++)
 
         addEffects(null,currentShape,"neutral","devour",0,          [ ["basepower",[15]],["physical",[2]]]);
         addEffects(null,currentShape,"strong","stampede",0,         [ ["basepower",[22]],["physical",[4]],["setOthersRealmAspect",[3]]]);
-        addEffects(null,currentShape,"weak","endure",0,             [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"burst","behemoth",0,          [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","fearless",0,           [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"burst","great horn",0,         [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"harmony","behemoth",0,        [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"devour","behemoth",0,         [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"parasitic","behemoth",0,      [ ["basepower",[10]],["strongest",[1]] ]);
@@ -2210,7 +2272,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addEffects(null,currentShape,"mutate","behemoth",0,         [ ["basepower",[10]],["strongest",[1]] ]);
 
         
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "beast";
             currentShape.realmAspectRecord["ascended"] = "fire";
@@ -2230,7 +2292,7 @@ for (let i =0 ;i < shapesList.length; i++)
 
         addEffects(null,currentShape,"neutral","hunger",-2, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","flare",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","coil",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","slumber",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"burst","outrage",-1, [ ["basepower",[10]],["physical",[2]] ]);
         addEffects(null,currentShape,"harmony","breath",-3, [ ["basepower",[10]],["magical",[99]] ]);
         addEffects(null,currentShape,"devour","cataclysm",0, [ ["basepower",[10]],["strongest",[1]] ]);
