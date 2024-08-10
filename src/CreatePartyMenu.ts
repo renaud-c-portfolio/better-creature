@@ -25,14 +25,15 @@ export class CreatePartyMenu extends GameElement {
     public currentChar:CreatureChar|null = null;
 
     createPartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"create party",0,"text");
+    testPartyButton:GameButton = new GameButton(this.engine,192,32,60,20,"test",0,"text");
     renamePartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"rename",0,"text");
     addCharButton:GameButton = new GameButton(this.engine,36,32,100,30,"add creature",0,"text");
 
     actionButtons:Array<GameButton> = [
-        new GameButton(this.engine,290,246,140,40,"action1",0,"action"),
-        new GameButton(this.engine,470,246,140,40,"action2",0,"action"),
-        new GameButton(this.engine,290,296,140,40,"action3",0,"action"),
-        new GameButton(this.engine,470,296,140,40,"action4",0,"action")]; 
+        new GameButton(this.engine,284,246,160,40,"action1",0,"action"),
+        new GameButton(this.engine,456,246,160,40,"action2",0,"action"),
+        new GameButton(this.engine,284,296,160,40,"action3",0,"action"),
+        new GameButton(this.engine,456,296,160,40,"action4",0,"action")]; 
 
 
     aspectButtons:Array<GameButton> = [
@@ -111,6 +112,7 @@ export class CreatePartyMenu extends GameElement {
 
         if (this.playerParties.length > 1)
         {
+
             if (this.engine.wheel > 0)
             {
                 this.selectPartyIndex += 1;
@@ -132,6 +134,19 @@ export class CreatePartyMenu extends GameElement {
             context.fillStyle = "rgb(0,0,110)";
             context.fillText(this.currentParty.partyName,120,20);
             const numChars = this.currentParty.characterList.length;
+            if (numChars > 0)
+            {
+                this.testPartyButton.drawFunction(context);
+                if (this.testPartyButton.clickConfirm)
+                {
+                    this.engine.currentMatch.party[0] = [...this.currentParty.characterList];
+                    this.engine.currentMatch.activeChars[0][0] = this.currentParty.characterList[0];
+                    this.engine.currentMatch.activeChars[0][1] = this.currentParty.characterList[1];
+                    this.engine.gameElements = [];
+                    this.engine.gameElements.push(this.engine.currentMatch);
+                }
+            }
+
             for (let i =0; i < numChars;i++)
             {
                 const partyChar = this.currentParty.characterList[i];

@@ -26,7 +26,7 @@ export class FightMatch extends GameElement {
 
     multiMode:MultiMode = "cpu";
 
-    fightPhase:FightPhase = "actions"; 
+    fightPhase:FightPhase = "start"; 
 
     currentTurn:number = 0;
     choicePhase = 0;
@@ -158,10 +158,7 @@ export class FightMatch extends GameElement {
             new CreatureChar(this.engine,0,0,0,0),
             new CreatureChar(this.engine,0,0,0,0),
         ];  
-        let matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[0]);
-        matchStartEvent.targetList.push(_parties[0][0]); 
-        matchStartEvent.targetList.push(_parties[0][1]); 
-        this.eventsList.push(matchStartEvent);
+        
         _parties[1] = [
             new CreatureChar(this.engine,640-100-64,30,0,1),
             new CreatureChar(this.engine,640-50-64,120,0,1),
@@ -170,11 +167,6 @@ export class FightMatch extends GameElement {
             new CreatureChar(this.engine,0,0,0,1),
             new CreatureChar(this.engine,0,0,0,1),
         ];
-        matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[1]);
-        matchStartEvent.targetList.push(_parties[1][0]); 
-        matchStartEvent.targetList.push(_parties[1][1]);  
-        this.eventsList.push(matchStartEvent);
-        
 
     }
     
@@ -1046,7 +1038,20 @@ export class FightMatch extends GameElement {
          switch (this.fightPhase)
          {
             case "start":
-             
+
+            let matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[0]);
+            matchStartEvent.targetList.push(this.party[0][0]); 
+            matchStartEvent.targetList.push(this.party[0][1]); 
+            this.eventsList.push(matchStartEvent); 
+
+            
+             matchStartEvent = new MatchStartSendAction(this.emptyPlayerCreature[1]);
+            matchStartEvent.targetList.push(this.party[1][0]); 
+            matchStartEvent.targetList.push(this.party[1][1]);  
+            this.eventsList.push(matchStartEvent);
+        
+            this.fightPhase = "actions";
+            
             break;
             case "choice": 
                 this.ViewCreatures(context); 
