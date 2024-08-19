@@ -414,19 +414,19 @@ for (let i =0 ;i < shapesList.length; i++)
     addAspectRelationship(currentAspect.typeStr,null,"canine",     "weak","weak","fallen");
     addAspectRelationship(currentAspect.typeStr,null,"feline",     "neutral","neutral","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"critter",    "mutate","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"antler",     "mutate","strong","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"winged",     "catalyst","neutral","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"fruit",      "devour","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"mycon",      "harmony","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"antler",     "mutate","strong","fallen");
+    addAspectRelationship(currentAspect.typeStr,null,"winged",     "catalyst","neutral","fallen");
+    addAspectRelationship(currentAspect.typeStr,null,"fruit",      "devour","weak","ascended");
+    addAspectRelationship(currentAspect.typeStr,null,"mycon",      "harmony","weak","ascended");
     addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "burst","weak","fallen");
-    addAspectRelationship(currentAspect.typeStr,null,"worm",       "mutate","devour","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"crab",       "neutral","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"kraken",     "harmony","mutate","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "parasitic","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","strong","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"worm",       "mutate","devour","ascended");
+    addAspectRelationship(currentAspect.typeStr,null,"crab",       "neutral","weak","fallen");
+    addAspectRelationship(currentAspect.typeStr,null,"kraken",     "harmony","mutate","fallen");
+    addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "parasitic","weak","fallen");
+    addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","strong","ascended");
+    addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","ascended");
     addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "catalyst","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"dragon",     "harmony","harmony","ascended");
+    addAspectRelationship(currentAspect.typeStr,null,"dragon",     "harmony","harmony","earthly");
  
  
     currentAspect.realmAspectRecord["ascended"] = "solar";
@@ -466,16 +466,16 @@ for (let i =0 ;i < shapesList.length; i++)
     
     addAspectRelationship(currentAspect.typeStr,"steel",null,      "burst","burst","earthly");
     addAspectRelationship(currentAspect.typeStr,"fae",null,        "mutate","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,"bugs",null,       "strong","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,"beast",null,      "strong","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,"bone",null,       "strong","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,"blood",null,      "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"bugs",null,       "catalyst","harmony","earthly");
+    addAspectRelationship(currentAspect.typeStr,"beast",null,      "devour","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"bone",null,       "harmony","strong","earthly");
+    addAspectRelationship(currentAspect.typeStr,"blood",null,      "harmony","mutate","earthly");
     addAspectRelationship(currentAspect.typeStr,"hell",null,       "weak","strong","earthly");
-    addAspectRelationship(currentAspect.typeStr,"forest",null,     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"forest",null,     "devour","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"solar",null,      "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"stars",null,      "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"abyss",null,      "strong","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,"machine",null,    "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,"machine",null,    "parasitic","harmony","earthly");
     addAspectRelationship(currentAspect.typeStr,"void",null,       "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"sands",null,      "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"rot",null,        "harmony","mutate","earthly");
@@ -497,7 +497,7 @@ for (let i =0 ;i < shapesList.length; i++)
     addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"worm",       "strong","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"crab",       "strong","burst","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"kraken",     "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"leviathan",  "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
