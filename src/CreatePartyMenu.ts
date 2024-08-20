@@ -134,7 +134,7 @@ export class CreatePartyMenu extends GameElement {
             context.fillStyle = "rgb(0,0,110)";
             context.fillText(this.currentParty.partyName,120,20);
             const numChars = this.currentParty.characterList.length;
-            if (numChars > 0)
+            if (numChars > 1)
             {
                 this.testPartyButton.drawFunction(context);
                 if (this.testPartyButton.clickConfirm)

@@ -3,7 +3,8 @@ import { monsType, MTYPE } from "./game/types/monsType";
 import { shape, MSHAPE } from "./game/shapes/shapes"; 
 import gameEngine from "./GameEngine";
 
-import crambUrl from "./gfx/quadtopus.png";
+import crambUrl from  "./gfx/funny_crab.png";
+import octoUrl from "./gfx/quadtopus.png";
 import mashUrl from "./gfx/mashroom.png";
 import hydraUrl from "./gfx/hydrr.png";
 import nekoUrl from "./gfx/evil_neko.png";
@@ -12,6 +13,16 @@ import sharkyUrl from "./gfx/sharky.png";
 import melonUrl from "./gfx/watermelone.png";
 import treeUrl from "./gfx/heaven-tree.png";
 import foxUrl from "./gfx/fire-canine.png";
+import fruitUrl from "./gfx/steel_fruit.png";
+import starBeheUrl from "./gfx/star_behemoth.png";
+import sandStingUrl from "./gfx/sands_stinger.png";
+import solarAntlerUrl from "./gfx/solar_antler.png";
+import bloodNightmareUrl from "./gfx/blood_nightmare.png";
+import curseBeetleUrl from "./gfx/curse_beetle.png";
+import faeCritterUrl from "./gfx/fae_critter.png";
+import forestFeatherUrl from "./gfx/forest_feather.png";
+import abyssWormUrl from "./gfx/abyss_worm.png";
+
 
 import { FightAction } from "./FightAction"; 
 import FightMatch from "./FightMatch";
@@ -80,7 +91,7 @@ export class CreatureChar extends GameElement {
 
     loaded:boolean = false;
 
-    tempUrlArray:Array<any> = [crambUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl,foxUrl];
+    tempUrlArray:Array<any> = [crambUrl,octoUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl,foxUrl,fruitUrl,starBeheUrl,solarAntlerUrl,sandStingUrl,bloodNightmareUrl,curseBeetleUrl,faeCritterUrl,forestFeatherUrl,abyssWormUrl];
  
     imageElem:HTMLImageElement = document.createElement("img");  
     imageAlpha:number = 1;

@@ -7,7 +7,7 @@ const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspectico
 export type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "speed" | "agility" | "none";
 export type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
 export type aspectsType = "fire" | "steel" | "fae" | "bugs" | "beast" | "bone" | "blood" | "hell" | "forest" | "solar" | "stars" | "abyss" | "machine" | "void" | "sands" | "rot" | "curse" | "heavens" | "storms" | "lifespring" | "none";
-export type shapesType = "beetle" | "crawler"| "stinger" | "nightmare" | "canine" | "feline" | "critter" | "antler" | "winged" | "fruit" | "mycon" | "worldtree" | "worm" | "crab" | "kraken" | "leviathan" | "hydra" | "dinosaur" | "behemoth" | "dragon" | "none";
+export type shapesType = "beetle" | "crawler"| "stinger" | "nightmare" | "canine" | "feline" | "critter" | "antler" | "feather" | "fruit" | "mycon" | "worldtree" | "worm" | "crab" | "kraken" | "leviathan" | "hydra" | "dinosaur" | "behemoth" | "dragon" | "none";
 
 export type attackInteract = "normal" | "strong" | "resisted" | "nothing" | "rot" | "resistedrot";
 export type defenseInteract = "neutral" | "resist" | "weak" | "immune" | "rotted" | "resistrotted"; 
@@ -33,7 +33,7 @@ export type actionEffects = "physical" | "magical" | "strongest" | "statusonly" 
 ;
 
 export const aspectsList:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms","lifespring"];
-export const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","winged","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
+export const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","feather","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
 export const realmsList:Array<realm> = ["earthly","ascended","fallen"];
 export const targetsList:Array<targetType> = ["single" , "double" , "aoe" , "self" , "ally" , "front" , "diagonal" , "all", "other"];
 
@@ -415,7 +415,7 @@ for (let i =0 ;i < shapesList.length; i++)
     addAspectRelationship(currentAspect.typeStr,null,"feline",     "neutral","neutral","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"critter",    "mutate","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"antler",     "mutate","strong","fallen");
-    addAspectRelationship(currentAspect.typeStr,null,"winged",     "catalyst","neutral","fallen");
+    addAspectRelationship(currentAspect.typeStr,null,"feather",     "catalyst","neutral","fallen");
     addAspectRelationship(currentAspect.typeStr,null,"fruit",      "devour","weak","ascended");
     addAspectRelationship(currentAspect.typeStr,null,"mycon",      "harmony","weak","ascended");
     addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "burst","weak","fallen");
@@ -492,7 +492,7 @@ for (let i =0 ;i < shapesList.length; i++)
     addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-    addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+    addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -555,7 +555,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -616,7 +616,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -678,7 +678,7 @@ for (let i =0 ;i < shapesList.length; i++)
           addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
           addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
           addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-          addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+          addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
           addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
           addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
           addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -739,7 +739,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -799,7 +799,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -858,7 +858,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -916,7 +916,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -973,7 +973,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1030,7 +1030,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1087,7 +1087,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1140,7 +1140,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-     addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+     addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
      addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1192,7 +1192,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1244,7 +1244,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1295,7 +1295,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1345,7 +1345,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1398,7 +1398,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1446,7 +1446,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1493,7 +1493,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1539,7 +1539,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"feline",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"critter",    "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"antler",     "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"winged",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"feather",     "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"fruit",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"mycon",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1587,7 +1587,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1633,7 +1633,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1678,7 +1678,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1722,7 +1722,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1765,7 +1765,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1807,7 +1807,7 @@ for (let i =0 ;i < shapesList.length; i++)
             
             addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1849,7 +1849,7 @@ for (let i =0 ;i < shapesList.length; i++)
 
             
             addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1889,7 +1889,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addEffects(null,currentShape,"mutate","antlered",10, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addShapeRelationship(currentShape.typeStr,null,"winged",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
@@ -1915,18 +1915,18 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape.baseRes = 62;
         //total = 368
 
-        // shape 8: WINGED ----------------------------------------------
-        currentShape = shapesRecord["winged"];
+        // shape 8: feather ----------------------------------------------
+        currentShape = shapesRecord["feather"];
 
             addEffects(null,currentShape,"neutral","flying",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","winged",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
