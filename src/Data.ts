@@ -765,12 +765,12 @@ for (let i =0 ;i < shapesList.length; i++)
 
      addEffects(currentAspect,null,"neutral","skeleton",4, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"strong","tooth",-2, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"weak","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"weak","ribcage",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"burst","fracture",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"harmony","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"devour","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"parasitic","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"catalyst","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"harmony","mending",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"devour","splinter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"parasitic","calcify",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"catalyst","marrow",-3, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"mutate","skull",-3, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"unique","enlarge",99, [ ["basepower",[10]],["strongest",[1]] ]);
 
@@ -823,15 +823,15 @@ for (let i =0 ;i < shapesList.length; i++)
  
      currentAspect.desc = "the  power of blood, ";
 
-     addEffects(currentAspect,null,"neutral","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"strong","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"neutral","bloodletting",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","hemorrhage",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"weak","wound",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"burst","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"burst","heart",-5, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"harmony","transfusion",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"devour","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"devour","clot",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"parasitic","vampire",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"catalyst","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"mutate","blood",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"catalyst","vitalize",6, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"mutate","blood",25, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"unique","clot",-2, [ ["basepower",[10]],["strongest",[1]] ]);
 
      
@@ -940,16 +940,16 @@ for (let i =0 ;i < shapesList.length; i++)
       
      currentAspect.desc = "the ever-growing power of forests, ";
 
-        addEffects(currentAspect,null,"neutral","woods",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"strong","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"weak","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"burst","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"neutral","woods",30, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"strong","bramble",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"weak","treefall",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"burst","autumn",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"harmony","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"devour","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"parasitic","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","lost",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"catalyst","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"mutate","forest",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"unique","endless",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"unique","endless",99, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
      addAspectRelationship(currentAspect.typeStr,"forest",null,     "strong","weak","earthly");
@@ -1570,15 +1570,17 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 0: BEETLE ----------------------------------------------
         currentShape = shapesRecord["beetle"];
 
+        currentShape.desc = "Adaptable, high armor"
+
             addEffects(null,currentShape,"neutral","elytra",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","mandible",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","bore",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","suplex",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","orb gather",-5, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","beetle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","mandible",0, [ ["basepower",[10]],["physical",[2]] ]);
+            addEffects(null,currentShape,"weak","bore",0, [ ["basepower",[10]],["physical",[2]] ]);
+            addEffects(null,currentShape,"burst","suplex",0, [ ["basepower",[10]],["physical",[3]] ]);
+            addEffects(null,currentShape,"harmony","orb gather",-7, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","shellhorn",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","pupa",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","snap",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","blisterspray",-3, [ ["basepower",[10]],["strongest",[1]] ]);
 
             addShapeRelationship(currentShape.typeStr,null,"crawler",    "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"stinger",    "strong","weak","earthly");
@@ -1615,12 +1617,14 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 1: CRAWLER ----------------------------------------------
         currentShape = shapesRecord["crawler"];
+
+        currentShape.desc = "masters of surprise attacks. many legs";
         
             addEffects(null,currentShape,"neutral","chelicerae",0, [ ["basepower",[10]],["physical",[1]] ]);
             addEffects(null,currentShape,"strong","legcrush",0, [ ["basepower",[10]],["physical",[2]] ]);
             addEffects(null,currentShape,"weak","skitter",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"burst","sudden",10, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","scissor",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","nip",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"devour","liquefy",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"parasitic","toxishock",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"catalyst","crawler",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -1661,6 +1665,8 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 2: STINGER ----------------------------------------------
         currentShape = shapesRecord["stinger"];
+ 
+        currentShape.desc = "injects powerful status ailments";
 
             addEffects(null,currentShape,"neutral","sting",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"strong","inject",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -1706,16 +1712,17 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 3: NIGHTMARE ----------------------------------------------
         currentShape = shapesRecord["nightmare"];
+        currentShape.desc = "elusive magical tricksters";
 
             addEffects(null,currentShape,"neutral","horror",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","grip",0, [ ["basepower",[10]],["physical",[1]] ]);
             addEffects(null,currentShape,"weak","stalking",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","fright",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","panic",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"harmony","dozing",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","nightmare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","scream",0, [ ["basepower",[10]],["magical",[1]] ]);
+            addEffects(null,currentShape,"parasitic","jumpscare",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","behind you",-99, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","coldsweat",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
             addShapeRelationship(currentShape.typeStr,null,"canine",     "strong","weak","earthly");
@@ -1750,16 +1757,17 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 4: CANINE ----------------------------------------------
         currentShape = shapesRecord["canine"];
+        currentShape.desc = "all-rounder that enjoys team tactics";
 
             addEffects(null,currentShape,"neutral","barking",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"strong","lockjaw",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","panting",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","growl",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"burst","takedown",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"harmony","howl",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","roughhouse",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"parasitic","scent",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"catalyst","pack",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","canine",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","panting",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
             addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
@@ -1793,16 +1801,18 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 5: FELINE ----------------------------------------------
         currentShape = shapesRecord["feline"];
+        
+        currentShape.desc = "agile stealthy hunter";
 
             addEffects(null,currentShape,"neutral","pounce",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"strong","ambush",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"weak","meow",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"burst","ripper",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","cleanup",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","feline",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","catscratch",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","sabertooth",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","purr",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","paw bat",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","cleanup",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
             addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
@@ -1836,16 +1846,19 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 6: CRITTER ----------------------------------------------
         currentShape = shapesRecord["critter"];
+        
+        currentShape.desc = "escape artists full of tricks";
 
-            addEffects(null,currentShape,"neutral","swift",3, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","dismantle",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            addEffects(null,currentShape,"neutral","swift",5, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","dismantle",-1, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"weak","squeak",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","critter",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","brave",7, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","gnaw",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","plague",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","hide &",99, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","sniff",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","infest",-3, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
             addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
@@ -1877,6 +1890,9 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 7: ANTLER ----------------------------------------------
         currentShape = shapesRecord["antler"];
+        
+        currentShape.desc = "stalwart defenders";
+
 
             addEffects(null,currentShape,"neutral","headbutt",0, [ ["basepower",[10]],["physical",[5]] ]);
             addEffects(null,currentShape,"strong","goring",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -1915,18 +1931,21 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape.baseRes = 62;
         //total = 368
 
-        // shape 8: feather ----------------------------------------------
+        // shape 8: FEATHER ----------------------------------------------
         currentShape = shapesRecord["feather"];
+        
+        currentShape.desc = "swift and graceful";
 
-            addEffects(null,currentShape,"neutral","flying",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","feather",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            addEffects(null,currentShape,"neutral","beak",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"strong","wingbeat",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","quill",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","divebomb",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","sky grab",20, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","swoop",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"parasitic","& fly away",-99, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","flying",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","flutter",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
             addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
@@ -1956,16 +1975,19 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 9: FRUIT ----------------------------------------------
         currentShape = shapesRecord["fruit"];
+        
+        currentShape.desc = "full of magical juice to support allies";
 
-            addEffects(null,currentShape,"neutral","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"strong","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"weak","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"devour","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"parasitic","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"catalyst","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"mutate","fruit",0, [ ["basepower",[10]],["strongest",[1]] ]);
+
+            addEffects(null,currentShape,"neutral","seed",0, [ ["basepower",[10]],["physical",[1]] ]);
+            addEffects(null,currentShape,"strong","peel",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"weak","sedative",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","cornucopia",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","nectar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"devour","acid",0, [ ["basepower",[10]],["magical",[1]] ]);
+            addEffects(null,currentShape,"parasitic","sprout",-2, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"catalyst","vitamin",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"mutate","berry",-8, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
             addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
@@ -1994,6 +2016,10 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 10: MYCON ----------------------------------------------
         currentShape = shapesRecord["mycon"];
+
+        
+        currentShape.desc = "mysterious mushroom with strange powers";
+
  
         addEffects(null,currentShape,"neutral","cap",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","amanita",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -2032,15 +2058,19 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 11: WORLDTREE ----------------------------------------------
         currentShape = shapesRecord["worldtree"];
 
+        
+        currentShape.desc = "full of life, which it might share";
+
+
         addEffects(null,currentShape,"neutral","branch",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","trunk",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","bud",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","sap",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"burst","blooming",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"harmony","flower",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"devour","uproot",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"parasitic","graft",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"catalyst","ecosystem",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"mutate","worldtree",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","leaves",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
         addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
@@ -2068,14 +2098,18 @@ for (let i =0 ;i < shapesList.length; i++)
         // shape 12: WORM ----------------------------------------------
         currentShape = shapesRecord["worm"];
 
+        
+        currentShape.desc = "simple and efficient. likes to burrow.";
+
+
         addEffects(null,currentShape,"neutral","bristle",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","capture",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"weak","burrow",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"burst","surfacing",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"harmony","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","reverse",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"devour","leech",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"parasitic","hook",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"catalyst","worm",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","extend",15, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"mutate","slime",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
@@ -2102,16 +2136,19 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 13: CRAB ----------------------------------------------
         currentShape = shapesRecord["crab"];
+        
+        currentShape.desc = "heavily armored, surprisingly evasive";
+
 
         addEffects(null,currentShape,"neutral","pinch",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","crusher",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"weak","slicer",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"weak","scissor",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"burst","shell",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"harmony","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"devour","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"harmony","crab",20, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"devour","vise",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"parasitic","scuttle",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"catalyst","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"mutate","crab",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","bubbles",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"mutate","carcinize",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
         addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
@@ -2136,6 +2173,9 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 14: KRAKEN ----------------------------------------------
         currentShape = shapesRecord["kraken"];
+        
+        currentShape.desc = "restrain opponents to devour them";
+
 
         addEffects(null,currentShape,"neutral","tentacle",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","drag and",99, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -2168,7 +2208,9 @@ for (let i =0 ;i < shapesList.length; i++)
         //total = 347
 
         // shape 15: LEVIATHAN ----------------------------------------------
-        currentShape = shapesRecord["leviathan"];
+        currentShape = shapesRecord["leviathan"]; 
+        currentShape.desc = "immovable lord of the sea";
+
 
         addEffects(null,currentShape,"neutral","engulf",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","ramming",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -2176,8 +2218,8 @@ for (let i =0 ;i < shapesList.length; i++)
         addEffects(null,currentShape,"burst","spout",-2, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"harmony","sing",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"devour","breach",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"parasitic","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"catalyst","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"parasitic","bloodsmell",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"catalyst","giant",15, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"mutate","leviathan",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
         
@@ -2199,7 +2241,9 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape.baseRes = 59;
 
         // shape 16: HYDRA ----------------------------------------------
-        currentShape = shapesRecord["hydra"];
+        currentShape = shapesRecord["hydra"]; 
+        currentShape.desc = "unpredictable, many-headed venomous serpent";
+
 
         addEffects(null,currentShape,"neutral","venomfang",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","tri-bite",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -2229,7 +2273,9 @@ for (let i =0 ;i < shapesList.length; i++)
         currentShape.baseRes = 45;
 
         // shape 17: DINOSAUR ----------------------------------------------
-        currentShape = shapesRecord["dinosaur"];
+        currentShape = shapesRecord["dinosaur"]; 
+        currentShape.desc = "the strongest animals to ever live";
+
  
         addEffects(null,currentShape,"neutral","stomp",-2, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","whiplash",-1, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -2260,6 +2306,9 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 18: BEHEMOTH ----------------------------------------------
         currentShape = shapesRecord["behemoth"];
+        
+        currentShape.desc = "unstoppable humongous force of nature";
+
 
         addEffects(null,currentShape,"neutral","devour",0,          [ ["basepower",[15]],["physical",[2]]]);
         addEffects(null,currentShape,"strong","stampede",0,         [ ["basepower",[22]],["physical",[4]],["setOthersRealmAspect",[3]]]);
@@ -2289,6 +2338,9 @@ for (let i =0 ;i < shapesList.length; i++)
 
         // shape 19: DRAGON ----------------------------------------------
         currentShape = shapesRecord["dragon"];
+        
+        currentShape.desc = "ancient mystical embodiment of the elements";
+
 
         addEffects(null,currentShape,"neutral","hunger",-2, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"strong","flare",0, [ ["basepower",[10]],["strongest",[1]] ]);

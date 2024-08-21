@@ -14,7 +14,7 @@ export class GameParty {
 }
 
 type PartyMenuStep = "basic" | "scrollmenu" | "renameChar";
-type PartyPopupTypes = "none" | "renameChar" | "renameCharExtended" | "changeAspect" | "changeEmptyAspect" | "actionInfo";
+type PartyPopupTypes = "none" | "renameChar" | "renameCharExtended" | "changeAspect" | "changeShape" | "changeEmptyAspect" | "actionInfo";
  
 
 export class CreatePartyMenu extends GameElement {
@@ -263,6 +263,7 @@ export class CreatePartyMenu extends GameElement {
             
             if (this.aspectButtons[0].highlighted)
             {
+                this.tooltipPopup.selectAspect = this.currentChar.aspectTypes[0];
                 this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.aspectButtons[0].y+40,"changeAspect");
                 this.changeIndex = 0;
             }
@@ -280,6 +281,17 @@ export class CreatePartyMenu extends GameElement {
             {this.aspectButtons[1].aspectLabel = this.currentChar.aspectTypes[0]; context.globalAlpha = 0.5;}
             else{this.aspectButtons[1].aspectLabel = this.currentChar.aspectTypes[1];}
             this.aspectButtons[1].drawFunction(context);
+            if (this.aspectButtons[1].highlighted)
+                {
+                    if (this.currentChar.aspectTypes.length == 1)
+                    {
+                        this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.aspectButtons[0].y+40,"changeEmptyAspect");
+                    }
+                    else
+                    {this.tooltipPopup.selectAspect = this.currentChar.aspectTypes[1];
+                    this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.aspectButtons[0].y+40,"changeAspect");}
+                    this.changeIndex = 0;
+                }
             if (this.aspectButtons[1].clickConfirm)
                 {
                     this.aspectButtons[1].clickConfirm = 0;
@@ -293,6 +305,11 @@ export class CreatePartyMenu extends GameElement {
 
             this.shapeButtons[0].shapeLabel = this.currentChar.shapes[0];
             this.shapeButtons[0].drawFunction(context);
+            if (this.shapeButtons[0].highlighted)
+            { 
+                this.tooltipPopup.selectShape = this.currentChar.shapes[0];
+                this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.shapeButtons[0].y+40,"changeShape");
+            }
             if (this.shapeButtons[0].clickConfirm)
             {
                 this.shapeButtons[0].clickConfirm = 0; 
@@ -305,6 +322,11 @@ export class CreatePartyMenu extends GameElement {
             }
             this.shapeButtons[1].shapeLabel = this.currentChar.shapes[1];
             this.shapeButtons[1].drawFunction(context);
+            if (this.shapeButtons[1].highlighted)
+            { 
+                this.tooltipPopup.selectShape = this.currentChar.shapes[1];
+                this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.shapeButtons[0].y+40,"changeShape");
+            }
             if (this.shapeButtons[1].clickConfirm)
             {
                 this.shapeButtons[1].clickConfirm = 0;
@@ -648,6 +670,8 @@ class PartyMenuTooltip extends GameElement {
     public tooltipPrevious:string = "";
     public tooltipTime:number = 0;
     public selectAction:FightAction|null = null;
+    public selectAspect:DATA.aspectsType = "none";
+    public selectShape:DATA.shapesType = "none";
      
     constructor(engine:GameEngine,public partyMenu:CreatePartyMenu,x:number,y:number,public width:number,public height:number){
         super(engine,x,y,0);
@@ -696,7 +720,7 @@ class PartyMenuTooltip extends GameElement {
                     {
                         context.font = "16px '04b03'";
                         context.fillStyle = "black";
-                        context.fillText(this.selectAction.name,this.x+12,this.y+16);
+                        context.fillText(this.selectAction.name.toUpperCase(),this.x+12,this.y+16);
                         context.drawImage(DATA.aspectsRecord[this.selectAction.actionAspect].iconImg,this.x+8,this.y+24);
                         context.fillText(this.selectAction.actionAspect,this.x+24,this.y+36);
                          context.fillRect(this.x+4,this.y+60,312,2)
@@ -756,9 +780,10 @@ class PartyMenuTooltip extends GameElement {
                     context.fillText("click to change aspect",this.x+2,this.y+14); 
  
                     context.fillStyle = "black";
-                    const currentAspect = this.partyMenu.aspectButtons[0].aspectLabel;
-                    if (currentAspect!= null){const currentAspectObj = DATA.aspectsRecord[currentAspect];
-
+                    const currentAspect = this.selectAspect;
+                    if (currentAspect!= null && currentAspect != "none"){
+                        
+                        const currentAspectObj = DATA.aspectsRecord[currentAspect];
                         let textLine = 0;
                         context.drawImage(currentAspectObj.iconImg,this.x+4,this.y+22);
                         context.fillText(currentAspectObj.name.toUpperCase(),this.x+20,this.y+34); 
@@ -781,7 +806,30 @@ class PartyMenuTooltip extends GameElement {
 
                     }
 
-                break;
+                    break;
+
+                case "changeShape":
+                    this.width = 320;
+                    this.height = 120;
+                    context.font = "16px '04b03'";
+                    context.fillStyle = "blue";
+                    context.fillText("click to change shape",this.x+2,this.y+14); 
+
+                    context.fillStyle = "black";
+                    const currentShape = this.selectShape;
+
+                    if (currentShape!= "none"){
+                        
+                        const currentShapeObj = DATA.shapesRecord[currentShape];
+                        let textLine = 0; 
+                        context.drawImage(currentShapeObj.iconImg,this.x+4,this.y+22);
+                        context.fillText(currentShapeObj.name.toUpperCase(),this.x+20,this.y+34); 
+                        context.fillText(currentShapeObj.desc,this.x+20,this.y+50,this.width);  
+                    }
+
+
+
+                    break;
             }
             context.globalAlpha = 1;
         }
