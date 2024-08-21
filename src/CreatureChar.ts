@@ -22,6 +22,7 @@ import curseBeetleUrl from "./gfx/curse_beetle.png";
 import faeCritterUrl from "./gfx/fae_critter.png";
 import forestFeatherUrl from "./gfx/forest_feather.png";
 import abyssWormUrl from "./gfx/abyss_worm.png";
+import boneDinoUrl from "./gfx/bone_dinosaur.png";
 
 
 import { FightAction } from "./FightAction"; 
@@ -91,7 +92,7 @@ export class CreatureChar extends GameElement {
 
     loaded:boolean = false;
 
-    tempUrlArray:Array<any> = [crambUrl,octoUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl,foxUrl,fruitUrl,starBeheUrl,solarAntlerUrl,sandStingUrl,bloodNightmareUrl,curseBeetleUrl,faeCritterUrl,forestFeatherUrl,abyssWormUrl];
+    tempUrlArray:Array<any> = [crambUrl,octoUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl,foxUrl,fruitUrl,starBeheUrl,solarAntlerUrl,sandStingUrl,bloodNightmareUrl,curseBeetleUrl,faeCritterUrl,forestFeatherUrl,abyssWormUrl,boneDinoUrl];
  
     imageElem:HTMLImageElement = document.createElement("img");  
     imageAlpha:number = 1;
@@ -99,7 +100,7 @@ export class CreatureChar extends GameElement {
     constructor (public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0,public team = -1){
         super(engine,x,y,depth)
         let rando = Math.floor(Math.random()*this.tempUrlArray.length);
-        this.imageElem.src = this.tempUrlArray[rando];
+        //this.imageElem.src = this.tempUrlArray[rando];
 
         this.imageElem.onload = () => { 
             this.loaded = true;
@@ -126,7 +127,7 @@ export class CreatureChar extends GameElement {
 
         this.speed = Math.floor(Math.random()*7)+1;
          
-
+        this.resetStats();
     }
 
 
@@ -307,6 +308,51 @@ export class CreatureChar extends GameElement {
         else if (this.statPlus[6] === 2) {this.resistance *= 1.23; this.resistance +=14;}
         this.resistance = Math.round(this.resistance/12);
 
+        switch (this.shapes[0])
+        {
+            case "antler":
+                this.sprite = solarAntlerUrl; break;
+            case "beetle":
+                this.sprite = curseBeetleUrl; break;
+            case "behemoth":
+                this.sprite = starBeheUrl; break;
+            case "canine":
+                this.sprite = foxUrl; break;
+            case "crab":
+                this.sprite = crambUrl; break;
+            case "crawler":
+                this.sprite = centiUrl; break;
+            case "critter":
+                this.sprite = faeCritterUrl; break;
+            case "dinosaur":
+                this.sprite = boneDinoUrl; break;
+            case "dragon":
+                this.sprite = boneDinoUrl; break;
+            case "feather":
+                this.sprite = forestFeatherUrl; break;
+            case "feline":
+                this.sprite = nekoUrl; break;
+            case "fruit":
+                this.sprite = fruitUrl; break;
+            case "hydra":
+                this.sprite = hydraUrl; break;
+            case "kraken":
+                this.sprite = octoUrl; break;
+            case "leviathan":
+                this.sprite = sharkyUrl; break;
+            case "mycon":
+                this.sprite = mashUrl; break;
+            case "nightmare":
+                this.sprite = bloodNightmareUrl; break;
+            case "stinger":
+                this.sprite = sandStingUrl; break;
+            case "worldtree":
+                this.sprite = treeUrl; break;
+            case "worm":
+                this.sprite = abyssWormUrl; break;
+        }
+        this.imageElem.src = this.sprite;
+
         this.createActions();
     } 
 
@@ -397,7 +443,7 @@ export class CreatureChar extends GameElement {
                             targetAspect[i][1] = effectParams[0];
                         break;
                         case "targetType":
-                             
+                            newAction.targetType = DATA.targetsList[effectParams[0]];
                         break;
                     }
                 }

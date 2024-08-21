@@ -27,6 +27,9 @@ class GameButton extends GameElement {
 
     public disabled:boolean = false;
     public active:boolean = true;
+    public mouseOverActive:boolean = true;
+    public mouseOvering:boolean = false;
+
 
     public highlighted:boolean = false;
 
@@ -36,6 +39,8 @@ class GameButton extends GameElement {
 
     public mainColor:string = "rgb(100,100,160)";
     public outlineColor:string = "black";
+
+
 
     constructor(engine:GameEngine, public x:number = 0,public y:number = 0,public width:number = 50, public height:number = 30,public text:string = "",public depth:number = 0, public type:BUTTONT = "text") {
         super(engine,x,y,depth); 
@@ -58,17 +63,22 @@ class GameButton extends GameElement {
         context.fillStyle = this.mainColor;
         context.filter = "brightness(1.2) grayscale(0.6)";
         
-        if (this.engine.MouseInRect(this.x,this.y,this.width,this.height) && !this.disabled && this.active)
+        this.mouseOvering = false;
+        if (this.engine.MouseInRect(this.x,this.y,this.width,this.height) && !this.disabled && this.mouseOverActive)
             {
                 context.filter = "brightness(1.3)";
                 this.highlighted = true;
-                document.body.style.cursor = 'pointer';
+                this.mouseOvering = true;
 
-                if (this.engine.leftClick === 1)
+                if (this.active)
+                { document.body.style.cursor = 'pointer'; }
+                else { document.body.style.cursor = 'help';} 
+
+                if (this.engine.leftClick === 1 && this.active)
                     {
                         this.clicked = 1;
                     }
-                if (this.engine.leftRelease > 0 && this.clicked > 0)
+                if (this.engine.leftRelease > 0 && this.clicked > 0 && this.active)
                     {
                         this.clickConfirm = this.clicked;
                         this.clicked = 0;

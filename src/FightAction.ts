@@ -13,9 +13,9 @@ export class FightAction {
     
     name:string = "default action"+String(Math.floor(Math.random()*1000));
     actionType:DATA.actionType = "physical";
-    targetType:DATA.targetType = "single";
-
+    targetType:DATA.targetType = "single"; 
     actionAspect:DATA.aspectsType = "fire";
+    description:string = "basic attack";
     
     priority:number = 0;
     power:number = 10;

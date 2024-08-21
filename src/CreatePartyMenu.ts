@@ -5,6 +5,7 @@ import GameEngine from "./GameEngine";
 
 import * as DATA from "./Data";
 import { ScrollMenu } from "./ScrollMenu";
+import { FightAction } from "./FightAction";
 
 export class GameParty {
     public partyName:string = "new party";
@@ -13,7 +14,8 @@ export class GameParty {
 }
 
 type PartyMenuStep = "basic" | "scrollmenu" | "renameChar";
-type PartyPopupTypes = "none" | "renameChar" | "renameCharExtended" | "changeAspect" | "changeEmptyAspect";
+type PartyPopupTypes = "none" | "renameChar" | "renameCharExtended" | "changeAspect" | "changeEmptyAspect" | "actionInfo";
+ 
 
 export class CreatePartyMenu extends GameElement {
 
@@ -23,6 +25,8 @@ export class CreatePartyMenu extends GameElement {
 
     public selectCharIndex = -1;
     public currentChar:CreatureChar|null = null;
+
+    public selectAction:FightAction|null = null;
 
     createPartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"create party",0,"text");
     testPartyButton:GameButton = new GameButton(this.engine,192,32,60,20,"test",0,"text");
@@ -68,7 +72,11 @@ export class CreatePartyMenu extends GameElement {
         super(engine,x,y,depth);  
 
         this.tooltipPopup =  new PartyMenuTooltip(engine,this,0,0,200,30);
-
+        this.loadParties();
+        if (this.playerParties.length > 0)
+        {
+            this.currentParty = this.playerParties[0];
+        }
     }
 
 
@@ -200,6 +208,7 @@ export class CreatePartyMenu extends GameElement {
                     newChar.resetStats();
                     this.currentChar = newChar;
                     this.currentParty.characterList.push(newChar);
+                    this.saveParties();
                 }
             } 
         } 
@@ -383,12 +392,19 @@ export class CreatePartyMenu extends GameElement {
             context.fillText("SOUL: ",charMenuX+192,charMenuY+182);
             context.fillText("HALFSOUL: ",charMenuX+192,charMenuY+200); 
 
+            //actions 
             for (let i=0; i < 4; i++)
             {
                 const button = this.actionButtons[i];
                 button.active = false;
                 button.actionLabel = this.currentChar.actions[i];
                 button.drawFunction(context);
+                if (button.mouseOvering)
+                {
+                    this.tooltipPopup.tooltipFunction(charMenuX+22,charMenuY+82,"actionInfo");
+                    if (this.tooltipPopup.tooltipTime < 20) { this.tooltipPopup.tooltipTime = 25;}
+                    this.tooltipPopup.selectAction = this.currentChar.actions[i];
+                }
             }
         }
         
@@ -427,6 +443,7 @@ export class CreatePartyMenu extends GameElement {
                         }
                         this.createStep = "basic";
                         this.reactivateButtons();
+                        this.saveParties();
                     }
                 else if (this.engine.rightClick > 0)
                     {
@@ -456,6 +473,7 @@ export class CreatePartyMenu extends GameElement {
                                     this.currentChar.name = this.engine.censorship(this.currentChar.name);
                                     this.createStep = "basic";
                                     this.reactivateButtons();
+                                    this.saveParties();
                                 }
                             
                         }
@@ -464,6 +482,7 @@ export class CreatePartyMenu extends GameElement {
                             this.currentChar.name = this.oldName;
                             this.createStep = "basic";
                             this.reactivateButtons();
+                            this.saveParties();
                         }
                 }
                 else if (this.engine.rightClick > 0 && this.currentParty != null)
@@ -514,6 +533,112 @@ export class CreatePartyMenu extends GameElement {
                 context.globalAlpha = 1;
 
     }
+
+    saveParties = () =>{
+        localStorage.setItem("partyNum",String(this.playerParties.length));
+        for (let i =0; i < this.playerParties.length; i++)
+        {
+            const currentSaveParty = this.playerParties[i];
+            let partyStr = currentSaveParty.partyName+"@";
+            for (let j =0; j < currentSaveParty.characterList.length; j++)
+            {
+                const currentSaveChar = currentSaveParty.characterList[j];
+                partyStr += currentSaveChar.name + "@";
+                partyStr += currentSaveChar.aspectTypes[0]+"-";
+                if (currentSaveChar.aspectTypes.length > 0)
+                {partyStr += currentSaveChar.aspectTypes[1] + "-";}
+                else { partyStr+= "none-"}
+                partyStr += currentSaveChar.shapes[0] + "-";
+                partyStr += currentSaveChar.shapes[1] + "-";
+                for (let k = 0; k < currentSaveChar.statPlus.length; k++)
+                {
+                    partyStr += String(currentSaveChar.statPlus[k]);
+                }
+            }
+            localStorage.setItem("party"+String(i),partyStr);
+        }
+    }
+
+    loadParties = () => {
+        this.playerParties = [];
+        const partyNum = Number(localStorage.getItem("partyNum"));
+        for (let i=0; i < partyNum; i++)
+        {
+            let saveStr = localStorage.getItem("party"+String(i));
+            if (saveStr != undefined)
+            {
+                const newParty = new GameParty();
+                let saveIndex = saveStr?.indexOf("@");
+                newParty.partyName = saveStr?.slice(0,saveIndex);
+                saveStr = saveStr.slice(saveIndex+1);
+                this.playerParties.push(newParty);
+                while (saveStr.indexOf("@") >= 0)
+                {
+                    const newChar = new CreatureChar(this.engine,-99,-99,0,0);
+                    newParty.characterList.push(newChar);
+                    saveIndex = saveStr?.indexOf("@");
+                    newChar.name = saveStr.slice(0,saveIndex);
+                    
+                    let checkArray:Array<string> = [...DATA.aspectsList];
+                    saveStr = saveStr?.slice(saveIndex+1);
+                    saveIndex = saveStr.indexOf("-");
+                    let stringo = saveStr.slice(0,saveIndex);
+                    let stringoAspect:DATA.aspectsType
+                    let stringoShape:DATA.shapesType;
+                    console.log("stringo ",stringo)
+                    newChar.aspectTypes = [];
+                    if (checkArray.includes(stringo))
+                    {
+                        console.log("catgirls??")
+                        stringoAspect = stringo as DATA.aspectsType;
+                        newChar.aspectTypes[0] = stringoAspect; 
+                    }
+                    saveStr = saveStr?.slice(saveIndex+1);
+
+                    saveIndex = saveStr?.indexOf("-"); 
+                    stringo = saveStr.slice(0,saveIndex);
+                    if (stringo != "none" && checkArray.includes(stringo))
+                    {
+                        stringoAspect = stringo as DATA.aspectsType;
+                        newChar.aspectTypes[1] = stringoAspect; 
+                    }
+                    saveStr = saveStr?.slice(saveIndex+1);
+
+                    saveIndex = saveStr?.indexOf("-"); 
+                    stringo = saveStr.slice(0,saveIndex);
+                    checkArray = [...DATA.shapesList];
+                    if (checkArray.includes(stringo))
+                    {
+                        stringoShape = stringo as DATA.shapesType;
+                        newChar.shapes[0] = stringoShape; 
+                    }
+                    saveStr = saveStr?.slice(saveIndex+1);
+
+                    saveIndex = saveStr?.indexOf("-"); 
+                    stringo = saveStr.slice(0,saveIndex);
+                    checkArray = [...DATA.shapesList];
+                    if (checkArray.includes(stringo))
+                    {
+                        stringoShape = stringo as DATA.shapesType;
+                        newChar.shapes[1] = stringoShape; 
+                    }
+                    saveStr = saveStr?.slice(saveIndex+1);
+                    console.log("remains ",saveStr);
+                    for (let j =0; j < newChar.statPlus.length; j++)
+                    {
+                        newChar.statPlus[j] = Number(saveStr[0]);
+                        saveStr = saveStr?.slice(1);
+                    }
+                    console.log("remains2 ",saveStr);
+
+
+                    
+                    newChar.resetStats();
+                }
+            }
+        }
+        
+    }
 }
 
 class PartyMenuTooltip extends GameElement {
@@ -522,6 +647,7 @@ class PartyMenuTooltip extends GameElement {
     public tooltipType:PartyPopupTypes = "none";
     public tooltipPrevious:string = "";
     public tooltipTime:number = 0;
+    public selectAction:FightAction|null = null;
      
     constructor(engine:GameEngine,public partyMenu:CreatePartyMenu,x:number,y:number,public width:number,public height:number){
         super(engine,x,y,0);
@@ -562,6 +688,65 @@ class PartyMenuTooltip extends GameElement {
                     context.fillStyle = "blue";
                     context.fillText("press enter to accept",this.x+2,this.y+32);
                     context.fillText("right click to cancel",this.x+2,this.y+50);
+                break;
+                case "actionInfo":
+                    this.width = 320;
+                    this.height = 140;
+                    if (this.selectAction != null)
+                    {
+                        context.font = "16px '04b03'";
+                        context.fillStyle = "black";
+                        context.fillText(this.selectAction.name,this.x+12,this.y+16);
+                        context.drawImage(DATA.aspectsRecord[this.selectAction.actionAspect].iconImg,this.x+8,this.y+24);
+                        context.fillText(this.selectAction.actionAspect,this.x+24,this.y+36);
+                         context.fillRect(this.x+4,this.y+60,312,2)
+
+                        context.fillText(this.selectAction.description,this.x+8,this.y+76);
+                        switch(this.selectAction.targetType)
+                        {
+                            case "single":
+                            context.fillText("single target",this.x+12,this.y+52); break; 
+                            case "double":
+                            context.fillText("target enemies",this.x+12,this.y+52); break;
+                            case "aoe":
+                            context.fillText("target others",this.x+12,this.y+52); break;
+                            case "all":
+                            context.fillText("target everyone",this.x+12,this.y+52); break;
+                            case "ally":
+                            context.fillText("target ally",this.x+12,this.y+52); break;
+                            case "self":
+                            context.fillText("target self",this.x+12,this.y+52); break;
+                            case "front":
+                            context.fillText("target front",this.x+12,this.y+52); break;
+                            case "diagonal":
+                            context.fillText("target diagonal",this.x+12,this.y+52); break;
+                            case "other":
+                            context.fillText("other target",this.x+12,this.y+52); break;
+                        }
+                        switch(this.selectAction.actionType)
+                        {
+                            case "physical":
+                                context.drawImage(this.engine.physImage,this.x+138,this.y+23);
+                                context.fillText("physical attack",this.x+154,this.y+36);
+                                context.fillText("power: "+String(this.selectAction.power),this.x+184,this.y+52);
+                                break;
+                            case "magical":
+                                context.drawImage(this.engine.magImage,this.x+138,this.y+23);
+                                context.fillText("magical attack",this.x+154,this.y+36);
+                                context.fillText("power: "+String(this.selectAction.power),this.x+184,this.y+52);
+                                break;
+                            case "strongest":
+                                context.drawImage(this.engine.strongestImage,this.x+138,this.y+23);
+                                context.fillText("adaptable attack",this.x+154,this.y+36);
+                                context.fillText("power: "+String(this.selectAction.power),this.x+184,this.y+52);
+                                break;
+                            case "status":
+                                context.drawImage(this.engine.strongestImage,this.x+138,this.y+23);
+                                context.fillText("status action",this.x+154,this.y+36); 
+                                break; 
+                        }
+
+                    }
                 break;
                 case "changeAspect":
                     this.width = 320;

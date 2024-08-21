@@ -21,7 +21,7 @@ export type halfStatus = "beast" | "";
 
 export type soulType = "natural" | "mirror" | "shadow" | "symbiosis" | "chaos" | "primordial" | "none";
 
-export type actionType = "physical" | "magical" | "strongest" | "status";
+export type actionType = "physical" | "magical" | "strongest" | "status" | "protect";
 
 export type targetType = "single" | "double" | "aoe" | "self" | "ally" | "front" | "diagonal" | "all" | "other";
 
@@ -766,7 +766,7 @@ for (let i =0 ;i < shapesList.length; i++)
      addEffects(currentAspect,null,"neutral","skeleton",4, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"strong","tooth",-2, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"weak","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"burst","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"burst","fracture",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"harmony","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"devour","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"parasitic","bone",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -2294,7 +2294,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addEffects(null,currentShape,"strong","flare",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"weak","slumber",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"burst","outrage",-1, [ ["basepower",[10]],["physical",[2]] ]);
-        addEffects(null,currentShape,"harmony","breath",-3, [ ["basepower",[10]],["magical",[99]] ]);
+        addEffects(null,currentShape,"harmony","breath",-3, [ ["basepower",[10]],["magical",[99]],["targetType",[targetsList.indexOf("double")]] ]);
         addEffects(null,currentShape,"devour","cataclysm",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"parasitic","treasure",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"catalyst","awaken",15, [ ["basepower",[10]],["strongest",[1]] ]);

@@ -99,8 +99,8 @@ export class FightMatch extends GameElement {
         { this.spriteContext =  spriteContexter;}
         else
         { this.spriteContext = engine.context; }
-        if (spriteContexter != null)
-        {this.popupContext =  spriteContexter;}
+        if (popupContexter != null)
+        {this.popupContext =  popupContexter;}
         else
         {this.popupContext = engine.context; }
 
