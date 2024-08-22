@@ -23,6 +23,7 @@ import faeCritterUrl from "./gfx/fae_critter.png";
 import forestFeatherUrl from "./gfx/forest_feather.png";
 import abyssWormUrl from "./gfx/abyss_worm.png";
 import boneDinoUrl from "./gfx/bone_dinosaur.png";
+import stormsDragonUrl from "./gfx/storms_dragon.png";
 
 
 import { FightAction } from "./FightAction"; 
@@ -325,9 +326,7 @@ export class CreatureChar extends GameElement {
             case "critter":
                 this.sprite = faeCritterUrl; break;
             case "dinosaur":
-                this.sprite = boneDinoUrl; break;
-            case "dragon":
-                this.sprite = boneDinoUrl; break;
+                this.sprite = boneDinoUrl; break; 
             case "feather":
                 this.sprite = forestFeatherUrl; break;
             case "feline":
@@ -350,6 +349,8 @@ export class CreatureChar extends GameElement {
                 this.sprite = treeUrl; break;
             case "worm":
                 this.sprite = abyssWormUrl; break;
+            case "dragon":
+                this.sprite = stormsDragonUrl; break;
         }
         this.imageElem.src = this.sprite;
 

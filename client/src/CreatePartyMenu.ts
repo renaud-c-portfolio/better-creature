@@ -264,8 +264,7 @@ export class CreatePartyMenu extends GameElement {
             if (this.aspectButtons[0].highlighted)
             {
                 this.tooltipPopup.selectAspect = this.currentChar.aspectTypes[0];
-                this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.aspectButtons[0].y+40,"changeAspect");
-                this.changeIndex = 0;
+                this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.aspectButtons[0].y+40,"changeAspect"); 
             }
             if (this.aspectButtons[0].clickConfirm)
                 {
@@ -289,8 +288,7 @@ export class CreatePartyMenu extends GameElement {
                     }
                     else
                     {this.tooltipPopup.selectAspect = this.currentChar.aspectTypes[1];
-                    this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.aspectButtons[0].y+40,"changeAspect");}
-                    this.changeIndex = 0;
+                    this.tooltipPopup.tooltipFunction(this.aspectButtons[0].x-40,this.aspectButtons[0].y+40,"changeAspect");} 
                 }
             if (this.aspectButtons[1].clickConfirm)
                 {
@@ -523,25 +521,41 @@ export class CreatePartyMenu extends GameElement {
     }
 
     deactivateButtons = () => {
-        this.createPartyButton.active = false;
-        this.addCharButton.active = false;
+        this.createPartyButton.mouseOverActive = false;
+        this.addCharButton.mouseOverActive = false;
+        this.testPartyButton.mouseOverActive = false;
+        
         for (let i=0 ;i < this.aspectButtons.length; i++)
             {
                 this.aspectButtons[i].active = false;
+                this.aspectButtons[i].mouseOverActive = false;
                 this.shapeButtons[i].active = false;
+                this.shapeButtons[i].mouseOverActive = false;
             }  
+        for (let i =0 ;i < 4; i++)
+        {
+            this.actionButtons[i].mouseOverActive = false;
+        }
     }
 
     reactivateButtons = () => {
-        this.createPartyButton.active = true;
-        this.addCharButton.active = true;
+        this.createPartyButton.mouseOverActive = true;
+        this.addCharButton.mouseOverActive = true;
+        this.testPartyButton.mouseOverActive = true;
+
         for (let i=0 ;i < this.aspectButtons.length; i++)
             {
                 this.aspectButtons[i].active = true;
+                this.aspectButtons[i].mouseOverActive = true;
                 this.shapeButtons[i].active = true;
+                this.shapeButtons[i].mouseOverActive = true;
                 this.aspectButtons[i].outlineColor = "black";
                 this.shapeButtons[i].outlineColor = "black";
             } 
+            for (let i =0 ;i < 4; i++)
+            {
+                this.actionButtons[i].mouseOverActive = true;
+            }
     } 
 
 
