@@ -1,4 +1,6 @@
-const express = require('express'); 
+import express, { Request, Response } from "express";
+import dotenv from "dotenv";
+
 const router = express.Router();
 
 /*
@@ -9,8 +11,9 @@ const logoutHandler = require('./handlers/logoutHandler');
 const uploadEditPack = require('./handlers/uploadEditPack');
 const getUserPacks = require('./handlers/getUserPacks');
 const downloadBasicPacks = require('./handlers/downloadBasicPacks'); 
-*/
+*/ 
 router.use(express.json()); 
+
 /*
 router.post('/login', loginHandler);  
 
@@ -21,14 +24,14 @@ router.post('/uploadPack', uploadEditPack);
 router.get('/userPacks', getUserPacks); 
 router.get('/basicPacks', downloadBasicPacks);  
 //router.get('/teamPacks/:teamId', null); 
-
+*/
  
 
-router.all("*", (req, res) => {
+router.all("*", (req:Request, res:Response) => {
     res.status(404).json({
     status: 404,
     message: "wrong endpoint. point to another end",
     });
-})*/
+}); 
 
 module.exports = router;
