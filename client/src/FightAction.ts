@@ -51,9 +51,7 @@ export class FightAction {
     constructor(public user:CreatureChar) {
         let random1 = tempNames[Math.floor(Math.random()*tempNames.length)];
         let random2 = tempNames[Math.floor(Math.random()*tempNames.length)];
-        this.name = random1 + " " + random2;
-        let randomAspect = DATA.aspectsList[Math.floor(Math.random()*DATA.aspectsList.length)];
-        this.actionAspect = randomAspect;
+        this.name = random1 + " " + random2; 
         let randomType = Math.floor(Math.random()*3);
         this.power = Math.floor(Math.random()*45)+5;
         if (randomType === 1) {this.actionType = "magical"; this.actionEffects[3] = ["magicAttack","target"]; }
@@ -66,6 +64,7 @@ export class FightAction {
         const newEvent = new FightAction(user); 
         
         newEvent.name = this.name;
+        newEvent.actionAspect = this.actionAspect;
         newEvent.actionType = this.actionType;
         newEvent.priority = this.priority;
         newEvent.eventPriority = this.priority;
@@ -137,11 +136,12 @@ export class FightAction {
                             if (this.actionEffectTimers[this.effectIndex] === 1)
                             {
                                 targetChar = fightMatch.getCharFromNumber(this.currentTarget); 
+                                console.log("attack aspect ",this.actionAspect);
                                 this.totalMult = this.getTypeMult(this.actionAspect,targetChar); 
 
                                 let finalDamage = Math.round(((this.power*this.user.muscle/10) - targetChar.armor)*this.totalMult);
                                 finalDamage *= this.totalMult;
-                                if (finalDamage < 0){finalDamage = 0};
+                                if (finalDamage < 0){finalDamage = 0};  
                                 targetChar.damaged += finalDamage;
                                 targetChar.HP -= finalDamage;
                                 this.totalDamage += finalDamage;
@@ -159,6 +159,8 @@ export class FightAction {
                                         break;
                                     case 0: fightMatch.actionsMessage2 = "No Effect!! "
                                         break;
+                                    case 1: break;
+                                    default: fightMatch.actionsMessage2 = "Weird math "+String(this.totalMult)+"?? "
                                 }
                             } 
                         break;
@@ -187,6 +189,8 @@ export class FightAction {
                                         break;
                                     case 0: fightMatch.actionsMessage2 = "No Effect!! "
                                         break;
+                                        case 1: break;
+                                        default: fightMatch.actionsMessage2 = "Weird math "+String(this.totalMult)+"?? "
                                 }
                             } 
                          
@@ -368,6 +372,8 @@ export class FightAction {
             }
             
         }
+        
+        console.log(attackType,targetCreature,targetCreature.aspectTypes[0],mult);
         return mult;
     }
  

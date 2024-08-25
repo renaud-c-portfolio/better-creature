@@ -823,8 +823,8 @@ for (let i =0 ;i < shapesList.length; i++)
  
      currentAspect.desc = "the  power of blood, ";
 
-     addEffects(currentAspect,null,"neutral","bloodletting",0, [ ["basepower",[10]],["strongest",[1]] ]);
-     addEffects(currentAspect,null,"strong","hemorrhage",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"neutral","bloodlet",0, [ ["basepower",[10]],["strongest",[1]] ]);
+     addEffects(currentAspect,null,"strong","anemia",-10, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"weak","wound",0, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"burst","heart",-5, [ ["basepower",[10]],["strongest",[1]] ]);
      addEffects(currentAspect,null,"harmony","transfusion",0, [ ["basepower",[10]],["strongest",[1]] ]);
@@ -2246,7 +2246,7 @@ for (let i =0 ;i < shapesList.length; i++)
 
 
         addEffects(null,currentShape,"neutral","venomfang",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(null,currentShape,"strong","tri-bite",0, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(null,currentShape,"strong","tri-bite",0, [ ["basepower",[10]],["physical",[3]] ]);
         addEffects(null,currentShape,"weak","coil",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"burst","tri-spit",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(null,currentShape,"harmony","constrict",0, [ ["basepower",[10]],["strongest",[1]] ]);
