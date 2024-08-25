@@ -361,7 +361,7 @@ export class CreatureChar extends GameElement {
 
         let newAction = new FightAction(creature);
 
-        let basePower = 1;  
+        let basePower = 0;  
         let powerMult = 1; 
         let powerBonus = 0; 
         
@@ -439,6 +439,11 @@ export class CreatureChar extends GameElement {
                             targetAspect[i][0] = realmAspects[i];
                             targetAspect[i][1] = effectParams[0];
                         break;
+                        
+                        case "setOthersAspect": //TODO fix this lol
+                            targetAspect[i][0] = realmAspects[opposite];
+                            targetAspect[i][1] = effectParams[0];
+                        break;
                         case "setOthersRealmAspect":
                             targetAspect[i][0] = realmAspects[opposite];
                             targetAspect[i][1] = effectParams[0];
@@ -469,11 +474,20 @@ export class CreatureChar extends GameElement {
 
         basePower = basePower/2; 
 
+        let spaceCheck = " ";
         if (halfName[0][1] + tieBreaker > halfName[1][1])
             {
-                newAction.name = halfName[0][0] + " " + halfName[1][0];
+                if (halfName[1][0].charAt(0) === "-" || halfName[0][0].charAt(halfName[0][0].length-1) === "-") {spaceCheck = "";}
+                newAction.name = halfName[0][0] + spaceCheck + halfName[1][0];
             }
-            else {newAction.name = halfName[1][0] + " " + halfName[0][0];  }
+            else {
+                if (halfName[0][0].charAt(0) === "-"  || halfName[1][0].charAt(halfName[0][0].length-1) === "-") {spaceCheck = "";}
+                newAction.name = halfName[1][0] + spaceCheck + halfName[0][0];  
+            }
+        if (halfName[0][0] === "-rex" || halfName[1][0] === "-rex")
+        {
+            newAction.name = "t-"+newAction.name;
+        }
         
         newAction.power = Math.round(basePower*powerMult);
         return newAction;

@@ -28,6 +28,8 @@ export class CreatePartyMenu extends GameElement {
 
     public selectAction:FightAction|null = null;
 
+    public partySize:number = 8;
+
     createPartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"create party",0,"text");
     testPartyButton:GameButton = new GameButton(this.engine,192,32,60,20,"test",0,"text");
     renamePartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"rename",0,"text");
@@ -116,6 +118,15 @@ export class CreatePartyMenu extends GameElement {
             this.playerParties.push(newParty);
             newParty.partyName += String(this.playerParties.length);
             this.currentParty = newParty;
+            for (let i =0; i < this.partySize; i++)
+            {
+                const newChar = new CreatureChar(this.engine,-100,-100,-55,0);
+                newChar.resetStats(); 
+                newChar.name = "new creature "+String(i+1);
+                this.currentParty.characterList.push(newChar);
+            }
+            this.currentChar = this.currentParty.characterList[0];
+            this.saveParties();
         }
 
         if (this.playerParties.length > 1)
@@ -479,8 +490,11 @@ export class CreatePartyMenu extends GameElement {
                     this.tooltipPopup.tooltipPrevious = "renameCharExtended";
                     this.tooltipPopup.tooltipTime = 99;
                     if (this.engine.keyPressed === 1)
-                        {
-                            if (this.engine.lastKeyChar.length === 1 && this.currentChar.name.length < 16)
+                        { 
+                            const checkAlphaNum = (this.engine.lastKeyChar.toUpperCase() != this.engine.lastKeyChar.toLowerCase() || !Number.isNaN(Number(this.engine.lastKeyChar)));
+                            console.log("hello ",Number(this.engine.lastKeyChar))
+
+                            if ( (this.engine.lastKeyChar === " " && this.currentChar.name.length > 0 || this.engine.lastKeyChar != " " && checkAlphaNum)  && this.engine.lastKeyChar.length === 1 && this && this.currentChar.name.length < 16)
                                 {
                                     this.currentChar.name += this.engine.lastKeyChar; 
                                 }

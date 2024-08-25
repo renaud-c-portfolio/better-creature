@@ -194,21 +194,18 @@ const changeInfoTab = (tab:HTMLDivElement) => {
 const ResizeCanvas = (canvas:HTMLCanvasElement) => {
   let ratio = Math.floor(Math.max(gameWidth,window.innerWidth)/gameWidth);
   let ratio2 = Math.floor(Math.max(gameHeight,window.innerHeight)/gameHeight); 
+  let finalRatio = 1;
   if (ratio2 >= ratio)
-  {
-    canvas.style.width =  String(gameWidth*ratio)+"px";
-    leftContainer.style.width = canvas.style.width;
-    rightContainer.style.width = String(window.innerWidth-gameWidth*ratio)+"px";
-    partyBuildTab.style.fontSize = String(16*ratio)+"px";
-  }
+  {  finalRatio = ratio; }
   else
-  {
-    canvas.style.width =  String(gameWidth*ratio2)+"px";
-    leftContainer.style.width = canvas.style.width;
-    rightContainer.style.width = String(window.innerWidth-gameWidth*ratio2)+"px";
-    partyBuildTab.style.fontSize = String(16*ratio2)+"px";
-    
-  }
+  { finalRatio = ratio2; }
+  
+  canvas.style.width =  String(gameWidth*finalRatio)+"px";
+  leftContainer.style.width = canvas.style.width;
+  rightContainer.style.width = String(window.innerWidth-gameWidth*finalRatio)+"px";
+  partyBuildTab.style.fontSize = String(16*finalRatio)+"px";
+
+  
 } 
 
 StartApp();

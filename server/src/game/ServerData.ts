@@ -1,8 +1,3 @@
-import { shape } from "./game/shapes/shapes";
-
-
- 
-const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspecticons/*.png',{ eager: true });
 
 export type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "speed" | "agility" | "none";
 export type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
@@ -40,18 +35,7 @@ export const targetsList:Array<targetType> = ["single" , "double" , "aoe" , "sel
 
 export const iconImages = new Map();
 
-export const statusEffects = [];  
-
-const preloader = document.createElement("img");
-
-Object.entries(iconUrls).map(([url, promise])=>{
-    let iconName = url;
-    iconName = iconName.replace("./gfx/aspecticons/icon-","");
-    iconName = iconName.replace(".png","");
-    const imageSource = promise.default;
-    console.log("images ",iconName,)
-    iconImages.set(iconName,imageSource);
-}); 
+export const statusEffects = [];   
 
 export class Aspect {
 
