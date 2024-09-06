@@ -1162,64 +1162,7 @@ export class FightMatch extends GameElement {
 
 }
 
-
-
-export class FightEvent { 
-     
-    public name:string = "default event";
-    public user:null|CreatureChar = null;
-    public referenceAction:null|FightAction = null;
-    public eventOver:boolean = false; 
  
-    public effectIndex:number = 0;
-
-    public eventSpeed:number = 0;
-    public eventPriority:number = 0;
-
-    public totalTime:number = 0;
-    public effectTime:number = 0;
-      
-
-     
-    constructor(public match:FightMatch, public eventEffects:Array<any>) {
-         
-    }
-
-    
-   
- 
-
-
-    ExecuteEvent = () => {
-        if (this.eventEffects.length > 0)
-            {
-                if (this.effectIndex < this.eventEffects.length)
-                {
-                    const currentEffect = this.eventEffects[this.effectIndex];  
-                    currentEffect.ExecuteEffect();
-                    if (currentEffect.effectOver)
-                    {
-                        this.effectIndex += 1;
-                        //todo prolly destroy the effect or smth
-                    }
-                }
-                else
-                {
-                    this.eventOver = true;
-                }
-                
-                 
-            }
-        else
-            {
-                this.eventOver = true; 
-            }
-            
-    }
-
-    
-    
-}  
 
 
 

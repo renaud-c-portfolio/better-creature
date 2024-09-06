@@ -6,7 +6,7 @@ const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspectico
 
 export type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "speed" | "agility" | "none";
 export type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
-export type aspectsType = "fire" | "steel" | "fae" | "bugs" | "beast" | "bone" | "blood" | "hell" | "forest" | "solar" | "stars" | "abyss" | "machine" | "void" | "sands" | "rot" | "curse" | "heavens" | "storms" | "lifespring" | "none";
+export type aspectsType = "fire" | "steel" | "fae" | "bugs" | "beast" | "bone" | "blood" | "hell" | "forest" | "solar" | "stars" | "abyss" | "machine" | "void" | "sands" | "rot" | "curse" | "heavens" | "storms" | "lifespring" | "imago" | "mortal" | "none";
 export type shapesType = "beetle" | "crawler"| "stinger" | "nightmare" | "canine" | "feline" | "critter" | "antler" | "feather" | "fruit" | "mycon" | "worldtree" | "worm" | "crab" | "kraken" | "leviathan" | "hydra" | "dinosaur" | "behemoth" | "dragon" | "none";
 
 export type attackInteract = "normal" | "strong" | "resisted" | "nothing" | "rot" | "resistedrot";
@@ -33,6 +33,7 @@ export type actionEffects = "physical" | "magical" | "strongest" | "statusonly" 
 ;
 
 export const aspectsList:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms","lifespring"];
+export const aspectsListExtended:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms","lifespring"];
 export const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","feather","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
 export const realmsList:Array<realm> = ["earthly","ascended","fallen"];
 export const targetsList:Array<targetType> = ["single" , "double" , "aoe" , "self" , "ally" , "front" , "diagonal" , "all", "other"];
@@ -448,7 +449,7 @@ for (let i =0 ;i < shapesList.length; i++)
     addAspectRelationship(currentAspect.typeStr,"solar",null,      "parasitic","harmony","earthly");
     addAspectRelationship(currentAspect.typeStr,"stars",null,      "neutral","neutral","earthly");
     addAspectRelationship(currentAspect.typeStr,"abyss",null,      "weak","devour","earthly");
-    addAspectRelationship(currentAspect.typeStr,"machine",null,    "catalyst","harmony","earthly");
+    addAspectRelationship(currentAspect.typeStr,"machine",null,    "burst","burst","earthly");
     addAspectRelationship(currentAspect.typeStr,"void",null,       "weak","weak","earthly");
     addAspectRelationship(currentAspect.typeStr,"sands",null,      "weak","devour","earthly");
     addAspectRelationship(currentAspect.typeStr,"rot",null,        "burst","parasitic","earthly");
@@ -1235,13 +1236,13 @@ for (let i =0 ;i < shapesList.length; i++)
         addEffects(currentAspect,null,"neutral","gear",0, [ ["basepower",[10]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"strong","cannon",-2, [ ["basepower",[30]],["strongest",[1]] ]);
         addEffects(currentAspect,null,"weak","scrap",0, [ ["basepower",[10]],["strongest",[1]] ]);
-        addEffects(currentAspect,null,"burst","driver",0, [ ["basepower",[20]],["physical",[1]] ]);
+        addEffects(currentAspect,null,"burst","laser",-1, [ ["basepower",[20]],["magical",[3]],["setAspect", [aspectsRecord["fire"].index, 1]],["setOthersAspect", [1]],["setOthersRealmAspect", [1]] ]);
         //
         addEffects(currentAspect,null,"harmony","wheel",-2, [ ["basepower",[10]],["strongest",[1]] ]);
         //
         addEffects(currentAspect,null,"devour","explosion",0, [ ["basepower",[30]],["strongest",[1]], ["targetType",[targetsList.indexOf("aoe")]] ]);
         //
-        addEffects(currentAspect,null,"parasitic","drill",-1, [ ["basepower",[10]],["strongest",[1]] ]);
+        addEffects(currentAspect,null,"parasitic","drill",-1, [ ["basepower",[10]],["physical",[1]] ]);
         //
         addEffects(currentAspect,null,"catalyst","homing",20, [ ["basepower",[6]],["strongest",[1]] ]);
         //never misses
@@ -1277,7 +1278,7 @@ for (let i =0 ;i < shapesList.length; i++)
         addAspectRelationship(currentAspect.typeStr,null,"hydra",      "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"dinosaur",   "strong","weak","earthly");
         addAspectRelationship(currentAspect.typeStr,null,"behemoth",   "strong","weak","earthly");
-        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "strong","weak","earthly");
+        addAspectRelationship(currentAspect.typeStr,null,"dragon",     "burst","harmony","earthly");
 
         currentAspect.realmAspectRecord["ascended"] = "bugs";
         currentAspect.realmAspectRecord["fallen"] = "steel";  

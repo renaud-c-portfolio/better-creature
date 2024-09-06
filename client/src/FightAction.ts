@@ -1,5 +1,4 @@
-import CreatureChar from "./CreatureChar";
-import { FightEvent } from "./FightEvent";
+import CreatureChar from "./CreatureChar"; 
 import FightMatch from "./FightMatch";
 
 export type ACTIONT = "physical" | "magic" | "powerup" | "debuff" | "protect" | "curse" | "special" | "switch"; 
