@@ -481,12 +481,16 @@ export class CreatureChar extends GameElement {
                 newAction.name = halfName[0][0] + spaceCheck + halfName[1][0];
             }
             else {
-                if (halfName[0][0].charAt(0) === "-"  || halfName[1][0].charAt(halfName[0][0].length-1) === "-") {spaceCheck = "";}
+                if (halfName[0][0].charAt(0) === "-"  || halfName[1][0].charAt(halfName[1][0].length-1) === "-") {spaceCheck = "";}
                 newAction.name = halfName[1][0] + spaceCheck + halfName[0][0];  
             }
         if (halfName[0][0] === "-rex" || halfName[1][0] === "-rex")
         {
             newAction.name = "t-"+newAction.name;
+        }
+        if (halfName[0][0] === "-bite" || halfName[1][0] === "-bite" || halfName[0][0] === "-spit" || halfName[1][0] === "-spit")
+        {
+            newAction.name = "tri-"+newAction.name;
         }
         
         newAction.power = Math.round(basePower*powerMult);

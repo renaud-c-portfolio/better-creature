@@ -78,6 +78,7 @@ export class CreatePartyMenu extends GameElement {
         if (this.playerParties.length > 0)
         {
             this.currentParty = this.playerParties[0];
+            this.currentChar = this.currentParty.characterList[0];
         }
     }
 
