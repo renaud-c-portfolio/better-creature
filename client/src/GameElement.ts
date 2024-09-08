@@ -1,8 +1,5 @@
 import GameEngine from "./GameEngine";
-class GameElement {
-
-      
-    sprite:string = "";
+class GameElement { 
 
     isSpriteList:boolean = false;
 

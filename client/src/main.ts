@@ -1,8 +1,8 @@
-import './style.css' 
-import * as PIXI from 'pixi.js';
+import './style.css'  
 
-import crambUrl from "./gfx/funny_crab.png" 
 import GameEngine from './GameEngine';
+import { ClientMatch } from './ClientMatch';
+import { CreatePartyMenu } from './CreatePartyMenu';
 
 const gameWidth = 640;
 const gameHeight = 360;
@@ -26,6 +26,11 @@ const settingsTab = document.createElement("div");
 
 const canvasDiv = document.createElement("div");
 const gameCanvas =  document.createElement("canvas");
+ 
+const engine = new GameEngine(gameCanvas); 
+
+const partyBuildMenu = new CreatePartyMenu(engine); 
+const matchesList:Array<ClientMatch> = [];
 
 const StartApp = async () => {
 
@@ -138,34 +143,27 @@ const StartApp = async () => {
     ResizeCanvas(gameCanvas);
   });
 
-  const tempImage = document.createElement("img");
-  tempImage.src = crambUrl; 
-  tempImage.setAttribute("id","theimage");
-  const context = gameCanvas.getContext('2d'); 
+   const context = gameCanvas.getContext('2d'); 
 
   const headerDiv = document.getElementById("header");
   const appDiv = document.getElementById("app");
   const sidebarDiv = document.getElementById("sidebar");
   if (context != null)
     {
-      context.imageSmoothingEnabled = false;
-      tempImage.onload = () => { 
-         drawImageActualSize(tempImage,context);
-       }
+      context.imageSmoothingEnabled = false; 
     }
  
   if (appDiv != null)
     { 
       appDiv.appendChild(leftContainer);  
       appDiv.appendChild(rightContainer);  
-    } 
+    }  
 
-  
-
-  const engine = new GameEngine(gameCanvas);
-  ResizeCanvas(gameCanvas);
+  ResizeCanvas(gameCanvas); 
   engine.startGame();
-  console.log("starto");
+ 
+
+  console.log("starto"); 
 }
 
 const drawImageActualSize = (_image:HTMLImageElement,_context:CanvasRenderingContext2D) => {
@@ -182,13 +180,13 @@ const changeGameTab = (tab:HTMLDivElement) => {
   tab.classList.add("selected");
 }
 
-const changeInfoTab = (tab:HTMLDivElement) => {
+const changeInfoTab = (tab:HTMLDivElement) => { 
 
   encycloTab.classList.remove("selected");
   battleTab.classList.remove("selected");
   friendsTab.classList.remove("selected");
   settingsTab.classList.remove("selected");
-  tab.classList.add("selected");
+  tab.classList.add("selected");  
 }
 
 const ResizeCanvas = (canvas:HTMLCanvasElement) => {
@@ -203,9 +201,8 @@ const ResizeCanvas = (canvas:HTMLCanvasElement) => {
   canvas.style.width =  String(gameWidth*finalRatio)+"px";
   leftContainer.style.width = canvas.style.width;
   rightContainer.style.width = String(window.innerWidth-gameWidth*finalRatio)+"px";
-  partyBuildTab.style.fontSize = String(16*finalRatio)+"px";
-
-  
+  //partyBuildTab.style.fontSize = String(16*finalRatio)+"px";
+ 
 } 
 
 StartApp();

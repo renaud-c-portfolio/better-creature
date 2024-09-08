@@ -1,4 +1,4 @@
-import GameButton from "./GameButton";
+import ClientButton from "./ClientButton.ts";
 import CreatureChar from "./CreatureChar";
 import GameElement from "./GameElement";
 
@@ -123,26 +123,26 @@ export class FightMatch extends GameElement {
     }
 
     actionButtons = [
-        new GameButton(this.engine,26,246,140,40,"action1",0,"action"),
-        new GameButton(this.engine,176,246,140,40,"action2",0,"action"),
-        new GameButton(this.engine,326,246,140,40,"action3",0,"action"),
-        new GameButton(this.engine,476,246,140,40,"action4",0,"action")
+        new ClientButton(this.engine,26,246,140,40,"action1",0,"action"),
+        new ClientButton(this.engine,176,246,140,40,"action2",0,"action"),
+        new ClientButton(this.engine,326,246,140,40,"action3",0,"action"),
+        new ClientButton(this.engine,476,246,140,40,"action4",0,"action")
 
     ];
 
-    protectButtons = [new GameButton(this.engine,356,300,100,40,"protect1",0),
-    new GameButton(this.engine,486,300,100,40,"protect2",0)];
+    protectButtons = [new ClientButton(this.engine,356,300,100,40,"protect1",0),
+    new ClientButton(this.engine,486,300,100,40,"protect2",0)];
 
     switchButtons = [
-        new GameButton(this.engine,66,296,54,54,"switch",0,"labeledChar"),
-        new GameButton(this.engine,136,296,54,54,"switch",0,"labeledChar"),
-        new GameButton(this.engine,206,296,54,54,"switch",0,"labeledChar"),
-        new GameButton(this.engine,276,296,54,54,"switch",0,"labeledChar")
+        new ClientButton(this.engine,66,296,54,54,"switch",0,"labeledChar"),
+        new ClientButton(this.engine,136,296,54,54,"switch",0,"labeledChar"),
+        new ClientButton(this.engine,206,296,54,54,"switch",0,"labeledChar"),
+        new ClientButton(this.engine,276,296,54,54,"switch",0,"labeledChar")
     ];
 
-    confirmButton = new GameButton(this.engine,326,246,140,40,"confirm",0);
-    cancelButton = new GameButton(this.engine,26,246,140,40,"cancel",0);
-    backButton = new GameButton(this.engine,12,296,40,54,"back",0);
+    confirmButton = new ClientButton(this.engine,326,246,140,40,"confirm",0);
+    cancelButton = new ClientButton(this.engine,26,246,140,40,"cancel",0);
+    backButton = new ClientButton(this.engine,12,296,40,54,"back",0);
 
     
     
@@ -168,21 +168,7 @@ export class FightMatch extends GameElement {
             new CreatureChar(this.engine,0,0,0,1),
         ];
 
-    }
-    
-
-    combatLoop = () => {
-
-        switch (this.fightPhase){
-            case "start":
-                 
-            break;
-            case "choice":
-                 
-            break;
-        }
-
-    }
+    } 
 
 
     charActionText = (teamIndex:number,charIndex:number) => {

@@ -4,7 +4,7 @@ import GameElement from "./GameElement";
 import GameEngine from "./GameEngine";
 
 import * as DATA from "./Data";
-import GameButton from "./GameButton";
+import ClientButton from "./ClientButton";
 
 
 export class ScrollMenu extends GameElement {
@@ -23,8 +23,8 @@ export class ScrollMenu extends GameElement {
     scroll:number = 0;
 
     aspectNone:boolean = false;
-    aspectButton:GameButton = new GameButton(this.engine,350,44,102,26,"fire",0,"aspect");
-    shapeButton:GameButton = new GameButton(this.engine,350,44,102,26,"beetle",0,"shape");
+    aspectButton:ClientButton = new ClientButton(this.engine,350,44,102,26,"fire",0,"aspect");
+    shapeButton:ClientButton = new ClientButton(this.engine,350,44,102,26,"beetle",0,"shape");
 
 
     constructor(engine:GameEngine, public x:number = 0,public y:number = 0,public width:number = 50, public height:number = 30,public text:string = "",public depth:number = 0) {

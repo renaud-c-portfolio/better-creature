@@ -1,6 +1,4 @@
-import GameElement from "./GameElement";
-import { monsType, MTYPE } from "./game/types/monsType";
-import { shape, MSHAPE } from "./game/shapes/shapes"; 
+import GameElement from "./GameElement"; 
 import gameEngine from "./GameEngine";
 
 import crambUrl from  "./gfx/funny_crab.png";
@@ -38,6 +36,8 @@ export class CreatureChar extends GameElement {
     public dir:number = 1;
     public defaultX:number = 0;
     public defaultY:number = 0;
+
+    public sprite:string = "";
 
     public HP:number = 100;
     public maxHP:number = 100; 

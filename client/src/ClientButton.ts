@@ -1,7 +1,7 @@
-import CreatureChar from "./CreatureChar";
-import { FightAction } from "./FightAction";
-import GameElement from "./GameElement";
-import GameEngine from "./GameEngine";
+import CreatureChar from "./CreatureChar.ts";
+import { FightAction } from "./FightAction.ts";
+import GameElement from "./GameElement.ts";
+import GameEngine from "./GameEngine.ts";
 
 import FightMatch from "./FightMatch.ts";
  
@@ -11,7 +11,7 @@ import { shape } from "./game/shapes/shapes.ts";
 
 type BUTTONT = "text" | "action" | "image" | "labeledImage" | "labeledChar" | "aspect" | "shape";
 
-class GameButton extends GameElement {
+class ClientButton extends GameElement {
 
     public clicked:number = 0;
     public clickConfirm:number = 0;
@@ -238,4 +238,4 @@ class GameButton extends GameElement {
 }
 
 
-export default GameButton
+export default ClientButton

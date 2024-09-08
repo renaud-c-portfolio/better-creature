@@ -1,5 +1,5 @@
 import CreatureChar from "./CreatureChar";
-import GameButton from "./GameButton";
+import ClientButton from "./ClientButton";
 import GameElement from "./GameElement";
 import GameEngine from "./GameEngine";
 
@@ -30,31 +30,31 @@ export class CreatePartyMenu extends GameElement {
 
     public partySize:number = 8;
 
-    createPartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"create party",0,"text");
-    testPartyButton:GameButton = new GameButton(this.engine,192,32,60,20,"test",0,"text");
-    renamePartyButton:GameButton = new GameButton(this.engine,16,32,160,20,"rename",0,"text");
-    addCharButton:GameButton = new GameButton(this.engine,36,32,100,30,"add creature",0,"text");
+    createPartyButton:ClientButton = new ClientButton(this.engine,16,32,160,20,"create party",0,"text");
+    testPartyButton:ClientButton = new ClientButton(this.engine,192,32,60,20,"test",0,"text");
+    renamePartyButton:ClientButton = new ClientButton(this.engine,16,32,160,20,"rename",0,"text");
+    addCharButton:ClientButton = new ClientButton(this.engine,36,32,100,30,"add creature",0,"text");
 
-    actionButtons:Array<GameButton> = [
-        new GameButton(this.engine,284,246,160,40,"action1",0,"action"),
-        new GameButton(this.engine,456,246,160,40,"action2",0,"action"),
-        new GameButton(this.engine,284,296,160,40,"action3",0,"action"),
-        new GameButton(this.engine,456,296,160,40,"action4",0,"action")]; 
+    actionButtons:Array<ClientButton> = [
+        new ClientButton(this.engine,284,246,160,40,"action1",0,"action"),
+        new ClientButton(this.engine,456,246,160,40,"action2",0,"action"),
+        new ClientButton(this.engine,284,296,160,40,"action3",0,"action"),
+        new ClientButton(this.engine,456,296,160,40,"action4",0,"action")]; 
 
 
-    aspectButtons:Array<GameButton> = [
-        new GameButton(this.engine,350,44,102,26,"fire",0,"aspect"),
-        new GameButton(this.engine,460,44,102,26,"fire",0,"aspect"),
+    aspectButtons:Array<ClientButton> = [
+        new ClientButton(this.engine,350,44,102,26,"fire",0,"aspect"),
+        new ClientButton(this.engine,460,44,102,26,"fire",0,"aspect"),
     ];
 
-    protectButtons:Array<GameButton> = [
-        new GameButton(this.engine,290,246,100,40,"protect1"),
-        new GameButton(this.engine,470,246,100,40,"protect2")
+    protectButtons:Array<ClientButton> = [
+        new ClientButton(this.engine,290,246,100,40,"protect1"),
+        new ClientButton(this.engine,470,246,100,40,"protect2")
     ];
     
-    shapeButtons:Array<GameButton> = [
-        new GameButton(this.engine,350,74,102,26,"fire",0,"shape"),
-        new GameButton(this.engine,460,74,102,26,"fire",0,"shape"),
+    shapeButtons:Array<ClientButton> = [
+        new ClientButton(this.engine,350,74,102,26,"fire",0,"shape"),
+        new ClientButton(this.engine,460,74,102,26,"fire",0,"shape"),
     ];
 
  
@@ -574,7 +574,7 @@ export class CreatePartyMenu extends GameElement {
     } 
 
 
-    shadowCenterButton = (context:CanvasRenderingContext2D,button:GameButton) => {
+    shadowCenterButton = (context:CanvasRenderingContext2D,button:ClientButton) => {
 
                 context.globalAlpha = 0.6;
                 context.fillRect(0,0,640,button.y); 

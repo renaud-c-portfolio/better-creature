@@ -1,6 +1,6 @@
 
 
-class control { 
+class Control { 
     players = 1;
 
     mouseX: number = -1;
@@ -156,4 +156,4 @@ class control {
 
 }
 
-export default control;
+export default Control;

@@ -1,19 +1,19 @@
-import GameButton from "./GameButton";
+ 
 import FightMatch from "./FightMatch";
-import GameElement from "./GameElement";
-import CreatureChar from "./CreatureChar";
-
-import { MTYPE } from "./game/types/monsType";
-import { MSHAPE } from "./game/shapes/shapes";
+import GameElement from "./GameElement";  
+ 
 import { CreatePartyMenu } from "./CreatePartyMenu";
 
 import physUrl from "./gfx/physIcon.png";
 import magUrl from "./gfx/magIcon.png";
 import specUrl from "./gfx/specialIcon.png";
 import strongUrl from "./gfx/strongestIcon.png";
+import selectUrl from "./gfx/selector.png";
+import targetUrl from "./gfx/targettersheet.png";
+
 
 const whitelisted:Array<string> = ["spicy","spice"];
-const slurs:Array<string> = ["faggot","nigger","nigga","cunt","bitch","1488","hitler","kyke"," spic","spic ","tranny","troon","lolcow","whore","slut"];
+const slurs:Array<string> = ["slur"];
 
 class GameEngine {
     
@@ -98,14 +98,15 @@ class GameEngine {
     
 
 
+    //Controls related functions 
+
       //locate mouse inside canvas
-    UpdateMouse = (event:MouseEvent,_canvas:HTMLCanvasElement) => {
-        
+    UpdateMouse = (event:MouseEvent,_canvas:HTMLCanvasElement) => { 
         const rect = _canvas.getBoundingClientRect();
         const scaleX = _canvas.width / rect.width;
         const scaleY = _canvas.height / rect.height; 
         this.mouseX = Math.floor((event.clientX - rect.left)*scaleX);
-        this.mouseY =  Math.floor((event.clientY - rect.top)*scaleY);
+        this.mouseY =  Math.floor((event.clientY - rect.top)*scaleY);  
     }
 
     MouseWheel = (event:WheelEvent,canvas:HTMLCanvasElement) => { 
@@ -156,10 +157,9 @@ class GameEngine {
         
     }
 
+
     KeyboardEvent = (event:KeyboardEvent,canvas:HTMLCanvasElement) => {
-
-        
-
+ 
         if (this.lastKeyChar === event.key)
             {
                 this.keyPressed += 1;
@@ -168,8 +168,9 @@ class GameEngine {
             {
                 this.keyPressed = 1;
                 this.lastKeyChar = event.key;
-            } 
-            console.log("baboon "+event.key," ",this.keyPressed);
+            }  
+        
+        console.log("baboon "+event.key," ",this.keyPressed);
     }
 
 
@@ -188,7 +189,7 @@ class GameEngine {
 
 
     
-
+    //cat
     sortDepth = () => {
         this.depthList = [];
         for (let _i =0; _i < this.gameElements.length; _i++)
@@ -200,31 +201,6 @@ class GameEngine {
                 }
             } 
         this.depthList.sort((a, b) => a - b);
-    }
-
-    censorship = (string:string) => {
-
-        let str = string;
-        console.log("str start",str)
-        let checkSlur = true;
-        while (checkSlur)
-        {
-            checkSlur = false;
-            for (let i=0; i < slurs.length;i++)
-                { 
-                    if (str.indexOf(slurs[i]) > -1)
-                    {
-                        str = str.replace(slurs[i],"");  
-                        checkSlur = true;
-                    }
-                }
-        }
-       
-
-        if (str === ""){str = "no";}
-        console.log("str",str,"strend")
-        return str;
-
     }
 
 
@@ -285,6 +261,32 @@ class GameEngine {
           requestAnimationFrame(()=>{this.gameTick()});  
       }
 
+
+      
+    
+    //text related function
+    censorship = (string:string) => {
+
+        let str = string;
+        console.log("str start",str)
+        let checkSlur = true;
+        while (checkSlur)
+        {
+            checkSlur = false;
+            for (let i=0; i < slurs.length;i++)
+                { 
+                    if (str.indexOf(slurs[i]) > -1)
+                    {
+                        str = str.replace(slurs[i],"");  
+                        checkSlur = true;
+                    }
+                }
+        } 
+
+        if (str === ""){str = "no";}
+        console.log("str",str,"strend");
+        return str; 
+    }
 
 
 }

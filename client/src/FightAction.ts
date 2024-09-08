@@ -378,13 +378,12 @@ export class FightAction {
  
 }
 
-
-
+ 
 export class SwitchAction extends FightAction {
 
     constructor(user:CreatureChar) {
-        super(user); 
-         
+        super(user);  
+
         this.isSwitchAction = true;
         this.actionEffects = [];
         this.actionEffects = [["fightMessage","@playeuser switches @user with @switchtarget!"], ["flashChar","-20","white","self"],["wait"],["switchAction"],["flashChar","10","white","switch"],["wait"]];
@@ -407,6 +406,7 @@ export class FaintSwitchAction extends FightAction {
         this.priority = 9999;
         this.eventPriority = 9999;
         this.eventSpeed = 0.5;
+        
     }
 
 }
