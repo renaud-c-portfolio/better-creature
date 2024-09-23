@@ -2025,7 +2025,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"behemoth",   "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"dragon",     "strong","burst","earthly");
 
             currentShape.realmAspectRecord["earthly"] = "bone";
             currentShape.realmAspectRecord["ascended"] = "fae";

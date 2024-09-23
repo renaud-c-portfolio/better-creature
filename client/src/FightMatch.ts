@@ -5,6 +5,7 @@ import GameElement from "./GameElement";
 
 import selectUrl from "./gfx/selector.png";
 import targetUrl from "./gfx/targettersheet.png";
+import bgUrl from "./gfx/backyard.png";
 
 import { monsType, MTYPE } from "./game/types/monsType";
 import { shape, MSHAPE } from "./game/shapes/shapes"; 
@@ -53,6 +54,7 @@ export class FightMatch extends GameElement {
     
     selectImg:HTMLImageElement = document.createElement("img");   
     targetImg:HTMLImageElement = document.createElement("img");   
+    bgImg:HTMLImageElement = document.createElement("img");   
     time:number = 0;
 
     targetting:DATA.targetType|null = null; 
@@ -65,7 +67,7 @@ export class FightMatch extends GameElement {
     spriteCanvas:HTMLCanvasElement;
     spriteContext:CanvasRenderingContext2D;
     popupCanvas:HTMLCanvasElement;
-    popupContext:CanvasRenderingContext2D;
+    popupContext:CanvasRenderingContext2D; 
 
     viewTime:number = 0;
 
@@ -106,6 +108,7 @@ export class FightMatch extends GameElement {
 
         this.selectImg.src = selectUrl;
         this.targetImg.src = targetUrl;
+        this.bgImg.src = bgUrl;
 
         this.selectImg.onload = () => { 
             this.imgLoaded += 1;
@@ -987,7 +990,10 @@ export class FightMatch extends GameElement {
     override drawFunction = (context:CanvasRenderingContext2D) => {
 
         document.body.style.cursor = 'default';
-        
+
+
+        //bgUrl
+        context.drawImage(this.bgImg,0,0,640,360)
         //draw creatures
         if (this.activeChars[0][0] != undefined)
         {

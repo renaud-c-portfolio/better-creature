@@ -174,13 +174,13 @@ class ClientButton extends GameElement {
                             {
                                 context.filter = "grayscale(100%)";
                             }
+                            context.fillText(this.text,this.x+this.width/2-_halfTxtWidth,this.y+9+this.clicked);
                         context.drawImage(this.switchCreature.imageElem,this.x+10,this.y+10+this.clicked);
                         context.filter = "none";
                         _txtWidth = Math.floor(context.measureText(this.switchCreature.name).width);
                         _halfTxtWidth = Math.floor(_txtWidth/2);
                         context.fillText(this.switchCreature.name,this.x+(this.width/2)-_halfTxtWidth,this.y+this.height-4+this.clicked);
                         
-                        context.fillText(this.text,this.x+this.width/2-_halfTxtWidth,this.y+9+this.clicked);
                     }
                 
             } 
