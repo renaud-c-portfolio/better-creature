@@ -6,11 +6,18 @@ import GameEngine from './GameEngine.ts';
 
 import { ClientCreature } from "./ClientCreature";
 import { ClientAction } from './ClientAction.ts';
+import CreatureChar from './CreatureChar.ts';
+import { ServerMatch } from './ServerMatch.ts';
+
+
+import bgUrl from "./gfx/backyard.png";
 
 
 type playerControl = "local" | "cpu" | "online"; 
-type fightPhase = "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd" | "turnEndSwitch" | "turnEndSwitchStart" | "emergencySwitchChoice";
+type fightPhase = "preFight" | "waitStart" | "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd" | "turnEndSwitch" | "turnEndSwitchStart" | "emergencySwitchChoice";
 
+
+type MatchType = "local" | "server" | "client";
 
 
 export class ClientMatch extends GameElement {
@@ -18,6 +25,14 @@ export class ClientMatch extends GameElement {
     //gameplay constants that will probably never be changed
     totalTeams:number = 2;
     charsPerTeam:number = 2;
+
+    //local server for local games, can hold an empty one for now;
+    localServer = new ServerMatch();
+
+
+    //stuff to receive from server
+    playerDecision:DATA.PlayerDecision = [0,0,0];
+    newCharInfo:DATA.CreatureInfo|null = null;
 
     //player info & turn choices
     playerNames:Array<string> = ["baboon","aardvark"];
@@ -57,6 +72,9 @@ export class ClientMatch extends GameElement {
      popupContext:CanvasRenderingContext2D;
      popupViewTime:number = 0;
 
+     
+    bgImg:HTMLImageElement = document.createElement("img");   
+
      //player choice button creation
      //------------------------------
      actionButtons = [
@@ -84,7 +102,10 @@ export class ClientMatch extends GameElement {
 
     //constructor time =====================================================
     constructor(public engine:GameEngine) {
-        super(engine,0,0,0); 
+        super(engine,0,0,-100); 
+
+        //make localServer know who the client is
+        this.localServer.localMatch = this;
 
         //initializing drawing elements
         const spriteCanvasElement = document.createElement("canvas");
@@ -99,6 +120,9 @@ export class ClientMatch extends GameElement {
         {this.popupContext =  popupContexter;} else {this.popupContext = engine.context; }
         // 
 
+        
+        this.bgImg.src = bgUrl;
+        
         for (let i=0; i < this.totalTeams; i++)
             {
                 const emptyCreature = new ClientCreature(engine);
@@ -115,9 +139,13 @@ export class ClientMatch extends GameElement {
 
     // main render loop
     override drawFunction = (context:CanvasRenderingContext2D) => {
+        
+            context.drawImage(this.bgImg,0,0,640,360);
 
             this.drawGameElements(context);
-            this.drawGuiElements(context);  
+            this.drawGuiElements(context);
+
+
     }
 
     // 
@@ -146,8 +174,11 @@ export class ClientMatch extends GameElement {
     drawGuiElements = (context:CanvasRenderingContext2D) => {
         switch (this.currentPhase)
         {
+            case "waitStart":
+                
+                break;
             case "start":
- 
+
                 break;
             
             case "choice":
@@ -155,7 +186,7 @@ export class ClientMatch extends GameElement {
                 break;
             
             default:
-                 
+
                 break;
         }
     }
@@ -175,6 +206,14 @@ export class ClientMatch extends GameElement {
     }
 
 
+    startMatch = (party1:Array<ClientCreature>,party2:Array<ClientCreature>,matchType:MatchType) => {
+        this.playerParties[0] = party1;
+        this.playerParties[1] = party2;
+
+        this.activeChars[0] = [party1[0],party1[1]];
+        this.activeChars[1] = [party2[0],party2[1]];
+ 
+    }
      
      
 }

@@ -1,0 +1,9 @@
+
+
+export class WindowEncyclopedia {
+
+
+    constructor(){
+        
+    }
+}

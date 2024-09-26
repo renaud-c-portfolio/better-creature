@@ -40,8 +40,17 @@ export const targetsList:Array<targetType> = ["single" , "double" , "aoe" , "sel
 
 
 export const iconImages = new Map();
+export const statusEffects = [];
 
-export const statusEffects = [];  
+export type AspectsShapesArray = [aspectsType,aspectsType,shapesType,shapesType]
+export type PlusArray = [number,number,number,number,number,number];
+export type PlayerDecision = [number,number,number];
+
+export type CreatureInfo = [name:string,aspectsAndShapes:AspectsShapesArray,pluses:PlusArray];
+
+
+
+//-----
 
 const preloader = document.createElement("img");
 
@@ -1730,26 +1739,26 @@ for (let i =0 ;i < shapesList.length; i++)
             addEffects(null,currentShape,"strong","legcrush",0, [ ["basepower",[10]],["physical",[2]] ]);
             addEffects(null,currentShape,"weak","skitter",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"burst","toxishock",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"harmony","instar",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"harmony","instar",-6, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"devour","liquefy",6, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"parasitic","creep",-3, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"catalyst","sudden",30, [ ["basepower",[10]],["strongest",[1]] ,["setOthersRealmAspect",[5]]]);
             addEffects(null,currentShape,"mutate","web",0, [ ["basepower",[10]],["strongest",[1]] ]);
 
             
-            addShapeRelationship(currentShape.typeStr,null,"stinger",    "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"nightmare",  "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"canine",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"feline",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"critter",    "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"antler",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"fruit",      "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"mycon",      "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"worm",       "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"crab",       "strong","weak","earthly");
-            addShapeRelationship(currentShape.typeStr,null,"kraken",     "strong","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"stinger",    "devour","strong","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"nightmare",  "weak","catalyst","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"canine",     "neutral","burst","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feline",     "catalyst","strong","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"critter",    "parasitic","parasitic","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"antler",     "mutate","harmony","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"feather",     "strong","harmony","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"fruit",      "burst","weak","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"mycon",      "harmony","burst","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worldtree",  "weak","devour","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"worm",       "catalyst","burst","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"crab",       "harmony","mutate","earthly");
+            addShapeRelationship(currentShape.typeStr,null,"kraken",     "neutral","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"leviathan",  "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"hydra",      "strong","weak","earthly");
             addShapeRelationship(currentShape.typeStr,null,"dinosaur",   "strong","weak","earthly");
@@ -1871,7 +1880,7 @@ for (let i =0 ;i < shapesList.length; i++)
             addEffects(null,currentShape,"neutral","barking",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"strong","lockjaw",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"weak","growl",0, [ ["basepower",[10]],["strongest",[1]] ]);
-            addEffects(null,currentShape,"burst","takedown",0, [ ["basepower",[10]],["strongest",[1]] ]);
+            addEffects(null,currentShape,"burst","takedown",-2, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"harmony","howl",-4, [ ["basepower",[10]],["magical",[1]] ]);
             addEffects(null,currentShape,"devour","roughhouse",0, [ ["basepower",[10]],["strongest",[1]] ]);
             addEffects(null,currentShape,"parasitic","scent",0, [ ["basepower",[10]],["strongest",[1]] ]);

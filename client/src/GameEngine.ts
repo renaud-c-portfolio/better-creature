@@ -10,6 +10,7 @@ import specUrl from "./gfx/specialIcon.png";
 import strongUrl from "./gfx/strongestIcon.png";
 import selectUrl from "./gfx/selector.png";
 import targetUrl from "./gfx/targettersheet.png";
+import { ClientMatch } from "./ClientMatch";
 
 
 const whitelisted:Array<string> = ["spicy","spice"];
@@ -39,7 +40,9 @@ class GameEngine {
 
     public wheel:number = 0;
 
-    public currentMatch:FightMatch = new FightMatch(this,0,0,-100);
+    public currentClientMatch:ClientMatch = new ClientMatch(this);
+    public localServerMatch = this.currentClientMatch.localServer;
+
     public partyMenu:CreatePartyMenu = new CreatePartyMenu(this,0,0,-100);
 
     public physImage = document.createElement("img");
@@ -88,13 +91,10 @@ class GameEngine {
         document.addEventListener("keydown",(event:KeyboardEvent)=>{ 
             this.KeyboardEvent(event,this.canvas);
         });  
-
-        this.currentMatch.defaultParty(); //until we import parties from data
-        //this.gameElements.push(this.currentMatch);
-        this.gameElements.push(this.partyMenu);
-        this.depthList.push(-100);  
+ 
     }
     
+
     
 
 
@@ -261,7 +261,7 @@ class GameEngine {
           requestAnimationFrame(()=>{this.gameTick()});  
       }
 
-
+    
       
     
     //text related function

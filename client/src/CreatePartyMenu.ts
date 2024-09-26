@@ -9,8 +9,7 @@ import { FightAction } from "./FightAction";
 
 export class GameParty {
     public partyName:string = "new party";
-    public characterList:Array<CreatureChar> = [];
-
+    public characterList:Array<CreatureChar> = []; 
 }
 
 type PartyMenuStep = "basic" | "scrollmenu" | "renameChar";
@@ -159,11 +158,13 @@ export class CreatePartyMenu extends GameElement {
                 this.testPartyButton.drawFunction(context);
                 if (this.testPartyButton.clickConfirm)
                 {
+                    /*
                     this.engine.currentMatch.party[0] = [...this.currentParty.characterList];
                     this.engine.currentMatch.activeChars[0][0] = this.currentParty.characterList[0];
                     this.engine.currentMatch.activeChars[0][1] = this.currentParty.characterList[1];
                     this.engine.gameElements = [];
                     this.engine.gameElements.push(this.engine.currentMatch);
+                    */
                 }
             }
 

@@ -12,15 +12,17 @@ export class ClientCreature extends GameElement {
 
     //permanent vars that determine the core of the creature -----------------------------
     public name:string = "animal" + String(Math.floor(Math.random()*100)); 
+
+    public unknown:boolean = false;
      
      
     public statPlus:Array<number> = [0,0,0,0,0,0,0];
     public itemChoices:Array<string|null> = [null,null];
     public currentItem:string|null = null;
-    
+         
     public soulType:DATA.soulType = "natural";
     public halfSoul:DATA.soulType = "none";
-
+         
     aspectsList:Array<DATA.aspectsType> = [];
     shapesList:Array<DATA.shapesType> = []; 
 

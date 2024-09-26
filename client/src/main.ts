@@ -3,9 +3,11 @@ import './style.css'
 import GameEngine from './GameEngine';
 import { ClientMatch } from './ClientMatch';
 import { CreatePartyMenu } from './CreatePartyMenu';
+import { WindowClient } from './WindowClient';
 
 const gameWidth = 640;
 const gameHeight = 360;
+
 
 const headerBar = document.createElement("div");
 const partyBuildTab = document.createElement("div");
@@ -25,14 +27,22 @@ const battleTab = document.createElement("div");
 const settingsTab = document.createElement("div"); 
 
 const canvasDiv = document.createElement("div");
-const gameCanvas =  document.createElement("canvas");
- 
-const engine = new GameEngine(gameCanvas); 
+const gameCanvas =  document.createElement("canvas"); 
 
-const partyBuildMenu = new CreatePartyMenu(engine); 
-const matchesList:Array<ClientMatch> = [];
+const StartApp = async () => { 
+    const appDiv = document.getElementById("app") as HTMLDivElement;
+    if (appDiv != null)
+    {
+      const clientWindow = new WindowClient(appDiv);
+      clientWindow.startClientWindows();
+    }
+    else
+    {
+      console.log("appDiv not found");
+    }
+}
 
-const StartApp = async () => {
+const OldStartApp = async () => {
 
   leftContainer.setAttribute("class","leftcontainer"); 
   leftContainer.style.width = String(gameWidth)+"px"; 
@@ -159,8 +169,7 @@ const StartApp = async () => {
       appDiv.appendChild(rightContainer);  
     }  
 
-  ResizeCanvas(gameCanvas); 
-  engine.startGame();
+  ResizeCanvas(gameCanvas);  
  
 
   console.log("starto"); 
@@ -190,6 +199,7 @@ const changeInfoTab = (tab:HTMLDivElement) => {
 }
 
 const ResizeCanvas = (canvas:HTMLCanvasElement) => {
+  /*
   let ratio = Math.floor(Math.max(gameWidth,window.innerWidth)/gameWidth);
   let ratio2 = Math.floor(Math.max(gameHeight,window.innerHeight)/gameHeight); 
   let finalRatio = 1;
@@ -201,8 +211,8 @@ const ResizeCanvas = (canvas:HTMLCanvasElement) => {
   canvas.style.width =  String(gameWidth*finalRatio)+"px";
   leftContainer.style.width = canvas.style.width;
   rightContainer.style.width = String(window.innerWidth-gameWidth*finalRatio)+"px";
-  //partyBuildTab.style.fontSize = String(16*finalRatio)+"px";
- 
+  //partyBuildTab.style.fontSize = String(16*finalRatio)+"px"; 
+  */
 } 
 
 StartApp();
