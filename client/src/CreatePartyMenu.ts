@@ -6,6 +6,7 @@ import GameEngine from "./GameEngine";
 import * as DATA from "./Data";
 import { ScrollMenu } from "./ScrollMenu";
 import { FightAction } from "./FightAction";
+import { WindowClient } from "./WindowClient";
 
 export class GameParty {
     public partyName:string = "new party";
@@ -69,8 +70,8 @@ export class CreatePartyMenu extends GameElement {
     changeType = "aspect";
     changeIndex = 0;
 
-    constructor(public engine:GameEngine,public x:number = 0,public y:number = 0,public depth:number = 0){
-        super(engine,x,y,depth);  
+    constructor(public engine:GameEngine,public clientWindow:WindowClient){
+        super(engine,0,0,-100);  
 
         this.tooltipPopup =  new PartyMenuTooltip(engine,this,0,0,200,30);
         this.loadParties();

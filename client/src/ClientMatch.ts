@@ -15,9 +15,7 @@ import bgUrl from "./gfx/backyard.png";
 
 type playerControl = "local" | "cpu" | "online"; 
 type fightPhase = "preFight" | "waitStart" | "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd" | "turnEndSwitch" | "turnEndSwitchStart" | "emergencySwitchChoice";
-
-
-type MatchType = "local" | "server" | "client";
+ 
 
 
 export class ClientMatch extends GameElement {
@@ -206,7 +204,7 @@ export class ClientMatch extends GameElement {
     }
 
 
-    startMatch = (party1:Array<ClientCreature>,party2:Array<ClientCreature>,matchType:MatchType) => {
+    startMatch = (party1:Array<ClientCreature>,party2:Array<ClientCreature>,matchType:DATA.MatchType) => {
         this.playerParties[0] = party1;
         this.playerParties[1] = party2;
 

@@ -2,7 +2,8 @@ import { shape } from "./game/shapes/shapes";
 
 
  
-const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspecticons/*.png',{ eager: true });
+const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspecticons/*.png',{ eager: true }); 
+const gameIconUrls = import.meta.glob<true,string,{default:string}>('./gfx/gameicons/*.png',{ eager: true });
 
 export type baseStats = "HP" | "strength" | "magic" | "armor" | "resistance" | "speed" | "agility" | "none";
 export type baseStatAbbreviation = "HP" | "str" | "mag" | "arm" | "res" | "spd" | "agi" | "none";
@@ -16,8 +17,7 @@ export type relationships = "strong" | "weak" | "neutral" | "harmony" | "burst" 
 export type realm = "earthly" | "ascended" | "fallen";
 
 export type statusEffect = "poison" | "rot" | "rust" | "none";
-export type halfStatus = "beast" | "";
-
+export type halfStatus = "beast" | ""; 
 
 export type soulType = "natural" | "mirror" | "shadow" | "symbiosis" | "chaos" | "primordial" | "none";
 
@@ -41,6 +41,9 @@ export const targetsList:Array<targetType> = ["single" , "double" , "aoe" , "sel
 
 export const iconImages = new Map();
 export const statusEffects = [];
+
+export type MatchType = "cpu" | "cpuSpectate" | "localVersus" | "onlineHost" | "onlineClient" | "onlineSpectate";
+export type PlayerControl = "local" | "cpu" | "netplay";
 
 export type AspectsShapesArray = [aspectsType,aspectsType,shapesType,shapesType]
 export type PlusArray = [number,number,number,number,number,number];

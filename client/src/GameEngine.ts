@@ -42,9 +42,7 @@ class GameEngine {
 
     public currentClientMatch:ClientMatch = new ClientMatch(this);
     public localServerMatch = this.currentClientMatch.localServer;
-
-    public partyMenu:CreatePartyMenu = new CreatePartyMenu(this,0,0,-100);
-
+ 
     public physImage = document.createElement("img");
     public magImage = document.createElement("img");
     public specImage = document.createElement("img");
