@@ -40,6 +40,7 @@ export class CreatureChar extends GameElement {
     public sprite:string = "";
 
     public clientPercentDisplayHP = false;
+    public infoKnown = true;
 
     public HP:number = 100;
     public maxHP:number = 100; 

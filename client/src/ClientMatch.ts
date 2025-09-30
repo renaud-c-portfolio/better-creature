@@ -6,7 +6,7 @@ import GameEngine from './GameEngine.ts';
  
 import { ClientAction } from './ClientAction.ts';
 import CreatureChar from './CreatureChar.ts';
-import { ServerMatch } from './ServerMatch.ts';
+import { ServerMatch,ServerClientMessage } from './ServerMatch.ts';
 
 
 import bgUrl from "./gfx/backyard.png";
@@ -16,7 +16,6 @@ type playerControl = "local" | "cpu" | "online";
 type fightPhase = "preFight" | "waitStart" | "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd" | "turnEndSwitch" | "turnEndSwitchStart" | "emergencySwitchChoice";
  
 
-
 export class ClientMatch extends GameElement {
 
     //gameplay constants that will probably never be changed
@@ -24,11 +23,14 @@ export class ClientMatch extends GameElement {
     activeCharsPerTeam:number = 2;
     fightCharsPerTeam:number = 5;
     totalPartySize:number = 8;
-
-    //local server for local games, can hold an empty one for now;
-    localServer = new ServerMatch();
+ 
 
     onlineGame = false;
+
+    allSentMessages:Array<ServerClientMessage> = [];
+    sendingMessages:Array<ServerClientMessage> = [];
+    receivingMessages:Array<ServerClientMessage> = [];
+    allReceivedMessages:Array<ServerClientMessage> = [];
 
 
     //stuff to receive from server
@@ -104,9 +106,7 @@ export class ClientMatch extends GameElement {
     //constructor time =====================================================
     constructor(public engine:GameEngine, online:boolean) {
         super(engine,0,0,-100); 
-
-        //make localServer know who the client is
-        this.localServer.localMatch = this;
+ 
 
         //initializing drawing elements
         const spriteCanvasElement = document.createElement("canvas");
@@ -254,7 +254,15 @@ export class ClientMatch extends GameElement {
 
         this.activeChars[0] = [party1[0],party1[1]];
         this.activeChars[1] = [party2[0],party2[1]];
- 
+    }
+
+
+    receiveServerMessages = () => {
+        for (let i=0; i < this.receivingMessages.length; i++)
+        {
+            const currentMessage = this.receivingMessages[i];
+            
+        }
     }
      
      

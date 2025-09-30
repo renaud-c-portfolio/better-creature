@@ -11,6 +11,7 @@ import strongUrl from "./gfx/strongestIcon.png";
 import selectUrl from "./gfx/selector.png";
 import targetUrl from "./gfx/targettersheet.png";
 import { ClientMatch } from "./ClientMatch";
+import { ServerMatch } from "./ServerMatch";
 
 
 const whitelisted:Array<string> = ["spicy","spice"];
@@ -40,8 +41,8 @@ class GameEngine {
 
     public wheel:number = 0;
 
-    public currentClientMatch:ClientMatch = new ClientMatch(this,false);
-    public localServerMatch = this.currentClientMatch.localServer;
+    public currentClientMatch:ClientMatch|null = null;
+    public currentLocalServer:ServerMatch|null = null; 
  
     public physImage = document.createElement("img");
     public magImage = document.createElement("img");
