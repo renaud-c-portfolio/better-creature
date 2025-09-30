@@ -39,6 +39,8 @@ export class CreatureChar extends GameElement {
 
     public sprite:string = "";
 
+    public clientPercentDisplayHP = false;
+
     public HP:number = 100;
     public maxHP:number = 100; 
     public damaged:number = 0;
@@ -493,6 +495,15 @@ export class CreatureChar extends GameElement {
             newAction.name = "tri-"+newAction.name;
         }
         
+        if (newAction.actionAspect === "machine" && newAction.actionType === "magical")
+        {
+            newAction.actionAspect = "laser";
+        }
+        else if (newAction.actionAspect === "machine" && newAction.actionType === "strongest" && creature.magic > creature.muscle)
+        {
+            newAction.actionAspect = "laser";
+        }
+
         newAction.power = Math.round(basePower*powerMult);
         return newAction;
 

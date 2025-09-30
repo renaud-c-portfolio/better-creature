@@ -2,6 +2,7 @@ import { ClientMatch } from "./ClientMatch";
 import { ServerMatch } from "./ServerMatch";
 
 import GameEngine from "./GameEngine";
+import GameElement from "./GameElement.ts";
 
 import { CreatePartyMenu } from "./CreatePartyMenu.ts";
 
@@ -12,6 +13,7 @@ import * as DATA from "./Data.ts";
 import { WindowTabs } from "./WindowTabs.ts";
 import { WindowEncyclopedia } from "./WindowEncyclopedia.ts";
 
+export type WindowTabType = "createMenu" | "battle";
 
 export class WindowClient {
 
@@ -34,7 +36,8 @@ export class WindowClient {
     rightContainerDiv = document.createElement("div");
 
     gameTabHeaderDiv = document.createElement("div");
-    partyBuilderTab = new WindowGameTab(this,"party builder");
+    partyBuilderTab:WindowGameTab; 
+    currentTab:WindowGameTab;
 
     loginHeaderDiv = document.createElement("div");
     infoAreaDiv = document.createElement("div");
@@ -47,6 +50,7 @@ export class WindowClient {
     settingsTab = new WindowInfoTab("settings");
 
 
+    fightMatches:Array<ClientMatch> = [];
 
     //creating game engine, party menu and other info menu object instances 
     engine:GameEngine = new GameEngine(this.gameCanvas); 
@@ -63,44 +67,46 @@ export class WindowClient {
 
         this.appDiv = appDiv;
         this.partyMenu = new CreatePartyMenu(this.engine,this); 
-
+        this.partyBuilderTab = new WindowGameTab(this,"createMenu",this.partyMenu,"party builder");
+        this.currentTab = this.partyBuilderTab;
         this.engine.gameElements.push(this.partyMenu); 
         this.engine.depthList.push(-100);   
-        this.createNewMatch("cpu","local","cpu");
+        //this.createNewMatch("cpu","local","cpu");
         this.engine.startGame(); 
     } 
 
 
 
-
-
-    createNewMatch = (matchType:DATA.MatchType,player1:DATA.PlayerControl,player2:DATA.PlayerControl) => {
-        
-        if (matchType === "cpu")
-        {
-
-        }
-
-
-         const matchTab = new WindowGameTab(this,"fight 0");
+    createNewLocalMatch = (matchType:DATA.MatchType,player1:DATA.PlayerControl,player2:DATA.PlayerControl) => {
+         const newMatch = new ClientMatch(this.engine,false);
+         const matchTab = new WindowGameTab(this,"battle",newMatch,"test battle 0");
          this.gameTabHeaderDiv.appendChild(matchTab.htmlElement);
-         matchTab.htmlElement.style.left = "20%"; 
-    }
+         let percent = 20;
+         matchTab.htmlElement.style.left = String(percent)+"%"; 
+
+         return newMatch;
+    } 
 
     closeMatch = () => {
 
     }
 
-    switchActiveTab = (tab:WindowGameTab) => {
+    switchActiveTab = (tab:WindowGameTab) => { 
+        this.engine.gameElements = [];
+        this.currentTab.htmlElement.classList.remove("selected");
+
+        this.currentTab = tab;
+        tab.htmlElement.classList.add("selected");
+        this.engine.gameElements.push(tab.tabGameElement);
         if (tab === this.partyBuilderTab)
         {
             this.partyBuilderTab.htmlElement.classList.add("selected");
-            this.engine.gameElements = [];
+            this.currentTab = this.partyBuilderTab;
             this.engine.gameElements.push(this.partyMenu);
         }
         else
         {
-            
+            this.currentTab = tab;
         }
     }
 
@@ -186,9 +192,11 @@ export class WindowClient {
 }
 
 class WindowGameTab { 
-    htmlElement = document.createElement("div");  
+ 
 
-    constructor (clientWindow:WindowClient,label:string) { 
+    htmlElement = document.createElement("div");   
+
+    constructor (clientWindow:WindowClient,public tabType:WindowTabType,public tabGameElement:GameElement,label:string) { 
         this.htmlElement.classList.add("gametab"); 
         this.htmlElement.innerText = label;
 

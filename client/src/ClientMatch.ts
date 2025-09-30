@@ -3,8 +3,7 @@ import * as DATA from './Data.ts';
 import GameElement from "./GameElement";
 import ClientButton from "./ClientButton.ts";
 import GameEngine from './GameEngine.ts';
-
-import { ClientCreature } from "./ClientCreature";
+ 
 import { ClientAction } from './ClientAction.ts';
 import CreatureChar from './CreatureChar.ts';
 import { ServerMatch } from './ServerMatch.ts';
@@ -22,10 +21,14 @@ export class ClientMatch extends GameElement {
 
     //gameplay constants that will probably never be changed
     totalTeams:number = 2;
-    charsPerTeam:number = 2;
+    activeCharsPerTeam:number = 2;
+    fightCharsPerTeam:number = 5;
+    totalPartySize:number = 8;
 
     //local server for local games, can hold an empty one for now;
     localServer = new ServerMatch();
+
+    onlineGame = false;
 
 
     //stuff to receive from server
@@ -38,12 +41,12 @@ export class ClientMatch extends GameElement {
     playerChoices:Array<any> = [[-1,-1,-1,-1],[-1,-1,-1,-1]];
 
     //player parties and active chars
-    playerParties:Array<Array<ClientCreature>> = []; 
-    activeChars:Array<Array<ClientCreature>> = [[],[]];
-    emptyPlayerCreature:Array<ClientCreature> = [];
+    playerParties:Array<Array<CreatureChar>> = [[],[]]; 
+    activeChars:Array<Array<CreatureChar>> = [[],[]];
+    emptyPlayerCreature:Array<CreatureChar> = [];
 
     //environment etc effects that's just an invisible creature
-    environmentChar:ClientCreature;
+    environmentChar:CreatureChar;
 
     //general match vars
     currentPhase:fightPhase = "start";
@@ -60,7 +63,7 @@ export class ClientMatch extends GameElement {
     actionsMessage2:string = "";
 
     //visual vars
-    defaultPos:Array<Array<number>> = [[140,30,90,120],[640-140-64,30,640-90-64,120]]; //default positioning of characters
+    defaultPos:Array<Array<[number,number]>> = [[[140,30],[90,120]],[[640-140-64,30],[640-90-64,120]]]; //default positioning of characters
     gameElementsList:Array<GameElement> = []; 
 
      spriteCanvas:HTMLCanvasElement;
@@ -99,7 +102,7 @@ export class ClientMatch extends GameElement {
     //starting vars end-----------------------------------------------------
 
     //constructor time =====================================================
-    constructor(public engine:GameEngine) {
+    constructor(public engine:GameEngine, online:boolean) {
         super(engine,0,0,-100); 
 
         //make localServer know who the client is
@@ -123,13 +126,13 @@ export class ClientMatch extends GameElement {
         
         for (let i=0; i < this.totalTeams; i++)
             {
-                const emptyCreature = new ClientCreature(engine);
+                const emptyCreature = new CreatureChar(engine);
                 this.emptyPlayerCreature[i] = emptyCreature;
                 this.activeChars[i][0] = emptyCreature;
                 this.activeChars[i][1] = emptyCreature;
             }
         
-        this.environmentChar = new ClientCreature(engine);
+        this.environmentChar = new CreatureChar(engine);
  
     }
 
@@ -141,9 +144,26 @@ export class ClientMatch extends GameElement {
             context.drawImage(this.bgImg,0,0,640,360);
 
             this.drawGameElements(context);
-            this.drawGuiElements(context);
+            this.drawGuiElements(context);  
 
+    }
 
+    // initialize battle function
+    initBattle = () => {
+
+        for (let i =0; i < this.totalTeams; i++)
+        {
+            for (let j =0; j < this.activeCharsPerTeam; j++)
+            {
+                const char = this.playerParties[i][j];
+                if (char != null)
+                {
+                    this.activeChars[i][j] = char;
+                    char.x = this.defaultPos[i][j][0];
+                    char.y = this.defaultPos[i][j][1]; 
+                }
+            }
+        }
     }
 
     // 
@@ -192,6 +212,30 @@ export class ClientMatch extends GameElement {
     //graphical function - draw creatures & special effects, ordered by "depth";
     drawGameElements = (context:CanvasRenderingContext2D) => {
 
+
+        if (this.activeChars[0][0] != undefined)
+        {
+            let _char = this.activeChars[0][0];
+            _char.drawFunction(context);
+        }
+        if (this.activeChars[0][1] != undefined)
+        {
+            let _char = this.activeChars[0][1];
+            _char.drawFunction(context);
+        }
+        if (this.activeChars[1][0] != undefined)
+        {
+            let _char = this.activeChars[1][0];
+            _char.dir = -1;
+            _char.drawFunction(context);
+        }
+        if (this.activeChars[1][1] != undefined)
+        {
+            let _char = this.activeChars[1][1];
+            _char.dir = -1;
+            _char.drawFunction(context);
+        }
+
         this.gameElementsList.sort((a, b) => b.depth - a.depth);
 
         for (let i = 0; i < this.gameElementsList.length; i++)
@@ -204,7 +248,7 @@ export class ClientMatch extends GameElement {
     }
 
 
-    startMatch = (party1:Array<ClientCreature>,party2:Array<ClientCreature>,matchType:DATA.MatchType) => {
+    startMatch = (party1:Array<CreatureChar>,party2:Array<CreatureChar>,matchType:DATA.MatchType) => {
         this.playerParties[0] = party1;
         this.playerParties[1] = party2;
 

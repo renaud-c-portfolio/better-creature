@@ -40,7 +40,7 @@ class GameEngine {
 
     public wheel:number = 0;
 
-    public currentClientMatch:ClientMatch = new ClientMatch(this);
+    public currentClientMatch:ClientMatch = new ClientMatch(this,false);
     public localServerMatch = this.currentClientMatch.localServer;
  
     public physImage = document.createElement("img");
