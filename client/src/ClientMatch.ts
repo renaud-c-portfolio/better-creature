@@ -259,9 +259,9 @@ export class ClientMatch extends GameElement {
 
     receiveServerMessages = () => {
         for (let i=0; i < this.receivingMessages.length; i++)
+            
         {
             const currentMessage = this.receivingMessages[i];
-            
         }
     }
      
