@@ -12,7 +12,7 @@ export class ServerMatch {
 
     numPlayers:number = 2;
     activePerTeam: number = 2;
-    charsPerParty: number = 6;
+    charsPerParty: number = 5;
 
     playerParties:Array<Array<CreatureChar>> = [[],[]]; 
     activeChars:Array<Array<CreatureChar>> = [[],[]];

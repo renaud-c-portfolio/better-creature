@@ -7,6 +7,8 @@ import * as DATA from "./Data";
 import { ScrollMenu } from "./ScrollMenu";
 import { FightAction } from "./FightAction";
 import { WindowClient } from "./WindowClient";
+import { ClientMatch } from "./ClientMatch";
+import { ServerMatch } from "./ServerMatch";
 
 export class GameParty {
     public partyName:string = "new party";
@@ -160,7 +162,8 @@ export class CreatePartyMenu extends GameElement {
                 if (this.testPartyButton.clickConfirm)
                 {
                     this.testPartyButton.clickConfirm = 0;
-                    const newMatch = this.clientWindow.createNewLocalMatch("cpu","local","cpu");
+                    const [newMatch,newServer] = this.clientWindow.createNewLocalMatch("cpu","local","cpu"); 
+                    newServer.playerParties[0] = this.currentParty.characterList;
                     newMatch.playerParties[0] = this.currentParty.characterList;
                     newMatch.initBattle();
                     console.log("new match");
