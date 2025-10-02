@@ -1,8 +1,9 @@
 import { ClientMatch } from "./ClientMatch"; 
 import CreatureChar from "./CreatureChar.ts";
 import * as DATA from "./Data.ts";
+import { FightAction } from "./FightAction.ts";
 
-type fightPhase = "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd" | "turnEndSwitch" | "turnEndSwitchStart" | "emergencySwitchChoice";
+type fightPhase = "preStart" | "start" | "choice" | "turnStart" | "actions" | "turnEnd" | "combatEnd" | "turnEndSwitch" | "turnEndSwitchStart" | "emergencySwitchChoice";
 
 type partyChoice = [[number],[number],[number] , [number],[number],[number]];
 
@@ -26,6 +27,7 @@ export class ServerMatch {
     receivingMessages:Array<ServerClientMessage> = [];
     allReceivedMessages:Array<ServerClientMessage> = [];
 
+    turnEventList:Array<Array<FightAction>> = [[]]; 
 
     clientReady:Array<boolean> = [false,false];
     clientChoices:Array<Array<number>> = [[],[]];
@@ -36,6 +38,7 @@ export class ServerMatch {
     //local match can be null for a server-only setup
     localMatch:ClientMatch|null = null;
 
+    openSheet = false;
 
     constructor () {
          
@@ -51,6 +54,9 @@ export class ServerMatch {
 
         switch(this.currentPhase)
         {
+            case "preStart":
+                this.serverPreStartLogic();
+            break;
             case "start":
                     if (this.clientReady[0] && this.clientReady[1])
                     {
@@ -66,49 +72,65 @@ export class ServerMatch {
 
     }
 
-    serverStartLogic = () => {
+    serverPreStartLogic = () => {
+        /// send creature info to players, only first 2 of your opponents if closed sheets
         for (let i=0; i < this.numPlayers; i++)
         {
-            switch (this.playerTypes[i])
-            {
-                case "local":
-                        if (this.localMatch != null)
-                        {
-                            
-                        }
-                    break;
+             for (let j=0; j < this.numPlayers;j++)
+             { 
+                let sendInfo = 0;
+                if (i == j) {sendInfo = 2;}
+                else if (this.openSheet) {sendInfo = 1;}
 
-                case "CPU":
+                let showChars = this.activePerTeam;
+                if (sendInfo > 0) {showChars = 99;}
 
-                    break;
-
-                case "online":
-
-                    break;
-            }
+                for (let k =0; k < Math.max(showChars,this.playerParties[j].length);k++)
+                {
+                    const creature = this.playerParties[j][k];
+                    const creatureInfo = this.createCreatureInfo(creature,sendInfo);
+                    this.createNewMessage("creature",creatureInfo,i);
+                }
+             }
         }
+        
+        this.currentPhase = "start";
+        
     }
 
     validateCreature = () => {
 
     }
 
+    blankCreatureInfo = () => {
+        const info:DATA.CreatureInfo = {
+            name: null,
+            aspectsAndShapes:null,
+            pluses:null,
+            player: -1,
+            partyIndex: -1,
+        };
 
-    sendCreatureInfo = () => {
+        return info;
+    }
 
-        for (let i = 0; i < this.numPlayers; i++)
-        {
-
-        }
-
+    createCreatureInfo = (creature:CreatureChar,infoLevel:number) => {
+        
+        const info = this.blankCreatureInfo();
+        info.name = creature.name;
+        
+        info.player = creature.playerOwner;
+        info.partyIndex = creature.partyIndex;
+        info.aspectsAndShapes = [creature.aspectTypes, creature.shapes];
+        
+        return info;
     }
 
     createNewMessage = (type:MessageType,data:Object,clientIndex:number) => {
         const newMessage = new ServerClientMessage(this.messageIndex,type,data,clientIndex)
         this.messageIndex += 1;
         this.allSentMessages.push(newMessage);
-        this.sendingMessages.push(newMessage); 
-
+        this.sendingMessages.push(newMessage);  
         return newMessage;
     }
 
@@ -120,9 +142,7 @@ export class ServerMatch {
 
             switch (this.playerTypes[currentMessage.clientIndex])
             {
-                case "CPU":
-
-                break;
+                case "CPU": 
                 case "local":
                     if (this.localMatch != null)
                     {
@@ -142,13 +162,13 @@ export class ServerMatch {
         }
     }
       
-}
+} 
 
-export type MessageType = "creature" | "action" | "choice" | "receiveConfirm";
+export type MessageType = "creature" | "action" | "choice" | "message";
 
 export class ServerClientMessage {
 
-    response:string = "";
+    received = false;
     sendAttempts:number = 0;
     
     constructor (public id:number, public type:MessageType, public data:Object, public clientIndex:number) {

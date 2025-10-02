@@ -124,6 +124,25 @@ export class CreatePartyMenu extends GameElement {
             for (let i =0; i < this.partySize; i++)
             {
                 const newChar = new CreatureChar(this.engine,-100,-100,-55,0);
+                let rando = Math.floor(Math.random()*DATA.shapesList.length);
+                newChar.shapes = [];
+                newChar.aspectTypes = [];
+                rando = Math.floor(Math.random()*DATA.aspectsList.length);
+                newChar.aspectTypes.push(DATA.aspectsList[rando]);
+                if (Math.random()> 0.6)
+                {
+                    rando = Math.floor(Math.random()*DATA.aspectsList.length);
+                    if (newChar.aspectTypes[0] != DATA.aspectsList[rando])
+                    {newChar.aspectTypes.push(DATA.aspectsList[rando]);}
+                }
+                newChar.shapes.push(DATA.shapesList[rando]);
+                rando = Math.floor(Math.random()*DATA.shapesList.length);
+                newChar.shapes.push(DATA.shapesList[rando]);
+                while (newChar.shapes[0] === newChar.shapes[1])
+                {
+                    rando = Math.floor(Math.random()*DATA.shapesList.length);
+                    newChar.shapes[1] = DATA.shapesList[rando];
+                }
                 newChar.resetStats(); 
                 newChar.name = "new creature "+String(i+1);
                 this.currentParty.characterList.push(newChar);
@@ -164,8 +183,13 @@ export class CreatePartyMenu extends GameElement {
                     this.testPartyButton.clickConfirm = 0;
                     const [newMatch,newServer] = this.clientWindow.createNewLocalMatch("cpu","local","cpu"); 
                     newServer.playerParties[0] = this.currentParty.characterList;
-                    newMatch.playerParties[0] = this.currentParty.characterList;
-                    newMatch.initBattle();
+                    newServer.playerParties[1] = this.currentParty.characterList;
+                    //newMatch.playerParties[0] = this.currentParty.characterList;
+                    newMatch.fillTeamWithUnknown(0,6);
+                    newMatch.fillTeamWithUnknown(1,6); 
+                    newMatch.activeChars[0] = [newMatch.playerParties[0][0],newMatch.playerParties[0][1]];
+                    newMatch.activeChars[1] = [newMatch.playerParties[1][0],newMatch.playerParties[1][1]];
+                    //newMatch.initBattle();
                     console.log("new match");
                     //this.engine.currentMatch.party[0] = [...this.currentParty.characterList];
                     //this.engine.currentMatch.activeChars[0][0] = this.currentParty.characterList[0];
@@ -210,7 +234,7 @@ export class CreatePartyMenu extends GameElement {
                 context.drawImage(DATA.shapesRecord[partyChar.shapes[0]].iconImg,96+i%2*112,partyMenuY+21+Math.floor(i/2)*60);
                 context.drawImage(DATA.shapesRecord[partyChar.shapes[1]].iconImg,111+i%2*112,partyMenuY+21+Math.floor(i/2)*60);
 
-                context.font = "8px '04b03'";
+                context.font = "8px '04b03'";  
                 context.letterSpacing = "0px";  
                 
                 context.fillStyle = "black";

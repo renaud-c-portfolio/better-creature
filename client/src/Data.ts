@@ -32,6 +32,10 @@ export type actionEffects = "physical" | "magical" | "strongest" | "statusonly" 
  
 ;
 
+export type items = "none" | "unknown"
+
+;
+
 export const aspectsList:Array<aspectsType> =         ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms","lifespring"];
 export const aspectsListExtended:Array<aspectsType> = ["fire","steel","fae","bugs","beast","bone","blood","hell","forest","solar","stars","abyss","machine","void","sands","rot","curse","heavens","storms","lifespring","mortal","imago","laser"];
 export const shapesList:Array<shapesType> = ["beetle","crawler","stinger","nightmare","canine","feline","critter","antler","feather","fruit","mycon","worldtree","worm","crab","kraken","leviathan","hydra","dinosaur","behemoth","dragon"];
@@ -45,11 +49,21 @@ export const statusEffects = [];
 export type MatchType = "cpu" | "cpuSpectate" | "localVersus" | "onlineHost" | "onlineClient" | "onlineSpectate";
 export type PlayerControl = "local" | "cpu" | "netplay";
 
-export type AspectsShapesArray = [aspectsType,aspectsType,shapesType,shapesType]
+export type AspectsShapesArray = [Array<aspectsType>,Array<shapesType>];
 export type PlusArray = [number,number,number,number,number,number];
+
+export type CreatureInfo = {
+
+        player:number,partyIndex:number,
+        name:string|null,
+        aspectsAndShapes:AspectsShapesArray|null,
+        pluses:PlusArray|null,
+        
+    };
+
+
 export type PlayerDecision = [number,number,number];
 
-export type CreatureInfo = [name:string,aspectsAndShapes:AspectsShapesArray,pluses:PlusArray];
 
 
 

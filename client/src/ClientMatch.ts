@@ -3,8 +3,8 @@ import * as DATA from './Data.ts';
 import GameElement from "./GameElement";
 import ClientButton from "./ClientButton.ts";
 import GameEngine from './GameEngine.ts';
- 
-import { ClientAction } from './ClientAction.ts';
+   
+import { FightAction } from './FightAction.ts';
 import CreatureChar from './CreatureChar.ts';
 import { ServerMatch,ServerClientMessage } from './ServerMatch.ts';
 
@@ -25,6 +25,7 @@ export class ClientMatch extends GameElement {
     totalPartySize:number = 8;
  
 
+    /// important player stuffs
     onlineGame = false;
 
     allSentMessages:Array<ServerClientMessage> = [];
@@ -32,6 +33,10 @@ export class ClientMatch extends GameElement {
     receivingMessages:Array<ServerClientMessage> = [];
     allReceivedMessages:Array<ServerClientMessage> = [];
 
+    turnEventList:Array<Array<FightAction>> = [[]];
+
+    localPlayer = 0;
+    remapPlayerPerspective= [0,1,2,3];
 
     //stuff to receive from server
     playerDecision:DATA.PlayerDecision = [0,0,0];
@@ -41,6 +46,8 @@ export class ClientMatch extends GameElement {
     playerNames:Array<string> = ["baboon","aardvark"];
     playerController:Array<playerControl> = ["local","cpu"];
     playerChoices:Array<any> = [[-1,-1,-1,-1],[-1,-1,-1,-1]];
+
+    multiLocalPlayerTurn:number = 0;
 
     //player parties and active chars
     playerParties:Array<Array<CreatureChar>> = [[],[]]; 
@@ -123,15 +130,7 @@ export class ClientMatch extends GameElement {
 
         
         this.bgImg.src = bgUrl;
-        
-        for (let i=0; i < this.totalTeams; i++)
-            {
-                const emptyCreature = new CreatureChar(engine);
-                this.emptyPlayerCreature[i] = emptyCreature;
-                this.activeChars[i][0] = emptyCreature;
-                this.activeChars[i][1] = emptyCreature;
-            }
-        
+         
         this.environmentChar = new CreatureChar(engine);
  
     }
@@ -143,9 +142,8 @@ export class ClientMatch extends GameElement {
         
             context.drawImage(this.bgImg,0,0,640,360);
 
-            this.drawGameElements(context);
-            this.drawGuiElements(context);  
-
+            this.drawGameElements(context); 
+            this.drawGuiElements(context);   
     }
 
     // initialize battle function
@@ -211,42 +209,67 @@ export class ClientMatch extends GameElement {
      
     //graphical function - draw creatures & special effects, ordered by "depth";
     drawGameElements = (context:CanvasRenderingContext2D) => {
-
-
-        if (this.activeChars[0][0] != undefined)
+ 
+        for (let i=0; i< this.totalTeams; i++)
         {
-            let _char = this.activeChars[0][0];
-            _char.drawFunction(context);
+            for (let j=0; j < this.playerParties[i].length;j++)
+            {
+                let _char = this.playerParties[i][j]; 
+                _char.drawFunction(context);
+            }
         }
-        if (this.activeChars[0][1] != undefined)
+        /*
+        if (this.currentPhase != "waitStart")
         {
-            let _char = this.activeChars[0][1];
-            _char.drawFunction(context);
-        }
-        if (this.activeChars[1][0] != undefined)
-        {
-            let _char = this.activeChars[1][0];
-            _char.dir = -1;
-            _char.drawFunction(context);
-        }
-        if (this.activeChars[1][1] != undefined)
-        {
-            let _char = this.activeChars[1][1];
-            _char.dir = -1;
-            _char.drawFunction(context);
-        }
-
-        this.gameElementsList.sort((a, b) => b.depth - a.depth);
-
-        for (let i = 0; i < this.gameElementsList.length; i++)
-        {
-            const drawElement = this.gameElementsList[i];
-            drawElement.drawFunction(context);  
-        }     
+            if (this.activeChars[0][0] != undefined)
+                {
+                    let _char = this.activeChars[0][0];
+                    _char.drawFunction(context);
+                }
+                if (this.activeChars[0][1] != undefined)
+                {
+                    let _char = this.activeChars[0][1];
+                    _char.drawFunction(context);
+                }
+                if (this.activeChars[1][0] != undefined)
+                {
+                    let _char = this.activeChars[1][0];
+                    _char.dir = -1;
+                    _char.drawFunction(context);
+                }
+                if (this.activeChars[1][1] != undefined)
+                {
+                    let _char = this.activeChars[1][1];
+                    _char.dir = -1;
+                    _char.drawFunction(context);
+                }
+        
+                this.gameElementsList.sort((a, b) => b.depth - a.depth);
+        
+                for (let i = 0; i < this.gameElementsList.length; i++)
+                {
+                    const drawElement = this.gameElementsList[i];
+                    drawElement.drawFunction(context);  
+                }
+        }*/
+        
 
 
     }
 
+    fillTeamWithUnknown = (teamIndex:number,creatureAmount:number) => {
+        this.playerParties[teamIndex] = [];
+        for (let i=0; i < creatureAmount; i++)
+        {
+            const newCreature = new CreatureChar(this.engine,
+                40 + (i%2)*80 + teamIndex*300,
+                30 + Math.floor(i/2)*80,
+                0,
+                teamIndex
+            );
+            this.playerParties[teamIndex].push(newCreature);
+        }
+    }
 
     startMatch = (party1:Array<CreatureChar>,party2:Array<CreatureChar>,matchType:DATA.MatchType) => {
         this.playerParties[0] = party1;
@@ -258,10 +281,44 @@ export class ClientMatch extends GameElement {
 
 
     receiveServerMessages = () => {
-        for (let i=0; i < this.receivingMessages.length; i++)
-            
+        for (let i=0; i < this.receivingMessages.length; i++) 
         {
             const currentMessage = this.receivingMessages[i];
+
+            switch(currentMessage.type)
+            {
+                case "creature":
+                    const info = currentMessage.data as DATA.CreatureInfo;
+                    this.updateCreatureInfo(info);
+                break;
+            }
+        }
+    }
+
+    updateCreatureInfo = (info:DATA.CreatureInfo) => {
+        const creature = this.playerParties[this.remapPlayerPerspective[info.player]][this.remapPlayerPerspective[info.partyIndex]];
+        if (creature != undefined)
+        {
+            if (info.name != null)
+            {
+                if (info.name != creature.name)
+                {creature.name = info.name; console.log("name updated")}
+            }
+            if (info.aspectsAndShapes != null)
+            {
+                creature.aspectTypes = info.aspectsAndShapes[0];
+                creature.shapes = info.aspectsAndShapes[1];
+                console.log("aspect & shapes updated");
+            }
+            if (info.pluses != null)
+            {
+                creature.statPlus = info.pluses;
+                console.log("pluses updated");
+            }
+        }
+        else 
+        {
+            console.log("TRYING TO UPDATE UNDEFINED CREATURE ALERT")
         }
     }
      

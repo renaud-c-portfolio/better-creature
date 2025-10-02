@@ -1,6 +1,8 @@
 import GameElement from "./GameElement"; 
 import gameEngine from "./GameEngine";
 
+import unknownUrl from  "./gfx/unknown_creature.png";
+
 import crambUrl from  "./gfx/funny_crab.png";
 import octoUrl from "./gfx/quadtopus.png";
 import mashUrl from "./gfx/mashroom.png";
@@ -41,9 +43,14 @@ export class CreatureChar extends GameElement {
 
     public clientPercentDisplayHP = false;
     public infoKnown = true;
+    public unknown = false;
+
+    public playerOwner:number = -1;
+    public partyIndex:number = -1;
 
     public HP:number = 100;
     public maxHP:number = 100; 
+    public percentHP:number = 100;
     public damaged:number = 0;
     public maxDamaged:number = 0;
 
@@ -63,8 +70,8 @@ export class CreatureChar extends GameElement {
 
     public statPlus:Array<number> = [0,0,0,0,0,0,0];
     
-    public itemChoices:Array<string|null> = [null,null];
-    public currentItem:string|null = null;
+    public itemChoices:Array<DATA.items> = ["none","none"];
+    public currentItem:DATA.items = "none";
     
 
     public realms:Array<DATA.realm> = ["earthly","earthly"];
@@ -104,34 +111,23 @@ export class CreatureChar extends GameElement {
     constructor (public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0,public team = -1){
         super(engine,x,y,depth)
         let rando = Math.floor(Math.random()*this.tempUrlArray.length);
-        //this.imageElem.src = this.tempUrlArray[rando];
+        this.imageElem.src = unknownUrl;
 
         this.imageElem.onload = () => { 
             this.loaded = true;
           }
-        rando = Math.floor(Math.random()*DATA.aspectsList.length);
-        this.aspectTypes.push(DATA.aspectsList[rando]);
-        if (Math.random()> 0.6)
-        {
-            rando = Math.floor(Math.random()*DATA.aspectsList.length);
-            if (this.aspectTypes[0] != DATA.aspectsList[rando])
-            {this.aspectTypes.push(DATA.aspectsList[rando]);}
-        }
+        
 
-        rando = Math.floor(Math.random()*DATA.shapesList.length);
-        this.shapes.push(DATA.shapesList[rando]);
-        rando = Math.floor(Math.random()*DATA.shapesList.length);
-        this.shapes.push(DATA.shapesList[rando]);
-        while (this.shapes[0] === this.shapes[1])
-        {
-            rando = Math.floor(Math.random()*DATA.shapesList.length);
-            this.shapes[1] = DATA.shapesList[rando];
-        }
+       
+
+        this.shapes.push("none");
+        this.shapes.push("none");
+        this.aspectTypes.push("none"); 
         
 
         this.speed = Math.floor(Math.random()*7)+1;
          
-        this.resetStats();
+        //this.resetStats();
     }
 
 
