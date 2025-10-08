@@ -27,6 +27,7 @@ export class ClientMatch extends GameElement {
 
     /// important player stuffs
     onlineGame = false;
+    serverMatch:ServerMatch;
 
     allSentMessages:Array<ServerClientMessage> = [];
     sendingMessages:Array<ServerClientMessage> = [];
@@ -111,9 +112,11 @@ export class ClientMatch extends GameElement {
     //starting vars end-----------------------------------------------------
 
     //constructor time =====================================================
-    constructor(public engine:GameEngine, online:boolean) {
+    constructor(public engine:GameEngine, online:boolean, server:ServerMatch) {
         super(engine,0,0,-100); 
- 
+
+        this.serverMatch = server;
+        server.localMatch = this;
 
         //initializing drawing elements
         const spriteCanvasElement = document.createElement("canvas");
@@ -131,7 +134,7 @@ export class ClientMatch extends GameElement {
         
         this.bgImg.src = bgUrl;
          
-        this.environmentChar = new CreatureChar(engine);
+        this.environmentChar = new CreatureChar();
  
     }
 
@@ -144,6 +147,8 @@ export class ClientMatch extends GameElement {
 
             this.drawGameElements(context); 
             this.drawGuiElements(context);   
+
+            this.receiveServerMessages(); 
     }
 
     // initialize battle function
@@ -261,7 +266,7 @@ export class ClientMatch extends GameElement {
         this.playerParties[teamIndex] = [];
         for (let i=0; i < creatureAmount; i++)
         {
-            const newCreature = new CreatureChar(this.engine,
+            const newCreature = new CreatureChar(
                 40 + (i%2)*80 + teamIndex*300,
                 30 + Math.floor(i/2)*80,
                 0,
@@ -273,8 +278,7 @@ export class ClientMatch extends GameElement {
 
     startMatch = (party1:Array<CreatureChar>,party2:Array<CreatureChar>,matchType:DATA.MatchType) => {
         this.playerParties[0] = party1;
-        this.playerParties[1] = party2;
-
+        this.playerParties[1] = party2; 
         this.activeChars[0] = [party1[0],party1[1]];
         this.activeChars[1] = [party2[0],party2[1]];
     }
@@ -283,20 +287,34 @@ export class ClientMatch extends GameElement {
     receiveServerMessages = () => {
         for (let i=0; i < this.receivingMessages.length; i++) 
         {
-            const currentMessage = this.receivingMessages[i];
-
+            const currentMessage = this.receivingMessages[i]; 
+            console.log("receiving message "+String(currentMessage.id)+" of type "+currentMessage.type);
             switch(currentMessage.type)
             {
                 case "creature":
                     const info = currentMessage.data as DATA.CreatureInfo;
-                    this.updateCreatureInfo(info);
+                    this.updateCreatureInfo(info); 
+                    console.log("creature received")
                 break;
             }
+
+            if (this.onlineGame)
+            {
+
+            }
+            else
+            {
+                this.serverMatch.confirmSentMessageReceived(currentMessage.id);
+            } 
         }
+
+        this.receivingMessages = [];
     }
 
     updateCreatureInfo = (info:DATA.CreatureInfo) => {
-        const creature = this.playerParties[this.remapPlayerPerspective[info.player]][this.remapPlayerPerspective[info.partyIndex]];
+        console.log("info:",info)
+        const creature = this.playerParties[this.remapPlayerPerspective[info.player]][info.partyIndex];
+        console.log("resulting creature",creature);
         if (creature != undefined)
         {
             if (info.name != null)
@@ -309,6 +327,7 @@ export class ClientMatch extends GameElement {
                 creature.aspectTypes = info.aspectsAndShapes[0];
                 creature.shapes = info.aspectsAndShapes[1];
                 console.log("aspect & shapes updated");
+                creature.resetStats();
             }
             if (info.pluses != null)
             {

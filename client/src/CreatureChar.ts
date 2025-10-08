@@ -32,7 +32,7 @@ import FightMatch from "./FightMatch";
 import * as DATA from './Data.ts';
 
 
-export class CreatureChar extends GameElement {
+export class CreatureChar {
 
     public name:string = "animal" + String(Math.floor(Math.random()*100)); 
     public dir:number = 1;
@@ -106,10 +106,13 @@ export class CreatureChar extends GameElement {
     tempUrlArray:Array<any> = [crambUrl,octoUrl,mashUrl,hydraUrl,nekoUrl,centiUrl,sharkyUrl,melonUrl,treeUrl,foxUrl,fruitUrl,starBeheUrl,solarAntlerUrl,sandStingUrl,bloodNightmareUrl,curseBeetleUrl,faeCritterUrl,forestFeatherUrl,abyssWormUrl,boneDinoUrl];
  
     imageElem:HTMLImageElement = document.createElement("img");  
-    imageAlpha:number = 1;
+    imageAlpha:number = 1; 
+    knownInfo:Array<Record<DATA.InfoTypes,boolean>> = [
+        
+    ];
 
-    constructor (public engine:gameEngine,public x:number = 0,public y:number = 0,public depth:number = 0,public team = -1){
-        super(engine,x,y,depth)
+    constructor (public x:number = 0,public y:number = 0,public depth:number = 0,public team = -1){
+         
         let rando = Math.floor(Math.random()*this.tempUrlArray.length);
         this.imageElem.src = unknownUrl;
 

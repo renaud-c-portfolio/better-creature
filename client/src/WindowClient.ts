@@ -78,8 +78,9 @@ export class WindowClient {
 
 
     createNewLocalMatch = (matchType:DATA.MatchType,player1:DATA.PlayerControl,player2:DATA.PlayerControl):[ClientMatch,ServerMatch] => {
-         const newMatch = new ClientMatch(this.engine,false);
          const newServer = new ServerMatch();
+         const newMatch = new ClientMatch(this.engine,false,newServer);
+
          const matchTab = new WindowGameTab(this,"battle",newMatch,"test battle 0");
          this.gameTabHeaderDiv.appendChild(matchTab.htmlElement);
          let percent = 20;

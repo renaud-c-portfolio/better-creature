@@ -62,6 +62,9 @@ export type CreatureInfo = {
     };
 
 
+export const infoTypeArray = ["aspects","shapes","pluses","action1","action2","action3","action4","soul","halfsoul","possibleItem","currentItem"] as const;
+export type InfoTypes = typeof infoTypeArray[number];
+
 export type PlayerDecision = [number,number,number];
 
 

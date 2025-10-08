@@ -123,7 +123,7 @@ export class CreatePartyMenu extends GameElement {
             this.currentParty = newParty;
             for (let i =0; i < this.partySize; i++)
             {
-                const newChar = new CreatureChar(this.engine,-100,-100,-55,0);
+                const newChar = new CreatureChar(-100,-100,-55,0);
                 let rando = Math.floor(Math.random()*DATA.shapesList.length);
                 newChar.shapes = [];
                 newChar.aspectTypes = [];
@@ -182,13 +182,16 @@ export class CreatePartyMenu extends GameElement {
                 {
                     this.testPartyButton.clickConfirm = 0;
                     const [newMatch,newServer] = this.clientWindow.createNewLocalMatch("cpu","local","cpu"); 
-                    newServer.playerParties[0] = this.currentParty.characterList;
-                    newServer.playerParties[1] = this.currentParty.characterList;
+                    newServer.playerParties[0] = newServer.copyCreatureParty(this.currentParty.characterList);
+                    newServer.playerParties[1] = newServer.copyCreatureParty(this.currentParty.characterList);
                     //newMatch.playerParties[0] = this.currentParty.characterList;
-                    newMatch.fillTeamWithUnknown(0,6);
-                    newMatch.fillTeamWithUnknown(1,6); 
+                    newMatch.fillTeamWithUnknown(0,8);
+                    newMatch.fillTeamWithUnknown(1,8);  
                     newMatch.activeChars[0] = [newMatch.playerParties[0][0],newMatch.playerParties[0][1]];
                     newMatch.activeChars[1] = [newMatch.playerParties[1][0],newMatch.playerParties[1][1]];
+
+                    newServer.serverActive = true;
+                    newServer.serverTickUpdate();
                     //newMatch.initBattle();
                     console.log("new match");
                     //this.engine.currentMatch.party[0] = [...this.currentParty.characterList];
@@ -249,7 +252,7 @@ export class CreatePartyMenu extends GameElement {
                 if (this.addCharButton.clickConfirm)
                 {
                     this.addCharButton.clickConfirm = 0;
-                    const newChar = new CreatureChar(this.engine,-100,-100,-55,0);
+                    const newChar = new CreatureChar(-100,-100,-55,0);
                     newChar.resetStats();
                     this.currentChar = newChar;
                     this.currentParty.characterList.push(newChar);
@@ -658,7 +661,7 @@ export class CreatePartyMenu extends GameElement {
                 this.playerParties.push(newParty);
                 while (saveStr.indexOf("@") >= 0)
                 {
-                    const newChar = new CreatureChar(this.engine,-99,-99,0,0);
+                    const newChar = new CreatureChar(-99,-99,0,0);
                     newParty.characterList.push(newChar);
                     saveIndex = saveStr?.indexOf("@");
                     newChar.name = saveStr.slice(0,saveIndex);

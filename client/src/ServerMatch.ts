@@ -14,10 +14,16 @@ export class ServerMatch {
     numPlayers:number = 2;
     activePerTeam: number = 2;
     charsPerParty: number = 5;
+    totalPerParty: number = 8;
+
+    serverActive = false;
+    serverTicks = 0;
 
     playerParties:Array<Array<CreatureChar>> = [[],[]]; 
-    activeChars:Array<Array<CreatureChar>> = [[],[]];
+    activeChars:Array<Array<CreatureChar>> = [[],[]]; 
 
+    
+ 
     playerTypes:[playerType,playerType] = ["local","CPU"];
 
     messageIndex = 0;
@@ -45,7 +51,7 @@ export class ServerMatch {
     }
     
     
-    currentPhase:fightPhase = "start";
+    currentPhase:fightPhase = "preStart";
 
 
 
@@ -60,7 +66,7 @@ export class ServerMatch {
             case "start":
                     if (this.clientReady[0] && this.clientReady[1])
                     {
-
+                        
                     }
                 break;
 
@@ -72,33 +78,129 @@ export class ServerMatch {
 
     }
 
-    serverPreStartLogic = () => {
-        /// send creature info to players, only first 2 of your opponents if closed sheets
-        for (let i=0; i < this.numPlayers; i++)
+    fullInfoKnown = (known:boolean = false) => {
+        const obj = Object.fromEntries(DATA.infoTypeArray.map(k => [k,known])) as Record<DATA.InfoTypes,boolean>;
+ 
+        return obj;
+    }
+
+    serverTickUpdate = () => {
+
+        //console.log("server tick update "+String(this.serverTicks))
+        this.serverTicks += 1;
+
+        this.serverCombatSequenceLogic(); 
+        this.sendPendingMessages();
+
+        if (this.serverActive)
         {
-             for (let j=0; j < this.numPlayers;j++)
-             { 
-                let sendInfo = 0;
-                if (i == j) {sendInfo = 2;}
-                else if (this.openSheet) {sendInfo = 1;}
-
-                let showChars = this.activePerTeam;
-                if (sendInfo > 0) {showChars = 99;}
-
-                for (let k =0; k < Math.max(showChars,this.playerParties[j].length);k++)
-                {
-                    const creature = this.playerParties[j][k];
-                    const creatureInfo = this.createCreatureInfo(creature,sendInfo);
-                    this.createNewMessage("creature",creatureInfo,i);
-                }
-             }
+            setTimeout(()=>{
+                this.serverTickUpdate(); 
+            },500)
         }
         
+    }
+
+    initCreatures = () => {
+
+        for (let i=0; i < this.numPlayers; i++)
+        {
+            for (let j=0;j < Math.min(this.playerParties[i].length,this.totalPerParty); j++)
+            {
+                const creature = this.playerParties[i][j];
+                creature.playerOwner = i; 
+                creature.partyIndex = j;  
+                if (i===j)
+                {
+                    creature.knownInfo.push(this.fullInfoKnown(true));
+                }
+                console.log("creature inited",creature.playerOwner);
+            }
+        }
+    }
+
+    serverPreStartLogic = () => {
+        /// send creature info to players, only first 2 of your opponents if closed sheets  
+        this.initCreatures();
+
+        for (let i=0; i < this.numPlayers; i++)
+        {
+            if (this.playerTypes[i] === "local")
+            { 
+                for (let j=0; j < this.numPlayers;j++)
+                { 
+                    let sendInfo = 0;
+                    if (i == j) {sendInfo = 2;}
+                    else if (this.openSheet) {sendInfo = 1;}
+
+                    let showChars = this.activePerTeam;
+                    if (sendInfo > 0) {showChars = this.totalPerParty;}
+
+                    for (let k =0; k < showChars;k++)
+                    {
+                        const creature = this.playerParties[j][k];
+                        const creatureInfo = this.createCreatureInfo(creature,sendInfo);
+                        this.createNewMessage("creature",creatureInfo,i);
+                        console.log("sending creature to client"+String(i)+": #"+String(j)+"'s "+creature.name);
+                    }
+                }
+
+            }
+        } 
+
         this.currentPhase = "start";
         
     }
 
     validateCreature = () => {
+
+    } 
+
+    copyCreatureParty = (party:Array<CreatureChar>) => {
+
+        const newParty:Array<CreatureChar> = [];
+        
+        for (let i=0; i < party.length; i++)
+        {
+            const oldCreature = party[i];
+            const newCreature = this.newCreatureCopy(oldCreature);
+
+            newParty.push(newCreature);
+        }
+
+        return newParty;
+    }
+
+
+    newCreatureCopy = (creature:CreatureChar) => {
+        const newCreature = new CreatureChar();
+
+        newCreature.name = creature.name;
+        newCreature.statPlus = creature.statPlus.slice();
+        newCreature.aspectTypes = creature.aspectTypes.slice();
+        newCreature.shapes = creature.shapes.slice();
+        newCreature.partyIndex = creature.partyIndex;
+        newCreature.playerOwner = creature.playerOwner;
+
+        return newCreature;
+    }
+
+    newCreatureFromInfo = (info:DATA.CreatureInfo) => {
+
+        const creature = new CreatureChar()
+        if (info.name != null)
+        {creature.name = info.name;}
+        if (info.aspectsAndShapes!= null)
+        {
+            creature.aspectTypes = info.aspectsAndShapes[0];
+            creature.shapes = info.aspectsAndShapes[1];
+        } 
+        if (info.pluses != null)
+        {
+            creature.statPlus = info.pluses;
+        }
+        creature.playerOwner = info.player;
+        creature.partyIndex = info.partyIndex;
 
     }
 
@@ -117,13 +219,14 @@ export class ServerMatch {
     createCreatureInfo = (creature:CreatureChar,infoLevel:number) => {
         
         const info = this.blankCreatureInfo();
-        info.name = creature.name;
-        
+        info.name = creature.name; 
         info.player = creature.playerOwner;
         info.partyIndex = creature.partyIndex;
         info.aspectsAndShapes = [creature.aspectTypes, creature.shapes];
         
+        console.log("info creatured",info)
         return info;
+
     }
 
     createNewMessage = (type:MessageType,data:Object,clientIndex:number) => {
@@ -134,24 +237,48 @@ export class ServerMatch {
         return newMessage;
     }
 
+    confirmSentMessageReceived = (messageId:number) => { 
+        let messageConfirmed = false;
+        for (let i=0; i < this.sendingMessages.length;i++)
+        {
+            const message = this.sendingMessages[i];
+            if (message.id === messageId)
+            {
+                message.received = true;
+                messageConfirmed = true; 
+                console.log("message "+String(messageId)+" received")
+                this.sendingMessages.splice(i,1);
+                break;
+            }
+        }
+        if (!messageConfirmed)
+        {
+            console.log("message "+String(messageId)+" not in pending list but confirmation received");
+        }
+    }
+
 
     sendPendingMessages = () => {
         for (let i=0; i< this.sendingMessages.length; i++)
         {
             const currentMessage = this.sendingMessages[i];
-
+            console.log("sending pending message id "+String(currentMessage.id) +" to player "+String(i)+", a "+this.playerTypes[currentMessage.clientIndex]);
             switch (this.playerTypes[currentMessage.clientIndex])
             {
                 case "CPU": 
+
+                break;
                 case "local":
                     if (this.localMatch != null)
                     {
-                        if (this.localMatch.allReceivedMessages.indexOf(currentMessage) != -1)
+                        console.log("local match")
+                        if (this.localMatch.allReceivedMessages.indexOf(currentMessage) === -1)
                         {
                             this.localMatch.receivingMessages.push(currentMessage);
                             this.localMatch.allReceivedMessages.push(currentMessage);
+                            console.log("local match sent message")
                         }
-                    }
+                    } 
                 break;
                 case "online":
 
