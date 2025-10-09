@@ -41,8 +41,7 @@ export class CreatureChar {
 
     public sprite:string = "";
 
-    public clientPercentDisplayHP = false;
-    public infoKnown = true;
+    public clientPercentDisplayHP = false; 
     public unknown = false;
 
     public playerOwner:number = -1;
@@ -129,9 +128,19 @@ export class CreatureChar {
         
 
         this.speed = Math.floor(Math.random()*7)+1;
+
+        this.knownInfo.push(this.fullInfoKnown(false));
+        this.knownInfo.push(this.fullInfoKnown(false));
          
         //this.resetStats();
     }
+
+    fullInfoKnown = (known:boolean = false) => {
+        const obj = Object.fromEntries(DATA.infoTypeArray.map(k => [k,known])) as Record<DATA.InfoTypes,boolean>;
+ 
+        return obj;
+    }
+
 
 
     drawFunction = (context:CanvasRenderingContext2D) => {

@@ -214,15 +214,18 @@ export class ClientMatch extends GameElement {
      
     //graphical function - draw creatures & special effects, ordered by "depth";
     drawGameElements = (context:CanvasRenderingContext2D) => {
- 
-        for (let i=0; i< this.totalTeams; i++)
+
+
+        
+        /*for (let i=0; i< this.totalTeams; i++)
         {
             for (let j=0; j < this.playerParties[i].length;j++)
             {
                 let _char = this.playerParties[i][j]; 
                 _char.drawFunction(context);
             }
-        }
+        }*/
+       
         /*
         if (this.currentPhase != "waitStart")
         {
@@ -300,7 +303,7 @@ export class ClientMatch extends GameElement {
 
             if (this.onlineGame)
             {
-
+                
             }
             else
             {

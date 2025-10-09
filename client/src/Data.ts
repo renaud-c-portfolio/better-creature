@@ -28,11 +28,17 @@ export type targetType = "single" | "double" | "aoe" | "self" | "ally" | "front"
 export type actionEffects = "physical" | "magical" | "strongest" | "statusonly" |
  "basepower" | "powerMult" |
  "setAspect" | "setOthersAspect" | "setRealmAspect" | "setOthersRealmAspect" |
- "targetType"
- 
+ "targetType" 
 ;
 
 export type items = "none" | "unknown"
+
+;
+
+export type eventEffects = 
+"displayMessage" |
+"dealDamage" | "healDamage"
+"switchCreature"
 
 ;
 
@@ -61,9 +67,16 @@ export type CreatureInfo = {
         
     };
 
+export type ActionInfo = {
+
+    name:String,  
+}
+ 
 
 export const infoTypeArray = ["aspects","shapes","pluses","action1","action2","action3","action4","soul","halfsoul","possibleItem","currentItem"] as const;
 export type InfoTypes = typeof infoTypeArray[number];
+
+
 
 export type PlayerDecision = [number,number,number];
 

@@ -78,12 +78,7 @@ export class ServerMatch {
 
     }
 
-    fullInfoKnown = (known:boolean = false) => {
-        const obj = Object.fromEntries(DATA.infoTypeArray.map(k => [k,known])) as Record<DATA.InfoTypes,boolean>;
- 
-        return obj;
-    }
-
+    
     serverTickUpdate = () => {
 
         //console.log("server tick update "+String(this.serverTicks))
@@ -112,7 +107,7 @@ export class ServerMatch {
                 creature.partyIndex = j;  
                 if (i===j)
                 {
-                    creature.knownInfo.push(this.fullInfoKnown(true));
+                    creature.knownInfo[i] = (creature.fullInfoKnown(true));
                 }
                 console.log("creature inited",creature.playerOwner);
             }
@@ -139,6 +134,10 @@ export class ServerMatch {
                     for (let k =0; k < showChars;k++)
                     {
                         const creature = this.playerParties[j][k];
+
+                        creature.knownInfo[i].aspects = true;
+                        creature.knownInfo[i].shapes = true;
+ 
                         const creatureInfo = this.createCreatureInfo(creature,sendInfo);
                         this.createNewMessage("creature",creatureInfo,i);
                         console.log("sending creature to client"+String(i)+": #"+String(j)+"'s "+creature.name);
@@ -216,6 +215,13 @@ export class ServerMatch {
         return info;
     }
 
+
+    createActionInfo = () => {
+        
+        
+
+    }
+
     createCreatureInfo = (creature:CreatureChar,infoLevel:number) => {
         
         const info = this.blankCreatureInfo();
@@ -254,6 +260,13 @@ export class ServerMatch {
         if (!messageConfirmed)
         {
             console.log("message "+String(messageId)+" not in pending list but confirmation received");
+        }
+    }
+
+    receiveClientMessages = () => {
+        for (let i=0; i < this.receivingMessages.length; i++)
+        {
+
         }
     }
 
