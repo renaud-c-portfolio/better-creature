@@ -229,7 +229,6 @@ export class ServerMatch {
         info.player = creature.playerOwner;
         info.partyIndex = creature.partyIndex;
         info.aspectsAndShapes = [creature.aspectTypes, creature.shapes];
-        
         console.log("info creatured",info)
         return info;
 

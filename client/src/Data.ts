@@ -1,6 +1,6 @@
 import { shape } from "./game/shapes/shapes";
 
-
+////test comment
  
 const iconUrls = import.meta.glob<true,string,{default:string}>('./gfx/aspecticons/*.png',{ eager: true }); 
 const gameIconUrls = import.meta.glob<true,string,{default:string}>('./gfx/gameicons/*.png',{ eager: true });
